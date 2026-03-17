@@ -1,15 +1,14 @@
 package com.chinonso.university_scheduling.service;
 
+import org.springframework.stereotype.Service;
+
 import com.chinonso.university_scheduling.entity.Teacher;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
 import com.chinonso.university_scheduling.repository.TeacherRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class TeacherService {
 
     private final TeacherRepository teacherRepository;
@@ -18,65 +17,65 @@ public class TeacherService {
         this.teacherRepository = teacherRepository;
     }
 
-    // ── READ ───────────────────────────────────────────────────────────────────
-    public List<Teacher> findAll() {
+    // GET ALL
+    public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
     }
 
-    public Teacher findById(Integer id) {
+    // GET BY ID
+    public Teacher getTeacherById(Integer id) {
         return teacherRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Teacher not found with ID: " + id));
     }
 
-    public Teacher findByEmployeeId(String employeeId) {
-        return teacherRepository.findByEmployeeId(employeeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Teacher not found with employee id: " + employeeId));
-    }
-
-    public List<Teacher> findByDepartment(String department) {
-        return teacherRepository.findByDepartment(department);
-    }
-
-    // ── CREATE ─────────────────────────────────────────────────────────────────
-    public Teacher create(Teacher teacher) {
+    // CREATE
+    public Teacher createTeacher(Teacher teacher) {
         if (teacherRepository.existsByEmployeeId(teacher.getEmployeeId())) {
-            throw new IllegalArgumentException("Employee ID already exists: " + teacher.getEmployeeId());
+            throw new IllegalArgumentException(
+                    "Employee ID '" + teacher.getEmployeeId() + "' already exists");
         }
         if (teacherRepository.existsByEmail(teacher.getEmail())) {
-            throw new IllegalArgumentException("Email already registered: " + teacher.getEmail());
+            throw new IllegalArgumentException(
+                    "Email '" + teacher.getEmail() + "' is already registered");
         }
         return teacherRepository.save(teacher);
     }
 
-    // ── UPDATE ─────────────────────────────────────────────────────────────────
-    public Teacher update(Integer id, Teacher updated) {
-        Teacher existing = findById(id);
+    // UPDATE
+    public Teacher updateTeacher(Integer id, Teacher updatedTeacher) {
+        Teacher existing = getTeacherById(id);
 
-        if (!existing.getEmployeeId().equals(updated.getEmployeeId())
-                && teacherRepository.existsByEmployeeId(updated.getEmployeeId())) {
-            throw new IllegalArgumentException("Employee ID already exists: " + updated.getEmployeeId());
+        if (!existing.getEmployeeId().equals(updatedTeacher.getEmployeeId())
+                && teacherRepository.existsByEmployeeId(updatedTeacher.getEmployeeId())) {
+            throw new IllegalArgumentException(
+                    "Employee ID '" + updatedTeacher.getEmployeeId() + "' already exists");
         }
-        if (!existing.getEmail().equals(updated.getEmail())
-                && teacherRepository.existsByEmail(updated.getEmail())) {
-            throw new IllegalArgumentException("Email already registered: " + updated.getEmail());
+        if (!existing.getEmail().equals(updatedTeacher.getEmail())
+                && teacherRepository.existsByEmail(updatedTeacher.getEmail())) {
+            throw new IllegalArgumentException(
+                    "Email '" + updatedTeacher.getEmail() + "' is already registered");
         }
 
-        existing.setEmployeeId(updated.getEmployeeId());
-        existing.setFirstName(updated.getFirstName());
-        existing.setLastName(updated.getLastName());
-        existing.setEmail(updated.getEmail());
-        existing.setDepartment(updated.getDepartment());
-        existing.setSpecialization(updated.getSpecialization());
-        existing.setMaxHoursPerWeek(updated.getMaxHoursPerWeek());
+        existing.setEmployeeId(updatedTeacher.getEmployeeId());
+        existing.setFirstName(updatedTeacher.getFirstName());
+        existing.setLastName(updatedTeacher.getLastName());
+        existing.setEmail(updatedTeacher.getEmail());
+        existing.setDepartment(updatedTeacher.getDepartment());
+        existing.setSpecialization(updatedTeacher.getSpecialization());
+        existing.setMaxHoursPerWeek(updatedTeacher.getMaxHoursPerWeek());
 
         return teacherRepository.save(existing);
     }
 
-    // ── DELETE ─────────────────────────────────────────────────────────────────
-    public void delete(Integer id) {
-        if (!teacherRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Teacher not found with id: " + id);
-        }
-        teacherRepository.deleteById(id);
+    // DELETE
+    public void deleteTeacher(Integer id) {
+        Teacher teacher = getTeacherById(id);
+        teacherRepository.delete(teacher);
+    }
+
+    // GET BY DEPARTMENT
+    public List<Teacher> getTeachersByDepartment(String department) {
+        return teacherRepository.findByDepartment(department);
     }
 }

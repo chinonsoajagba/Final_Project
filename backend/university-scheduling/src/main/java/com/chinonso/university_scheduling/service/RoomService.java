@@ -1,15 +1,14 @@
 package com.chinonso.university_scheduling.service;
 
+import org.springframework.stereotype.Service;
+
 import com.chinonso.university_scheduling.entity.Room;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
 import com.chinonso.university_scheduling.repository.RoomRepository;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class RoomService {
 
     private final RoomRepository roomRepository;
@@ -18,71 +17,62 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    // ── READ ───────────────────────────────────────────────────────────────────
-    public List<Room> findAll() {
+    // GET ALL
+    public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
-    public Room findById(Integer id) {
+    // GET ACTIVE ONLY (for dropdowns in frontend)
+    public List<Room> getActiveRooms() {
+        return roomRepository.findByIsActiveTrue();
+    }
+
+    // GET BY ID
+    public Room getRoomById(Integer id) {
         return roomRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Room not found with ID: " + id));
     }
 
-    public Room findByRoomCode(String roomCode) {
-        return roomRepository.findByRoomCode(roomCode)
-                .orElseThrow(() -> new ResourceNotFoundException("Room not found with code: " + roomCode));
-    }
-
-    public List<Room> findByBuilding(String building) {
-        return roomRepository.findByBuilding(building);
-    }
-
-    public List<Room> findActiveRooms() {
-        return roomRepository.findByIsActive(true);
-    }
-
-    public List<Room> findByType(Room.RoomType roomType) {
-        return roomRepository.findByRoomType(roomType);
-    }
-
-    public List<Room> findByMinCapacity(Integer minCapacity) {
-        return roomRepository.findByCapacityGreaterThanEqual(minCapacity);
-    }
-
-    // ── CREATE ─────────────────────────────────────────────────────────────────
-    public Room create(Room room) {
+    // CREATE
+    public Room createRoom(Room room) {
         if (roomRepository.existsByRoomCode(room.getRoomCode())) {
-            throw new IllegalArgumentException("Room code already exists: " + room.getRoomCode());
+            throw new IllegalArgumentException(
+                    "Room code '" + room.getRoomCode() + "' already exists");
         }
         return roomRepository.save(room);
     }
 
-    // ── UPDATE ─────────────────────────────────────────────────────────────────
-    public Room update(Integer id, Room updated) {
-        Room existing = findById(id);
+    // UPDATE
+    public Room updateRoom(Integer id, Room updatedRoom) {
+        Room existing = getRoomById(id);
 
-        // Check uniqueness if the room code has changed
-        if (!existing.getRoomCode().equals(updated.getRoomCode())
-                && roomRepository.existsByRoomCode(updated.getRoomCode())) {
-            throw new IllegalArgumentException("Room code already exists: " + updated.getRoomCode());
+        // Only check code uniqueness if it actually changed
+        if (!existing.getRoomCode().equals(updatedRoom.getRoomCode())
+                && roomRepository.existsByRoomCode(updatedRoom.getRoomCode())) {
+            throw new IllegalArgumentException(
+                    "Room code '" + updatedRoom.getRoomCode() + "' already exists");
         }
 
-        existing.setRoomCode(updated.getRoomCode());
-        existing.setBuilding(updated.getBuilding());
-        existing.setCapacity(updated.getCapacity());
-        existing.setHasProjector(updated.getHasProjector());
-        existing.setHasComputers(updated.getHasComputers());
-        existing.setRoomType(updated.getRoomType());
-        existing.setIsActive(updated.getIsActive());
+        existing.setRoomCode(updatedRoom.getRoomCode());
+        existing.setBuilding(updatedRoom.getBuilding());
+        existing.setCapacity(updatedRoom.getCapacity());
+        existing.setHasProjector(updatedRoom.getHasProjector());
+        existing.setHasComputers(updatedRoom.getHasComputers());
+        existing.setRoomType(updatedRoom.getRoomType());
+        existing.setIsActive(updatedRoom.getIsActive());
 
         return roomRepository.save(existing);
     }
 
-    // ── DELETE ─────────────────────────────────────────────────────────────────
-    public void delete(Integer id) {
-        if (!roomRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Room not found with id: " + id);
-        }
-        roomRepository.deleteById(id);
+    // DELETE
+    public void deleteRoom(Integer id) {
+        Room room = getRoomById(id);
+        roomRepository.delete(room);
+    }
+
+    // GET ROOMS BY MINIMUM CAPACITY
+    public List<Room> getRoomsByMinCapacity(Integer capacity) {
+        return roomRepository.findByCapacityGreaterThanEqual(capacity);
     }
 }

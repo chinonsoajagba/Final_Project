@@ -1,8 +1,9 @@
 package com.chinonso.university_scheduling.repository;
 
-import com.chinonso.university_scheduling.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.chinonso.university_scheduling.entity.Teacher;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,13 +11,14 @@ import java.util.Optional;
 @Repository
 public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
-    Optional<Teacher> findByEmployeeId(String employeeId);
-
-    Optional<Teacher> findByEmail(String email);
-
-    List<Teacher> findByDepartment(String department);
-
+    // Check for duplicate employee ID or email
     boolean existsByEmployeeId(String employeeId);
 
     boolean existsByEmail(String email);
+
+    // Find teacher by email
+    Optional<Teacher> findByEmail(String email);
+
+    // Get all teachers in a department
+    List<Teacher> findByDepartment(String department);
 }

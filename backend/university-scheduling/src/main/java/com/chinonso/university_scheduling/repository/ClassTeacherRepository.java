@@ -1,19 +1,21 @@
 package com.chinonso.university_scheduling.repository;
 
-import com.chinonso.university_scheduling.entity.ClassSection;
-import com.chinonso.university_scheduling.entity.ClassTeacher;
-import com.chinonso.university_scheduling.entity.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.chinonso.university_scheduling.entity.ClassTeacher;
 
 import java.util.List;
 
 @Repository
 public interface ClassTeacherRepository extends JpaRepository<ClassTeacher, Integer> {
 
-    List<ClassTeacher> findByClassSection(ClassSection classSection);
+    // Get all class assignments for a teacher
+    List<ClassTeacher> findByTeacher_TeacherId(Integer teacherId);
 
-    List<ClassTeacher> findByTeacher(Teacher teacher);
+    // Get all teachers assigned to a class
+    List<ClassTeacher> findByClassSection_ClassId(Integer classId);
 
-    boolean existsByClassSectionAndTeacher(ClassSection classSection, Teacher teacher);
+    // Check if teacher is already assigned to this class
+    boolean existsByClassSection_ClassIdAndTeacher_TeacherId(Integer classId, Integer teacherId);
 }

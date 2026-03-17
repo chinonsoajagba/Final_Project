@@ -1,10 +1,9 @@
 package com.chinonso.university_scheduling.repository;
 
-import com.chinonso.university_scheduling.entity.ClassSection;
-import com.chinonso.university_scheduling.entity.Enrolment;
-import com.chinonso.university_scheduling.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.chinonso.university_scheduling.entity.Enrolment;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,15 +11,18 @@ import java.util.Optional;
 @Repository
 public interface EnrolmentRepository extends JpaRepository<Enrolment, Integer> {
 
-    List<Enrolment> findByStudent(Student student);
+    // Get all enrolments for a student
+    List<Enrolment> findByStudent_StudentId(Integer studentId);
 
-    List<Enrolment> findByClassSection(ClassSection classSection);
+    // Get all enrolments for a class
+    List<Enrolment> findByClassSection_ClassId(Integer classId);
 
-    Optional<Enrolment> findByStudentAndClassSection(Student student, ClassSection classSection);
+    // Check if student is already enrolled in a specific class
+    boolean existsByStudent_StudentIdAndClassSection_ClassId(Integer studentId, Integer classId);
 
-    boolean existsByStudentAndClassSection(Student student, ClassSection classSection);
+    // Find specific enrolment record (for drop/update)
+    Optional<Enrolment> findByStudent_StudentIdAndClassSection_ClassId(Integer studentId, Integer classId);
 
-    long countByClassSectionAndStatus(ClassSection classSection, Enrolment.EnrolmentStatus status);
-
-    List<Enrolment> findByStatus(Enrolment.EnrolmentStatus status);
+    // Count active enrolments for a class (used to verify current_enrolment)
+    int countByClassSection_ClassIdAndStatus(Integer classId, Enrolment.EnrolmentStatus status);
 }
