@@ -33,4 +33,4 @@ build/
 .vscode/
 
 ### Environmental Variables ###
-.env
+src/main/resources/application-local.properties
