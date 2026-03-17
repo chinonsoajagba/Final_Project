@@ -2,7 +2,13 @@ package com.chinonso.university_scheduling.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "class")
 public class ClassSection {
@@ -39,9 +45,11 @@ public class ClassSection {
     @Column(name = "max_enrolment", nullable = false)
     private Integer maxEnrolment;
 
+    @Builder.Default
     @Column(name = "current_enrolment", nullable = false)
     private Integer currentEnrolment = 0;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ClassStatus status = ClassStatus.SCHEDULED;
@@ -52,90 +60,5 @@ public class ClassSection {
 
     public enum ClassStatus {
         SCHEDULED, ONGOING, COMPLETED
-    }
-
-    public ClassSection() {
-    }
-
-    public ClassSection(Course course, String sectionNumber, String academicYear,
-            Semester semester, Room room, Integer maxEnrolment) {
-        this.course = course;
-        this.sectionNumber = sectionNumber;
-        this.academicYear = academicYear;
-        this.semester = semester;
-        this.room = room;
-        this.maxEnrolment = maxEnrolment;
-    }
-
-    public Integer getClassId() {
-        return classId;
-    }
-
-    public void setClassId(Integer classId) {
-        this.classId = classId;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
-
-    public String getSectionNumber() {
-        return sectionNumber;
-    }
-
-    public void setSectionNumber(String sectionNumber) {
-        this.sectionNumber = sectionNumber;
-    }
-
-    public String getAcademicYear() {
-        return academicYear;
-    }
-
-    public void setAcademicYear(String academicYear) {
-        this.academicYear = academicYear;
-    }
-
-    public Semester getSemester() {
-        return semester;
-    }
-
-    public void setSemester(Semester semester) {
-        this.semester = semester;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
-    }
-
-    public Integer getMaxEnrolment() {
-        return maxEnrolment;
-    }
-
-    public void setMaxEnrolment(Integer maxEnrolment) {
-        this.maxEnrolment = maxEnrolment;
-    }
-
-    public Integer getCurrentEnrolment() {
-        return currentEnrolment;
-    }
-
-    public void setCurrentEnrolment(Integer currentEnrolment) {
-        this.currentEnrolment = currentEnrolment;
-    }
-
-    public ClassStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ClassStatus status) {
-        this.status = status;
     }
 }

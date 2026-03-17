@@ -2,7 +2,13 @@ package com.chinonso.university_scheduling.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "course")
 public class Course {
@@ -34,64 +40,4 @@ public class Course {
     @Max(value = 4, message = "Level must not exceed 4")
     @Column(name = "level", nullable = false)
     private Integer level;
-
-    public Course() {
-    }
-
-    public Course(String courseCode, String courseName, Integer credits,
-            String department, Integer level) {
-        this.courseCode = courseCode;
-        this.courseName = courseName;
-        this.credits = credits;
-        this.department = department;
-        this.level = level;
-    }
-
-    public Integer getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
-    }
-
-    public String getCourseCode() {
-        return courseCode;
-    }
-
-    public void setCourseCode(String courseCode) {
-        this.courseCode = courseCode;
-    }
-
-    public String getCourseName() {
-        return courseName;
-    }
-
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
-    }
-
-    public Integer getCredits() {
-        return credits;
-    }
-
-    public void setCredits(Integer credits) {
-        this.credits = credits;
-    }
-
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
-    public Integer getLevel() {
-        return level;
-    }
-
-    public void setLevel(Integer level) {
-        this.level = level;
-    }
 }

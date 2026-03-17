@@ -2,7 +2,13 @@ package com.chinonso.university_scheduling.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.*;
 
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 @Table(name = "student")
 public class Student {
@@ -35,79 +41,12 @@ public class Student {
     @Column(name = "year_of_study", nullable = false)
     private Integer yearOfStudy;
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
     @Column(name = "enrolment_status", nullable = false)
     private EnrolmentStatus enrolmentStatus = EnrolmentStatus.ACTIVE;
 
     public enum EnrolmentStatus {
         ACTIVE, GRADUATED, SUSPENDED
-    }
-
-    public Student() {
-    }
-
-    public Student(String firstName, String lastName, String email,
-            String program, Integer yearOfStudy) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.program = program;
-        this.yearOfStudy = yearOfStudy;
-    }
-
-    public Integer getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Integer studentId) {
-        this.studentId = studentId;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getProgram() {
-        return program;
-    }
-
-    public void setProgram(String program) {
-        this.program = program;
-    }
-
-    public Integer getYearOfStudy() {
-        return yearOfStudy;
-    }
-
-    public void setYearOfStudy(Integer yearOfStudy) {
-        this.yearOfStudy = yearOfStudy;
-    }
-
-    public EnrolmentStatus getEnrolmentStatus() {
-        return enrolmentStatus;
-    }
-
-    public void setEnrolmentStatus(EnrolmentStatus enrolmentStatus) {
-        this.enrolmentStatus = enrolmentStatus;
     }
 }
