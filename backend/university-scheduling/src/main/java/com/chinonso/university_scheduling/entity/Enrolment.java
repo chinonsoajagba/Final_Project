@@ -45,4 +45,11 @@ public class Enrolment {
     public enum EnrolmentStatus {
         ENROLLED, DROPPED, COMPLETED
     }
+
+    public Enrolment(Student student, ClassSection classSection, LocalDate enrolmentDate) {
+        this.student = student;
+        this.classSection = classSection;
+        this.enrolmentDate = enrolmentDate;
+        this.status = EnrolmentStatus.ENROLLED;
+    }
 }

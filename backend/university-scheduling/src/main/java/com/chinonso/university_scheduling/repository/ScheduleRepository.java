@@ -19,8 +19,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
     // Get all schedules for a specific day
     List<Schedule> findByDayOfWeek(Schedule.DayOfWeek dayOfWeek);
 
-    // KEY QUERY: Check if a room is already booked at a given day/time
-    // Used for room conflict detection in Day 5
     @Query("""
                 SELECT s FROM Schedule s
                 WHERE s.classSection.room.roomId = :roomId
@@ -36,8 +34,6 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
             @Param("endTime") LocalTime endTime,
             @Param("excludeClassId") Integer excludeClassId);
 
-    // KEY QUERY: Get all schedules for classes a student is enrolled in
-    // Used for student time clash detection in Day 5
     @Query("""
                 SELECT s FROM Schedule s
                 WHERE s.classSection.classId IN (

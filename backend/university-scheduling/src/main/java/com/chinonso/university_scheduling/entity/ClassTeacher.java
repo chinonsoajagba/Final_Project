@@ -36,4 +36,10 @@ public class ClassTeacher {
     public enum TeacherRole {
         LECTURER, TEACHING_ASSISTANT
     }
+
+    public ClassTeacher(ClassSection classSection, Teacher teacher, TeacherRole role) {
+        this.classSection = classSection;
+        this.teacher = teacher;
+        this.role = role;
+    }
 }
