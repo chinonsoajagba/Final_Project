@@ -1,0 +1,14 @@
+{
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Spring Boot-SchedulingApplication<university-scheduling>",
+      "request": "launch",
+      "cwd": "${workspaceFolder}",
+      "mainClass": "com.chinonso.university_scheduling.SchedulingApplication",
+      "projectName": "university-scheduling",
+      "args": "",
+      "envFile": "${workspaceFolder}/.env"
+    }
+  ]
+}
