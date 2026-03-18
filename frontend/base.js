@@ -114,7 +114,28 @@ function updateTopbarDate() {
   }
 }
 
+function toggleSidebar() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  if (!sidebar) return;
+  sidebar.classList.toggle("sidebar-open");
+  if (overlay) overlay.classList.toggle("active");
+}
+
+function setupSidebarOverlay() {
+  const overlay = document.createElement("div");
+  overlay.className = "sidebar-overlay";
+  overlay.id = "sidebar-overlay";
+  overlay.addEventListener("click", () => {
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar) sidebar.classList.remove("sidebar-open");
+    overlay.classList.remove("active");
+  });
+  document.body.appendChild(overlay);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setActiveSidebarLink();
   updateTopbarDate();
+  setupSidebarOverlay();
 });

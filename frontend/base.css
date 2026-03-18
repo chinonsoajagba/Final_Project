@@ -1,6 +1,5 @@
 /* ============================================================
-   UNIVERSITY SCHEDULING SYSTEM — Global Styles
-   Used across all pages
+   Global Styles - Used across all pages
    ============================================================ */
 
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap");
@@ -400,22 +399,27 @@ body {
   background: #dcfce7;
   color: #16a34a;
 }
+
 .badge-danger {
   background: #fee2e2;
   color: #dc2626;
 }
+
 .badge-warning {
   background: #fef3c7;
   color: #d97706;
 }
+
 .badge-info {
   background: #e0f2fe;
   color: #0891b2;
 }
+
 .badge-primary {
   background: #dbeafe;
   color: #1d4ed8;
 }
+
 .badge-muted {
   background: #f1f5f9;
   color: #64748b;
@@ -552,11 +556,13 @@ body {
   color: #16a34a;
   border: 1px solid #bbf7d0;
 }
+
 .alert-danger-custom {
   background: #fee2e2;
   color: #dc2626;
   border: 1px solid #fecaca;
 }
+
 .alert-warning-custom {
   background: #fef3c7;
   color: #d97706;
@@ -605,4 +611,151 @@ body {
 .empty-state p {
   font-size: 14px;
   margin: 0;
+}
+
+/* ============================================================
+   HAMBURGER TOGGLE BUTTON (visible only on mobile)
+   ============================================================ */
+.sidebar-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 22px;
+  line-height: 1;
+  transition: var(--transition);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+/* ============================================================
+   SIDEBAR OVERLAY (mobile backdrop)
+   ============================================================ */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+
+.sidebar-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* ============================================================
+   TABLET & MOBILE (≤ 768px)
+   ============================================================ */
+@media (max-width: 768px) {
+  body {
+    display: block;
+  }
+
+  .sidebar {
+    left: calc(-1 * var(--sidebar-width));
+    transition: left 0.3s ease;
+    z-index: 1000;
+  }
+
+  .sidebar.sidebar-open {
+    left: 0;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+
+  .main-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .sidebar-toggle {
+    display: inline-flex;
+  }
+
+  .topbar {
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  .topbar-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .topbar-title {
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-subtitle {
+    display: none;
+  }
+
+  .page-content {
+    padding: 16px;
+  }
+
+  .stat-card {
+    padding: 18px;
+  }
+
+  .card-header-custom {
+    padding: 14px 16px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .card-body-custom {
+    padding: 16px;
+  }
+}
+
+/* ============================================================
+   SMALL MOBILE (≤ 480px)
+   ============================================================ */
+@media (max-width: 480px) {
+  .topbar-date {
+    display: none;
+  }
+
+  .topbar-right {
+    gap: 8px;
+  }
+
+  .btn-primary-custom {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .filter-bar {
+    flex-direction: column;
+  }
+
+  .table-custom {
+    min-width: 480px;
+  }
+
+  .modal-dialog {
+    margin: 8px;
+  }
 }
