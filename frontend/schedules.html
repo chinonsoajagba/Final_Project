@@ -311,9 +311,7 @@
           .join("");
       }
 
-      // ============================================================
-      // LOAD ALL SCHEDULES
-      // ============================================================
+
       async function loadSchedules() {
         const container = document.getElementById("schedules-table-container");
         try {
@@ -328,9 +326,7 @@
         }
       }
 
-      // ============================================================
-      // RENDER TABLE
-      // ============================================================
+
       function renderTable(schedules) {
         const container = document.getElementById("schedules-table-container");
         document.getElementById("schedule-count").textContent =
@@ -427,9 +423,7 @@
         </div>`;
       }
 
-      // ============================================================
-      // FILTER
-      // ============================================================
+
       function filterSchedules() {
         const search = document
           .getElementById("search-input")
@@ -448,9 +442,7 @@
         renderTable(filtered);
       }
 
-      // ============================================================
-      // POPULATE CLASS DROPDOWN
-      // ============================================================
+
       async function populateClassDropdown(selectedClassId = null) {
         try {
           const classes = await apiGet("/classes");
@@ -469,9 +461,7 @@
         }
       }
 
-      // ============================================================
-      // DAY PILL SELECTION
-      // ============================================================
+
       function selectDay(day) {
         document
           .querySelectorAll(".day-pill")
@@ -480,9 +470,7 @@
         document.getElementById("f-dayOfWeek").value = day;
       }
 
-      // ============================================================
-      // OPEN ADD MODAL
-      // ============================================================
+
       async function openAddModal() {
         editingScheduleId = null;
         document.getElementById("modal-title").textContent = "Add New Schedule";
@@ -493,9 +481,7 @@
         scheduleModal.show();
       }
 
-      // ============================================================
-      // OPEN EDIT MODAL
-      // ============================================================
+
       async function openEditModal(id) {
         editingScheduleId = id;
         document.getElementById("modal-title").textContent = "Edit Schedule";
@@ -523,9 +509,7 @@
         }
       }
 
-      // ============================================================
-      // SAVE
-      // ============================================================
+
       async function saveSchedule() {
         const classId = document.getElementById("f-classId").value;
         const dayOfWeek = document.getElementById("f-dayOfWeek").value;
@@ -577,9 +561,7 @@
         }
       }
 
-      // ============================================================
-      // DELETE
-      // ============================================================
+
       async function deleteSchedule(id) {
         if (!confirmDelete("Delete this schedule slot? This cannot be undone."))
           return;
@@ -592,9 +574,7 @@
         }
       }
 
-      // ============================================================
-      // HELPERS
-      // ============================================================
+
       function calcDuration(start, end) {
         const [sh, sm] = start.split(":").map(Number);
         const [eh, em] = end.split(":").map(Number);

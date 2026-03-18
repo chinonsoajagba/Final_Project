@@ -19,55 +19,47 @@ public class ClassSectionController {
         this.classSectionService = classSectionService;
     }
 
-    // GET /api/classes
     @GetMapping
     public ResponseEntity<List<ClassSection>> getAllClasses() {
         return ResponseEntity.ok(classSectionService.getAllClasses());
     }
 
-    // GET /api/classes/{id}
     @GetMapping("/{id}")
     public ResponseEntity<ClassSection> getClassById(@PathVariable Integer id) {
         return ResponseEntity.ok(classSectionService.getClassById(id));
     }
 
-    // GET /api/classes/course/{courseId}
     @GetMapping("/course/{courseId}")
     public ResponseEntity<List<ClassSection>> getClassesByCourse(
             @PathVariable Integer courseId) {
         return ResponseEntity.ok(classSectionService.getClassesByCourse(courseId));
     }
 
-    // GET /api/classes/room/{roomId}
     @GetMapping("/room/{roomId}")
     public ResponseEntity<List<ClassSection>> getClassesByRoom(
             @PathVariable Integer roomId) {
         return ResponseEntity.ok(classSectionService.getClassesByRoom(roomId));
     }
 
-    // POST /api/classes?courseId=1&roomId=2
-    // courseId is required, roomId is optional
     @PostMapping
     public ResponseEntity<ClassSection> createClass(
-            @RequestBody ClassSection classSection, // removed @Valid
+            @RequestBody ClassSection classSection,
             @RequestParam Integer courseId,
             @RequestParam(required = false) Integer roomId) {
         ClassSection created = classSectionService.createClass(classSection, courseId, roomId);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // PUT /api/classes/{id}?courseId=1&roomId=2
     @PutMapping("/{id}")
     public ResponseEntity<ClassSection> updateClass(
             @PathVariable Integer id,
-            @RequestBody ClassSection classSection, // removed @Valid
+            @RequestBody ClassSection classSection,
             @RequestParam Integer courseId,
             @RequestParam(required = false) Integer roomId) {
         return ResponseEntity.ok(
                 classSectionService.updateClass(id, classSection, courseId, roomId));
     }
 
-    // DELETE /api/classes/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteClass(@PathVariable Integer id) {
         classSectionService.deleteClass(id);

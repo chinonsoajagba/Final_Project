@@ -20,38 +20,32 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    // GET /api/students
     @GetMapping
     public ResponseEntity<List<Student>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-    // GET /api/students/active — for enrolment dropdowns
     @GetMapping("/active")
     public ResponseEntity<List<Student>> getActiveStudents() {
         return ResponseEntity.ok(studentService.getActiveStudents());
     }
 
-    // GET /api/students/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable Integer id) {
         return ResponseEntity.ok(studentService.getStudentById(id));
     }
 
-    // GET /api/students/year/{year}
     @GetMapping("/year/{year}")
     public ResponseEntity<List<Student>> getByYear(@PathVariable Integer year) {
         return ResponseEntity.ok(studentService.getStudentsByYear(year));
     }
 
-    // POST /api/students
     @PostMapping
     public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
         Student created = studentService.createStudent(student);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    // PUT /api/students/{id}
     @PutMapping("/{id}")
     public ResponseEntity<Student> updateStudent(
             @PathVariable Integer id,
@@ -59,7 +53,6 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(id, student));
     }
 
-    // DELETE /api/students/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Integer id) {
         studentService.deleteStudent(id);

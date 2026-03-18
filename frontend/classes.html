@@ -306,9 +306,7 @@
         loadClasses();
       });
 
-      // ============================================================
-      // LOAD ALL CLASSES
-      // ============================================================
+
       async function loadClasses() {
         const container = document.getElementById("classes-table-container");
         try {
@@ -323,9 +321,7 @@
         }
       }
 
-      // ============================================================
-      // RENDER TABLE
-      // ============================================================
+
       function renderTable(classes) {
         const container = document.getElementById("classes-table-container");
         document.getElementById("class-count").textContent =
@@ -456,9 +452,7 @@
         </div>`;
       }
 
-      // ============================================================
-      // FILTER
-      // ============================================================
+
       function filterClasses() {
         const search = document
           .getElementById("search-input")
@@ -480,9 +474,7 @@
         renderTable(filtered);
       }
 
-      // ============================================================
-      // POPULATE DROPDOWNS
-      // ============================================================
+
       async function populateDropdowns(
         selectedCourseId = null,
         selectedRoomId = null,
@@ -524,9 +516,7 @@
         }
       }
 
-      // ============================================================
-      // OPEN ADD MODAL
-      // ============================================================
+
       async function openAddModal() {
         editingClassId = null;
         document.getElementById("modal-title").textContent = "Add New Class";
@@ -537,9 +527,7 @@
         classModal.show();
       }
 
-      // ============================================================
-      // OPEN EDIT MODAL
-      // ============================================================
+
       async function openEditModal(id) {
         editingClassId = id;
         document.getElementById("modal-title").textContent = "Edit Class";
@@ -563,9 +551,7 @@
         }
       }
 
-      // ============================================================
-      // SAVE
-      // ============================================================
+
       async function saveClass() {
         const courseId = document.getElementById("f-courseId").value;
         const sectionNumber = document
@@ -623,9 +609,7 @@
         }
       }
 
-      // ============================================================
-      // DELETE
-      // ============================================================
+
       async function deleteClass(id, label) {
         if (!confirmDelete(`Delete class "${label}"? This cannot be undone.`))
           return;
@@ -638,9 +622,7 @@
         }
       }
 
-      // ============================================================
-      // HELPERS
-      // ============================================================
+
       function clearForm() {
         document.getElementById("f-courseId").innerHTML =
           '<option value="">-- Select Course --</option>';

@@ -17,19 +17,16 @@ public class CourseService {
         this.courseRepository = courseRepository;
     }
 
-    // GET ALL
     public List<Course> getAllCourses() {
         return courseRepository.findAll();
     }
 
-    // GET BY ID
     public Course getCourseById(Integer id) {
         return courseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Course not found with ID: " + id));
     }
 
-    // CREATE
     public Course createCourse(Course course) {
         if (courseRepository.existsByCourseCode(course.getCourseCode())) {
             throw new IllegalArgumentException(
@@ -38,7 +35,6 @@ public class CourseService {
         return courseRepository.save(course);
     }
 
-    // UPDATE
     public Course updateCourse(Integer id, Course updatedCourse) {
         Course existing = getCourseById(id);
 
@@ -57,18 +53,15 @@ public class CourseService {
         return courseRepository.save(existing);
     }
 
-    // DELETE
     public void deleteCourse(Integer id) {
         Course course = getCourseById(id);
         courseRepository.delete(course);
     }
 
-    // GET BY DEPARTMENT
     public List<Course> getCoursesByDepartment(String department) {
         return courseRepository.findByDepartment(department);
     }
 
-    // GET BY LEVEL
     public List<Course> getCoursesByLevel(Integer level) {
         return courseRepository.findByLevel(level);
     }

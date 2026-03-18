@@ -27,35 +27,29 @@ public class ClassSectionService {
         this.roomRepository = roomRepository;
     }
 
-    // GET ALL
     public List<ClassSection> getAllClasses() {
         return classSectionRepository.findAll();
     }
 
-    // GET BY ID
     public ClassSection getClassById(Integer id) {
         return classSectionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Class not found with ID: " + id));
     }
 
-    // GET BY COURSE
     public List<ClassSection> getClassesByCourse(Integer courseId) {
         return classSectionRepository.findByCourse_CourseId(courseId);
     }
 
-    // GET BY ROOM
     public List<ClassSection> getClassesByRoom(Integer roomId) {
         return classSectionRepository.findByRoom_RoomId(roomId);
     }
 
-    // GET BY SEMESTER AND YEAR
     public List<ClassSection> getClassesBySemesterAndYear(
             ClassSection.Semester semester, String academicYear) {
         return classSectionRepository.findBySemesterAndAcademicYear(semester, academicYear);
     }
 
-    // CREATE
     public ClassSection createClass(ClassSection classSection, Integer courseId, Integer roomId) {
         Course course = courseRepository.findById(courseId)
                 .orElseThrow(() -> new ResourceNotFoundException(
@@ -79,7 +73,6 @@ public class ClassSectionService {
         return classSectionRepository.save(classSection);
     }
 
-    // UPDATE
     public ClassSection updateClass(Integer id, ClassSection updated, Integer courseId, Integer roomId) {
         ClassSection existing = getClassById(id);
 
@@ -112,7 +105,6 @@ public class ClassSectionService {
         return classSectionRepository.save(existing);
     }
 
-    // DELETE
     public void deleteClass(Integer id) {
         ClassSection classSection = getClassById(id);
         classSectionRepository.delete(classSection);

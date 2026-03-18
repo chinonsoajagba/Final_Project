@@ -23,42 +23,34 @@ public class ScheduleService {
         this.classSectionRepository = classSectionRepository;
     }
 
-    // GET ALL
     public List<Schedule> getAllSchedules() {
         return scheduleRepository.findAll();
     }
 
-    // GET BY ID
     public Schedule getScheduleById(Integer id) {
         return scheduleRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Schedule not found with ID: " + id));
     }
 
-    // GET BY CLASS
     public List<Schedule> getSchedulesByClass(Integer classId) {
         return scheduleRepository.findByClassSection_ClassId(classId);
     }
 
-    // GET BY DAY
     public List<Schedule> getSchedulesByDay(Schedule.DayOfWeek day) {
         return scheduleRepository.findByDayOfWeek(day);
     }
 
-    // CREATE — checks for room conflicts before saving
     public Schedule createSchedule(Schedule schedule, Integer classId) {
         ClassSection classSection = classSectionRepository.findById(classId)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Class not found with ID: " + classId));
         schedule.setClassSection(classSection);
 
-        // Validate that end time is after start time
         if (!schedule.getEndTime().isAfter(schedule.getStartTime())) {
-            throw new IllegalArgumentException(
-                    "End time must be after start time");
+            throw new IllegalArgumentException("End time must be after start time");
         }
 
-        // Check for room conflict — only if the class has a room assigned
         if (classSection.getRoom() != null) {
             Integer roomId = classSection.getRoom().getRoomId();
             List<Schedule> conflicts = scheduleRepository.findRoomConflicts(
@@ -66,8 +58,7 @@ public class ScheduleService {
                     schedule.getDayOfWeek(),
                     schedule.getStartTime(),
                     schedule.getEndTime(),
-                    0L // 0L matches no real scheduleId, so nothing is excluded on create
-            );
+                    0L);
 
             if (!conflicts.isEmpty()) {
                 Schedule conflict = conflicts.get(0);
@@ -81,7 +72,6 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
     }
 
-    // UPDATE
     public Schedule updateSchedule(Integer id, Schedule updated, Integer classId) {
         Schedule existing = getScheduleById(id);
 
@@ -94,7 +84,6 @@ public class ScheduleService {
             throw new IllegalArgumentException("End time must be after start time");
         }
 
-        // Check room conflict — exclude this exact schedule being updated
         if (classSection.getRoom() != null) {
             Integer roomId = classSection.getRoom().getRoomId();
             List<Schedule> conflicts = scheduleRepository.findRoomConflicts(
@@ -102,7 +91,7 @@ public class ScheduleService {
                     updated.getDayOfWeek(),
                     updated.getStartTime(),
                     updated.getEndTime(),
-                    existing.getScheduleId().longValue()); // exclude only this schedule
+                    existing.getScheduleId().longValue());
 
             if (!conflicts.isEmpty()) {
                 Schedule conflict = conflicts.get(0);
@@ -121,7 +110,6 @@ public class ScheduleService {
         return scheduleRepository.save(existing);
     }
 
-    // DELETE
     public void deleteSchedule(Integer id) {
         Schedule schedule = getScheduleById(id);
         scheduleRepository.delete(schedule);
