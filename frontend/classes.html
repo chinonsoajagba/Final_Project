@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classes - University Scheduling System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="base.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <a href="dashboard.html" class="sidebar-brand">
+        <div class="sidebar-brand-icon">🎓</div>
+        <div class="sidebar-brand-text">
+          <span>UniSchedule</span>
+          <span>Management System</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">Main</div>
+        <a href="dashboard.html" class="sidebar-link">
+          <i class="bi bi-grid-1x2-fill"></i> Dashboard
+        </a>
+        <div class="sidebar-section-label">Resources</div>
+        <a href="rooms.html" class="sidebar-link">
+          <i class="bi bi-building"></i> Rooms
+        </a>
+        <a href="teachers.html" class="sidebar-link">
+          <i class="bi bi-person-badge"></i> Teachers
+        </a>
+        <a href="students.html" class="sidebar-link">
+          <i class="bi bi-people"></i> Students
+        </a>
+        <a href="courses.html" class="sidebar-link">
+          <i class="bi bi-book"></i> Courses
+        </a>
+        <div class="sidebar-section-label">Scheduling</div>
+        <a href="classes.html" class="sidebar-link">
+          <i class="bi bi-journals"></i> Classes
+        </a>
+        <a href="schedules.html" class="sidebar-link">
+          <i class="bi bi-calendar3"></i> Schedules
+        </a>
+        <a href="enrolments.html" class="sidebar-link">
+          <i class="bi bi-person-check"></i> Enrolments
+        </a>
+      </nav>
+      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-title">Classes</span>
+          <span class="topbar-subtitle"
+            >Manage all class sections and assignments</span
+          >
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-date" id="topbar-date"></span>
+          <button class="btn-primary-custom" onclick="openAddModal()">
+            <i class="bi bi-plus-lg"></i> Add Class
+          </button>
+        </div>
+      </header>
+
+      <!-- PAGE CONTENT -->
+      <main class="page-content">
+        <div id="alert-area"></div>
+
+        <!-- FILTER BAR -->
+        <div
+          style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap"
+        >
+          <div style="position: relative; flex: 1; min-width: 200px">
+            <i
+              class="bi bi-search"
+              style="
+                position: absolute;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: var(--text-muted);
+                font-size: 14px;
+              "
+            ></i>
+            <input
+              type="text"
+              id="search-input"
+              placeholder="Search by course code or section..."
+              oninput="filterClasses()"
+              style="
+                width: 100%;
+                padding: 9px 14px 9px 36px;
+                border: 1.5px solid var(--border);
+                border-radius: 8px;
+                font-size: 13.5px;
+                font-family: &quot;DM Sans&quot;, sans-serif;
+                color: var(--text-primary);
+                background: white;
+              "
+            />
+          </div>
+          <select
+            id="semester-filter"
+            onchange="filterClasses()"
+            style="
+              padding: 9px 14px;
+              border: 1.5px solid var(--border);
+              border-radius: 8px;
+              font-size: 13.5px;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              color: var(--text-primary);
+              background: white;
+              min-width: 140px;
+            "
+          >
+            <option value="">All Semesters</option>
+            <option value="FALL">Fall</option>
+            <option value="SPRING">Spring</option>
+            <option value="SUMMER">Summer</option>
+          </select>
+          <select
+            id="status-filter"
+            onchange="filterClasses()"
+            style="
+              padding: 9px 14px;
+              border: 1.5px solid var(--border);
+              border-radius: 8px;
+              font-size: 13.5px;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              color: var(--text-primary);
+              background: white;
+              min-width: 140px;
+            "
+          >
+            <option value="">All Statuses</option>
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="ONGOING">Ongoing</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+        </div>
+
+        <!-- TABLE CARD -->
+        <div class="card">
+          <div class="card-header-custom">
+            <h5><i class="bi bi-journals"></i> All Classes</h5>
+            <span
+              id="class-count"
+              style="
+                font-size: 12px;
+                color: var(--text-muted);
+                font-weight: 500;
+              "
+            ></span>
+          </div>
+          <div class="card-body-custom p-0">
+            <div id="classes-table-container">
+              <div class="loading-state">
+                <div class="spinner-custom"></div>
+                <p>Loading classes...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- ADD / EDIT MODAL -->
+    <div class="modal fade" id="classModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div
+          class="modal-content"
+          style="
+            border-radius: var(--radius-lg);
+            border: none;
+            overflow: hidden;
+          "
+        >
+          <div class="modal-header-custom">
+            <h5 id="modal-title">Add New Class</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body" style="padding: 24px">
+            <div id="modal-alert"></div>
+            <div class="row g-3">
+              <div class="col-12">
+                <label class="form-label-custom">Course *</label>
+                <select id="f-courseId" class="form-control-custom">
+                  <option value="">-- Select Course --</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label-custom">Section Number *</label>
+                <input
+                  type="text"
+                  id="f-sectionNumber"
+                  class="form-control-custom"
+                  placeholder="e.g. 01, A, B"
+                />
+              </div>
+              <div class="col-6">
+                <label class="form-label-custom">Academic Year *</label>
+                <input
+                  type="text"
+                  id="f-academicYear"
+                  class="form-control-custom"
+                  placeholder="e.g. 2024/2025"
+                />
+              </div>
+              <div class="col-6">
+                <label class="form-label-custom">Semester *</label>
+                <select id="f-semester" class="form-control-custom">
+                  <option value="">-- Select Semester --</option>
+                  <option value="FALL">Fall</option>
+                  <option value="SPRING">Spring</option>
+                  <option value="SUMMER">Summer</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label-custom">Status</label>
+                <select id="f-status" class="form-control-custom">
+                  <option value="SCHEDULED">Scheduled</option>
+                  <option value="ONGOING">Ongoing</option>
+                  <option value="COMPLETED">Completed</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label-custom">Room (Optional)</label>
+                <select id="f-roomId" class="form-control-custom">
+                  <option value="">-- No Room Assigned --</option>
+                </select>
+              </div>
+              <div class="col-6">
+                <label class="form-label-custom">Max Enrolment *</label>
+                <input
+                  type="number"
+                  id="f-maxEnrolment"
+                  class="form-control-custom"
+                  placeholder="e.g. 60"
+                  min="1"
+                />
+              </div>
+              <div class="col-6" style="display: flex; align-items: flex-end">
+                <p
+                  style="
+                    font-size: 12px;
+                    color: var(--text-muted);
+                    margin: 0;
+                    padding-bottom: 4px;
+                  "
+                >
+                  <i class="bi bi-info-circle"></i>
+                  Max enrolment cannot exceed the selected room's capacity.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            class="modal-footer"
+            style="padding: 16px 24px; border-top: 1px solid var(--border)"
+          >
+            <button
+              type="button"
+              class="btn-danger-custom"
+              data-bs-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              class="btn-primary-custom"
+              onclick="saveClass()"
+            >
+              <i class="bi bi-check-lg"></i>
+              <span id="save-btn-text">Save Class</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="base.js"></script>
+    <script>
+      let editingClassId = null;
+      let classModal;
+      let allClasses = [];
+
+      document.addEventListener("DOMContentLoaded", () => {
+        classModal = new bootstrap.Modal(document.getElementById("classModal"));
+        loadClasses();
+      });
+
+      // ============================================================
+      // LOAD ALL CLASSES
+      // ============================================================
+      async function loadClasses() {
+        const container = document.getElementById("classes-table-container");
+        try {
+          allClasses = await apiGet("/classes");
+          renderTable(allClasses);
+        } catch (err) {
+          container.innerHTML = `
+            <div class="alert-custom alert-danger-custom" style="margin:24px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Failed to load classes: ${err.message}
+            </div>`;
+        }
+      }
+
+      // ============================================================
+      // RENDER TABLE
+      // ============================================================
+      function renderTable(classes) {
+        const container = document.getElementById("classes-table-container");
+        document.getElementById("class-count").textContent =
+          `${classes.length} class(es)`;
+
+        if (classes.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+                <i class="bi bi-journals"></i>
+                <p>No classes found.</p>
+            </div>`;
+          return;
+        }
+
+        const statusBadge = {
+          SCHEDULED: "badge-info",
+          ONGOING: "badge-success",
+          COMPLETED: "badge-muted",
+        };
+
+        const semesterBadge = {
+          FALL: "badge-warning",
+          SPRING: "badge-success",
+          SUMMER: "badge-info",
+        };
+
+        container.innerHTML = `
+        <div style="overflow-x:auto;">
+        <table class="table-custom">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Course</th>
+                    <th>Section</th>
+                    <th>Room</th>
+                    <th>Semester</th>
+                    <th>Academic Year</th>
+                    <th>Enrolment</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${classes
+                  .map((c, i) => {
+                    const enrolPct =
+                      c.maxEnrolment > 0
+                        ? Math.round(
+                            (c.currentEnrolment / c.maxEnrolment) * 100,
+                          )
+                        : 0;
+                    const barColor =
+                      enrolPct >= 90
+                        ? "#dc2626"
+                        : enrolPct >= 70
+                          ? "#d97706"
+                          : "#16a34a";
+                    return `
+                    <tr>
+                        <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                        <td>
+                            <div>
+                                <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;
+                                             color:var(--primary);background:#f0f4f8;
+                                             padding:3px 8px;border-radius:5px;">
+                                    ${c.course.courseCode}
+                                </span>
+                                <div style="font-size:12px;color:var(--text-secondary);margin-top:3px;">
+                                    ${c.course.courseName}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight:700;font-size:14px;">
+                                Section ${c.sectionNumber}
+                            </span>
+                        </td>
+                        <td>
+                            ${
+                              c.room
+                                ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;">
+                                       <i class="bi bi-building" style="color:var(--text-muted);"></i>
+                                       ${c.room.roomCode}
+                                       <span style="color:var(--text-muted);font-size:11px;">(cap:${c.room.capacity})</span>
+                                   </span>`
+                                : `<span style="color:var(--text-muted);font-size:12px;font-style:italic;">Not assigned</span>`
+                            }
+                        </td>
+                        <td>
+                            <span class="badge-custom ${semesterBadge[c.semester] || "badge-muted"}">
+                                ${c.semester}
+                            </span>
+                        </td>
+                        <td style="font-size:13px;color:var(--text-secondary);">${c.academicYear}</td>
+                        <td style="min-width:130px;">
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <div style="flex:1;height:6px;background:#e2e8f0;border-radius:3px;overflow:hidden;">
+                                    <div style="height:100%;width:${enrolPct}%;
+                                                background:${barColor};border-radius:3px;
+                                                transition:width 0.4s ease;"></div>
+                                </div>
+                                <span style="font-size:12px;font-weight:600;white-space:nowrap;
+                                             color:${barColor};">
+                                    ${c.currentEnrolment}/${c.maxEnrolment}
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-custom ${statusBadge[c.status] || "badge-muted"}">
+                                ${c.status}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn-edit-custom" onclick="openEditModal(${c.classId})">
+                                    <i class="bi bi-pencil"></i> Edit
+                                </button>
+                                <button class="btn-danger-custom" onclick="deleteClass(${c.classId}, '${c.course.courseCode} S${c.sectionNumber}')">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
+                  })
+                  .join("")}
+            </tbody>
+        </table>
+        </div>`;
+      }
+
+      // ============================================================
+      // FILTER
+      // ============================================================
+      function filterClasses() {
+        const search = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const semester = document.getElementById("semester-filter").value;
+        const status = document.getElementById("status-filter").value;
+
+        const filtered = allClasses.filter((c) => {
+          const matchSearch =
+            !search ||
+            c.course.courseCode.toLowerCase().includes(search) ||
+            c.sectionNumber.toLowerCase().includes(search) ||
+            c.course.courseName.toLowerCase().includes(search);
+          const matchSemester = !semester || c.semester === semester;
+          const matchStatus = !status || c.status === status;
+          return matchSearch && matchSemester && matchStatus;
+        });
+
+        renderTable(filtered);
+      }
+
+      // ============================================================
+      // POPULATE DROPDOWNS
+      // ============================================================
+      async function populateDropdowns(
+        selectedCourseId = null,
+        selectedRoomId = null,
+      ) {
+        try {
+          const [courses, rooms] = await Promise.all([
+            apiGet("/courses"),
+            apiGet("/rooms/active"),
+          ]);
+
+          const courseSelect = document.getElementById("f-courseId");
+          courseSelect.innerHTML =
+            '<option value="">-- Select Course --</option>';
+          courses.forEach((c) => {
+            const opt = document.createElement("option");
+            opt.value = c.courseId;
+            opt.textContent = `${c.courseCode} — ${c.courseName} (Level ${c.level})`;
+            if (selectedCourseId && c.courseId === selectedCourseId)
+              opt.selected = true;
+            courseSelect.appendChild(opt);
+          });
+
+          const roomSelect = document.getElementById("f-roomId");
+          roomSelect.innerHTML =
+            '<option value="">-- No Room Assigned --</option>';
+          rooms.forEach((r) => {
+            const opt = document.createElement("option");
+            opt.value = r.roomId;
+            opt.textContent = `${r.roomCode} — ${r.building} (Cap: ${r.capacity})`;
+            if (selectedRoomId && r.roomId === selectedRoomId)
+              opt.selected = true;
+            roomSelect.appendChild(opt);
+          });
+        } catch (err) {
+          showModalAlert(
+            "Could not load courses or rooms. Is Spring Boot running?",
+            "danger",
+          );
+        }
+      }
+
+      // ============================================================
+      // OPEN ADD MODAL
+      // ============================================================
+      async function openAddModal() {
+        editingClassId = null;
+        document.getElementById("modal-title").textContent = "Add New Class";
+        document.getElementById("save-btn-text").textContent = "Save Class";
+        document.getElementById("modal-alert").innerHTML = "";
+        clearForm();
+        await populateDropdowns();
+        classModal.show();
+      }
+
+      // ============================================================
+      // OPEN EDIT MODAL
+      // ============================================================
+      async function openEditModal(id) {
+        editingClassId = id;
+        document.getElementById("modal-title").textContent = "Edit Class";
+        document.getElementById("save-btn-text").textContent = "Update Class";
+        document.getElementById("modal-alert").innerHTML = "";
+
+        try {
+          const c = await apiGet(`/classes/${id}`);
+          await populateDropdowns(
+            c.course.courseId,
+            c.room ? c.room.roomId : null,
+          );
+          document.getElementById("f-sectionNumber").value = c.sectionNumber;
+          document.getElementById("f-academicYear").value = c.academicYear;
+          document.getElementById("f-semester").value = c.semester;
+          document.getElementById("f-status").value = c.status;
+          document.getElementById("f-maxEnrolment").value = c.maxEnrolment;
+          classModal.show();
+        } catch (err) {
+          showToast("Could not load class details", "danger");
+        }
+      }
+
+      // ============================================================
+      // SAVE
+      // ============================================================
+      async function saveClass() {
+        const courseId = document.getElementById("f-courseId").value;
+        const sectionNumber = document
+          .getElementById("f-sectionNumber")
+          .value.trim();
+        const academicYear = document
+          .getElementById("f-academicYear")
+          .value.trim();
+        const semester = document.getElementById("f-semester").value;
+        const status = document.getElementById("f-status").value;
+        const roomId = document.getElementById("f-roomId").value || null;
+        const maxEnrolment = document.getElementById("f-maxEnrolment").value;
+
+        if (
+          !courseId ||
+          !sectionNumber ||
+          !academicYear ||
+          !semester ||
+          !maxEnrolment
+        ) {
+          showModalAlert("Please fill in all required fields.", "danger");
+          return;
+        }
+
+        const body = {
+          sectionNumber,
+          academicYear,
+          semester,
+          status,
+          maxEnrolment: parseInt(maxEnrolment),
+        };
+
+        try {
+          const roomParam = roomId ? `&roomId=${roomId}` : "";
+          if (editingClassId) {
+            await apiFetch(
+              `/classes/${editingClassId}?courseId=${courseId}${roomParam}`,
+              {
+                method: "PUT",
+                body: JSON.stringify(body),
+              },
+            );
+            showToast("Class updated successfully!", "success");
+          } else {
+            await apiFetch(`/classes?courseId=${courseId}${roomParam}`, {
+              method: "POST",
+              body: JSON.stringify(body),
+            });
+            showToast("Class added successfully!", "success");
+          }
+          classModal.hide();
+          loadClasses();
+        } catch (err) {
+          showModalAlert(err.message, "danger");
+        }
+      }
+
+      // ============================================================
+      // DELETE
+      // ============================================================
+      async function deleteClass(id, label) {
+        if (!confirmDelete(`Delete class "${label}"? This cannot be undone.`))
+          return;
+        try {
+          await apiDelete(`/classes/${id}`);
+          showToast(`Class "${label}" deleted.`, "success");
+          loadClasses();
+        } catch (err) {
+          showToast(err.message, "danger");
+        }
+      }
+
+      // ============================================================
+      // HELPERS
+      // ============================================================
+      function clearForm() {
+        document.getElementById("f-courseId").innerHTML =
+          '<option value="">-- Select Course --</option>';
+        document.getElementById("f-roomId").innerHTML =
+          '<option value="">-- No Room Assigned --</option>';
+        document.getElementById("f-sectionNumber").value = "";
+        document.getElementById("f-academicYear").value = "";
+        document.getElementById("f-semester").value = "";
+        document.getElementById("f-status").value = "SCHEDULED";
+        document.getElementById("f-maxEnrolment").value = "";
+      }
+
+      function showModalAlert(message, type) {
+        const colors = {
+          danger: "alert-danger-custom",
+          success: "alert-success-custom",
+        };
+        const icons = {
+          danger: "bi-x-circle-fill",
+          success: "bi-check-circle-fill",
+        };
+        document.getElementById("modal-alert").innerHTML = `
+        <div class="alert-custom ${colors[type]}">
+            <i class="bi ${icons[type]}"></i> ${message}
+        </div>`;
+      }
+    </script>
+  </body>
+</html>

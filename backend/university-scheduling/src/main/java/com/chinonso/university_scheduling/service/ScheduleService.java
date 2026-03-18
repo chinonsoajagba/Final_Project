@@ -62,11 +62,11 @@ public class ScheduleService {
         if (classSection.getRoom() != null) {
             Integer roomId = classSection.getRoom().getRoomId();
             List<Schedule> conflicts = scheduleRepository.findRoomConflicts(
-                    roomId,
+                    roomId.longValue(),
                     schedule.getDayOfWeek(),
                     schedule.getStartTime(),
                     schedule.getEndTime(),
-                    classId // exclude the current class itself
+                    0L // 0L matches no real scheduleId, so nothing is excluded on create
             );
 
             if (!conflicts.isEmpty()) {
@@ -94,15 +94,15 @@ public class ScheduleService {
             throw new IllegalArgumentException("End time must be after start time");
         }
 
-        // Check room conflict — exclude this schedule's own class
+        // Check room conflict — exclude this exact schedule being updated
         if (classSection.getRoom() != null) {
             Integer roomId = classSection.getRoom().getRoomId();
             List<Schedule> conflicts = scheduleRepository.findRoomConflicts(
-                    roomId,
+                    roomId.longValue(),
                     updated.getDayOfWeek(),
                     updated.getStartTime(),
                     updated.getEndTime(),
-                    classId);
+                    existing.getScheduleId().longValue()); // exclude only this schedule
 
             if (!conflicts.isEmpty()) {
                 Schedule conflict = conflicts.get(0);
