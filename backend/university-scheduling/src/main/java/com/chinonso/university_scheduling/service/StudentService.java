@@ -17,24 +17,20 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    // GET ALL
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
     }
 
-    // GET ACTIVE ONLY (for enrolment dropdowns)
     public List<Student> getActiveStudents() {
         return studentRepository.findByEnrolmentStatus(Student.EnrolmentStatus.ACTIVE);
     }
 
-    // GET BY ID
     public Student getStudentById(Integer id) {
         return studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Student not found with ID: " + id));
     }
 
-    // CREATE
     public Student createStudent(Student student) {
         if (studentRepository.existsByEmail(student.getEmail())) {
             throw new IllegalArgumentException(
@@ -43,7 +39,6 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    // UPDATE
     public Student updateStudent(Integer id, Student updatedStudent) {
         Student existing = getStudentById(id);
 
@@ -63,13 +58,11 @@ public class StudentService {
         return studentRepository.save(existing);
     }
 
-    // DELETE
     public void deleteStudent(Integer id) {
         Student student = getStudentById(id);
         studentRepository.delete(student);
     }
 
-    // GET BY YEAR
     public List<Student> getStudentsByYear(Integer year) {
         return studentRepository.findByYearOfStudy(year);
     }

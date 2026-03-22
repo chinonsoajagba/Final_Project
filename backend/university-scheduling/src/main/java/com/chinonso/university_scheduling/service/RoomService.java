@@ -17,24 +17,20 @@ public class RoomService {
         this.roomRepository = roomRepository;
     }
 
-    // GET ALL
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
 
-    // GET ACTIVE ONLY (for dropdowns in frontend)
     public List<Room> getActiveRooms() {
         return roomRepository.findByIsActiveTrue();
     }
 
-    // GET BY ID
     public Room getRoomById(Integer id) {
         return roomRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Room not found with ID: " + id));
     }
 
-    // CREATE
     public Room createRoom(Room room) {
         if (roomRepository.existsByRoomCode(room.getRoomCode())) {
             throw new IllegalArgumentException(
@@ -43,11 +39,9 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
-    // UPDATE
     public Room updateRoom(Integer id, Room updatedRoom) {
         Room existing = getRoomById(id);
 
-        // Only check code uniqueness if it actually changed
         if (!existing.getRoomCode().equals(updatedRoom.getRoomCode())
                 && roomRepository.existsByRoomCode(updatedRoom.getRoomCode())) {
             throw new IllegalArgumentException(
@@ -65,13 +59,11 @@ public class RoomService {
         return roomRepository.save(existing);
     }
 
-    // DELETE
     public void deleteRoom(Integer id) {
         Room room = getRoomById(id);
         roomRepository.delete(room);
     }
 
-    // GET ROOMS BY MINIMUM CAPACITY
     public List<Room> getRoomsByMinCapacity(Integer capacity) {
         return roomRepository.findByCapacityGreaterThanEqual(capacity);
     }

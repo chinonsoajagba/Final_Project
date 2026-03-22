@@ -25,14 +25,14 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Integer> {
                   AND s.dayOfWeek = :day
                   AND s.startTime < :endTime
                   AND s.endTime > :startTime
-                  AND (:excludeClassId IS NULL OR s.classSection.classId != :excludeClassId)
+                  AND s.scheduleId != :excludeScheduleId
             """)
     List<Schedule> findRoomConflicts(
-            @Param("roomId") Integer roomId,
+            @Param("roomId") Long roomId,
             @Param("day") Schedule.DayOfWeek day,
             @Param("startTime") LocalTime startTime,
             @Param("endTime") LocalTime endTime,
-            @Param("excludeClassId") Integer excludeClassId);
+            @Param("excludeScheduleId") Long excludeScheduleId);
 
     @Query("""
                 SELECT s FROM Schedule s

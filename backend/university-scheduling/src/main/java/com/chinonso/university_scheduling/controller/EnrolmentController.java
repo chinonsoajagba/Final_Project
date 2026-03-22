@@ -20,32 +20,26 @@ public class EnrolmentController {
         this.enrolmentService = enrolmentService;
     }
 
-    // GET /api/enrolments
     @GetMapping
     public ResponseEntity<List<Enrolment>> getAllEnrolments() {
         return ResponseEntity.ok(enrolmentService.getAllEnrolments());
     }
 
-    // GET /api/enrolments/{id}
     @GetMapping("/{id}")
     public ResponseEntity<Enrolment> getEnrolmentById(@PathVariable Integer id) {
         return ResponseEntity.ok(enrolmentService.getEnrolmentById(id));
     }
 
-    // GET /api/enrolments/student/{studentId}
     @GetMapping("/student/{studentId}")
     public ResponseEntity<List<Enrolment>> getByStudent(@PathVariable Integer studentId) {
         return ResponseEntity.ok(enrolmentService.getEnrolmentsByStudent(studentId));
     }
 
-    // GET /api/enrolments/class/{classId}
     @GetMapping("/class/{classId}")
     public ResponseEntity<List<Enrolment>> getByClass(@PathVariable Integer classId) {
         return ResponseEntity.ok(enrolmentService.getEnrolmentsByClass(classId));
     }
 
-    // POST /api/enrolments/enrol
-    // This is the main endpoint — triggers ALL conflict checks
     @PostMapping("/enrol")
     public ResponseEntity<Map<String, Object>> enrolStudent(
             @RequestBody Map<String, Integer> body) {
@@ -65,8 +59,6 @@ public class EnrolmentController {
                 "status", enrolment.getStatus().toString()));
     }
 
-    // POST /api/enrolments/drop
-    // Body: { "studentId": 1, "classId": 2 }
     @PostMapping("/drop")
     public ResponseEntity<Map<String, Object>> dropStudent(
             @RequestBody Map<String, Integer> body) {
@@ -80,7 +72,6 @@ public class EnrolmentController {
                 "status", enrolment.getStatus().toString()));
     }
 
-    // DELETE /api/enrolments/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteEnrolment(@PathVariable Integer id) {
         enrolmentService.deleteEnrolment(id);

@@ -1,96 +1,87 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dashboard — University Scheduling System</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="base.css" />
-  </head>
-  <body>
-    <!-- ============================================================
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - University Scheduling System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="base.css" />
+</head>
+
+<body>
+  <!-- ============================================================
      SIDEBAR
      ============================================================ -->
-    <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar-brand">
-        <div class="sidebar-brand-icon">🎓</div>
-        <div class="sidebar-brand-text">
-          <span>UniSchedule</span>
-          <span>Management System</span>
-        </div>
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">🎓</div>
+      <div class="sidebar-brand-text">
+        <span>UniSchedule</span>
+        <span>Management System</span>
+      </div>
+    </a>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section-label">Main</div>
+      <a href="dashboard.html" class="sidebar-link">
+        <i class="bi bi-grid-1x2-fill"></i> Dashboard
       </a>
 
-      <nav class="sidebar-nav">
-        <div class="sidebar-section-label">Main</div>
-        <a href="dashboard.html" class="sidebar-link">
-          <i class="bi bi-grid-1x2-fill"></i> Dashboard
-        </a>
+      <div class="sidebar-section-label">Resources</div>
+      <a href="rooms.html" class="sidebar-link">
+        <i class="bi bi-building"></i> Rooms
+      </a>
+      <a href="teachers.html" class="sidebar-link">
+        <i class="bi bi-person-badge"></i> Teachers
+      </a>
+      <a href="students.html" class="sidebar-link">
+        <i class="bi bi-people"></i> Students
+      </a>
+      <a href="courses.html" class="sidebar-link">
+        <i class="bi bi-book"></i> Courses
+      </a>
 
-        <div class="sidebar-section-label">Resources</div>
-        <a href="rooms.html" class="sidebar-link">
-          <i class="bi bi-building"></i> Rooms
-        </a>
-        <a href="teachers.html" class="sidebar-link">
-          <i class="bi bi-person-badge"></i> Teachers
-        </a>
-        <a href="students.html" class="sidebar-link">
-          <i class="bi bi-people"></i> Students
-        </a>
-        <a href="courses.html" class="sidebar-link">
-          <i class="bi bi-book"></i> Courses
-        </a>
+      <div class="sidebar-section-label">Scheduling</div>
+      <a href="classes.html" class="sidebar-link">
+        <i class="bi bi-journals"></i> Classes
+      </a>
+      <a href="schedules.html" class="sidebar-link">
+        <i class="bi bi-calendar3"></i> Schedules
+      </a>
+      <a href="enrolments.html" class="sidebar-link">
+        <i class="bi bi-person-check"></i> Enrolments
+      </a>
+    </nav>
 
-        <div class="sidebar-section-label">Scheduling</div>
-        <a href="classes.html" class="sidebar-link">
-          <i class="bi bi-journals"></i> Classes
-        </a>
-        <a href="schedules.html" class="sidebar-link">
-          <i class="bi bi-calendar3"></i> Schedules
-        </a>
-        <a href="enrolments.html" class="sidebar-link">
-          <i class="bi bi-person-check"></i> Enrolments
-        </a>
-      </nav>
+    <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+  </aside>
 
-      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
-    </aside>
-
-    <!-- ============================================================
+  <!-- ============================================================
      MAIN WRAPPER
      ============================================================ -->
-    <div class="main-wrapper">
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <div class="topbar-left">
-          <span class="topbar-title">Dashboard</span>
-          <span class="topbar-subtitle"
-            >Overview of all university resources</span
-          >
-        </div>
-        <div class="topbar-right">
-          <span class="topbar-date" id="topbar-date"></span>
-          <span class="topbar-badge"
-            ><i
-              class="bi bi-circle-fill text-success me-1"
-              style="font-size: 8px"
-            ></i
-            >System Online</span
-          >
-        </div>
-      </header>
+  <div class="main-wrapper">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-left">
+        <span class="topbar-title">Dashboard</span>
+        <span class="topbar-subtitle">Overview of all university resources</span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span class="topbar-badge"><i class="bi bi-circle-fill text-success me-1" style="font-size: 8px"></i>System
+          Online</span>
+      </div>
+    </header>
 
-      <!-- PAGE CONTENT -->
-      <main class="page-content">
-        <!-- WELCOME BANNER -->
-        <div
-          style="
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      <!-- WELCOME BANNER -->
+      <div style="
             background: linear-gradient(
               135deg,
               var(--primary-dark) 0%,
@@ -102,10 +93,8 @@
             color: white;
             position: relative;
             overflow: hidden;
-          "
-        >
-          <div
-            style="
+          ">
+        <div style="
               position: absolute;
               top: -20px;
               right: -20px;
@@ -113,10 +102,8 @@
               height: 140px;
               background: rgba(255, 255, 255, 0.05);
               border-radius: 50%;
-            "
-          ></div>
-          <div
-            style="
+            "></div>
+        <div style="
               position: absolute;
               bottom: -40px;
               right: 60px;
@@ -124,193 +111,184 @@
               height: 100px;
               background: rgba(255, 255, 255, 0.04);
               border-radius: 50%;
-            "
-          ></div>
-          <h4 style="font-weight: 700; font-size: 20px; margin-bottom: 6px">
-            Welcome to UniSchedule 👋
-          </h4>
-          <p style="font-size: 13.5px; opacity: 0.75; margin: 0">
-            Manage all university rooms, teachers, students, courses, classes
-            and enrolments from one place.
+            "></div>
+        <h4 style="font-weight: 700; font-size: 20px; margin-bottom: 6px">
+          Welcome to UniSchedule 👋
+        </h4>
+        <p style="font-size: 13.5px; opacity: 0.75; margin: 0">
+          Manage all university rooms, teachers, students, courses, classes
+          and enrolments from one place.
+        </p>
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div class="row g-3 mb-4" id="stats-row">
+        <!-- Loaded dynamically -->
+        <div class="col-12 text-center py-4">
+          <div class="spinner-custom"></div>
+          <p style="color: var(--text-muted); font-size: 13px; margin-top: 8px">
+            Loading stats...
           </p>
         </div>
+      </div>
 
-        <!-- STAT CARDS ROW -->
-        <div class="row g-3 mb-4" id="stats-row">
-          <!-- Loaded dynamically -->
-          <div class="col-12 text-center py-4">
-            <div class="spinner-custom"></div>
-            <p
-              style="color: var(--text-muted); font-size: 13px; margin-top: 8px"
-            >
-              Loading stats...
-            </p>
-          </div>
-        </div>
-
-        <!-- BOTTOM ROW: Recent Activity + Quick Actions -->
-        <div class="row g-3">
-          <!-- QUICK ACTIONS -->
-          <div class="col-lg-4">
-            <div class="card h-100">
-              <div class="card-header-custom">
-                <h5>
-                  <i class="bi bi-lightning-charge-fill"></i> Quick Actions
-                </h5>
-              </div>
-              <div class="card-body-custom">
-                <div style="display: flex; flex-direction: column; gap: 10px">
-                  <a href="rooms.html" class="quick-action-btn">
-                    <i class="bi bi-plus-circle"></i> Add New Room
-                  </a>
-                  <a href="teachers.html" class="quick-action-btn">
-                    <i class="bi bi-plus-circle"></i> Add New Teacher
-                  </a>
-                  <a href="students.html" class="quick-action-btn">
-                    <i class="bi bi-plus-circle"></i> Add New Student
-                  </a>
-                  <a href="courses.html" class="quick-action-btn">
-                    <i class="bi bi-plus-circle"></i> Add New Course
-                  </a>
-                  <a
-                    href="enrolments.html"
-                    class="quick-action-btn"
-                    style="background: var(--primary); color: white"
-                  >
-                    <i class="bi bi-person-check"></i> Enrol a Student
-                  </a>
-                </div>
+      <!-- BOTTOM ROW: Recent Activity + Quick Actions -->
+      <div class="row g-3">
+        <!-- QUICK ACTIONS -->
+        <div class="col-lg-4">
+          <div class="card h-100">
+            <div class="card-header-custom">
+              <h5>
+                <i class="bi bi-lightning-charge-fill"></i> Quick Actions
+              </h5>
+            </div>
+            <div class="card-body-custom">
+              <div style="display: flex; flex-direction: column; gap: 10px">
+                <a href="rooms.html" class="quick-action-btn">
+                  <i class="bi bi-plus-circle"></i> Add New Room
+                </a>
+                <a href="teachers.html" class="quick-action-btn">
+                  <i class="bi bi-plus-circle"></i> Add New Teacher
+                </a>
+                <a href="students.html" class="quick-action-btn">
+                  <i class="bi bi-plus-circle"></i> Add New Student
+                </a>
+                <a href="courses.html" class="quick-action-btn">
+                  <i class="bi bi-plus-circle"></i> Add New Course
+                </a>
+                <a href="enrolments.html" class="quick-action-btn" style="background: var(--primary); color: white">
+                  <i class="bi bi-person-check"></i> Enrol a Student
+                </a>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- RECENT ENROLMENTS -->
-          <div class="col-lg-8">
-            <div class="card h-100">
-              <div class="card-header-custom">
-                <h5><i class="bi bi-clock-history"></i> Recent Enrolments</h5>
-                <a
-                  href="enrolments.html"
-                  style="
+        <!-- RECENT ENROLMENTS -->
+        <div class="col-lg-8">
+          <div class="card h-100">
+            <div class="card-header-custom">
+              <h5><i class="bi bi-clock-history"></i> Recent Enrolments</h5>
+              <a href="enrolments.html" style="
                     font-size: 12px;
                     color: var(--primary-light);
                     text-decoration: none;
                     font-weight: 600;
-                  "
-                >
-                  View All <i class="bi bi-arrow-right"></i>
-                </a>
-              </div>
-              <div class="card-body-custom p-0">
-                <div id="recent-enrolments">
-                  <div class="loading-state">
-                    <div class="spinner-custom"></div>
-                  </div>
+                  ">
+                View All <i class="bi bi-arrow-right"></i>
+              </a>
+            </div>
+            <div class="card-body-custom p-0">
+              <div id="recent-enrolments">
+                <div class="loading-state">
+                  <div class="spinner-custom"></div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+  </div>
 
-    <!-- ============================================================
+  <!-- ============================================================
      STYLES SPECIFIC TO DASHBOARD
      ============================================================ -->
-    <style>
-      .quick-action-btn {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 11px 16px;
-        background: #f8fafc;
-        border: 1.5px solid var(--border);
-        border-radius: 9px;
-        font-size: 13.5px;
-        font-weight: 600;
-        color: var(--text-primary);
-        text-decoration: none;
-        transition: var(--transition);
-      }
-      .quick-action-btn:hover {
-        background: #f0f4f8;
-        border-color: var(--primary-light);
-        color: var(--primary);
-        transform: translateX(4px);
-      }
-    </style>
+  <style>
+    .quick-action-btn {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 16px;
+      background: #f8fafc;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="base.js"></script>
-    <script>
-      // ============================================================
-      // STAT CARD DEFINITIONS
-      // ============================================================
-      const statCards = [
-        {
-          endpoint: "/rooms",
-          label: "Total Rooms",
-          sub: "Active classrooms & labs",
-          icon: "bi-building",
-          color: "#2a5298",
-          bg: "rgba(42,82,152,0.1)",
-        },
-        {
-          endpoint: "/teachers",
-          label: "Teachers",
-          sub: "Faculty members",
-          icon: "bi-person-badge",
-          color: "#0891b2",
-          bg: "rgba(8,145,178,0.1)",
-        },
-        {
-          endpoint: "/students",
-          label: "Students",
-          sub: "Enrolled students",
-          icon: "bi-people",
-          color: "#16a34a",
-          bg: "rgba(22,163,74,0.1)",
-        },
-        {
-          endpoint: "/courses",
-          label: "Courses",
-          sub: "Course catalogue",
-          icon: "bi-book",
-          color: "#d97706",
-          bg: "rgba(217,119,6,0.1)",
-        },
-        {
-          endpoint: "/classes",
-          label: "Classes",
-          sub: "Active class sections",
-          icon: "bi-journals",
-          color: "#7c3aed",
-          bg: "rgba(124,58,237,0.1)",
-        },
-        {
-          endpoint: "/enrolments",
-          label: "Enrolments",
-          sub: "Total enrolment records",
-          icon: "bi-person-check",
-          color: "#dc2626",
-          bg: "rgba(220,38,38,0.1)",
-        },
-      ];
+    .quick-action-btn:hover {
+      background: #f0f4f8;
+      border-color: var(--primary-light);
+      color: var(--primary);
+      transform: translateX(4px);
+    }
+  </style>
 
-      // ============================================================
-      // LOAD STATS
-      // ============================================================
-      async function loadStats() {
-        const row = document.getElementById("stats-row");
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="base.js"></script>
+  <script>
+    // ============================================================
+    // STAT CARD DEFINITIONS
+    // ============================================================
+    const statCards = [
+      {
+        endpoint: "/rooms",
+        label: "Total Rooms",
+        sub: "Active classrooms & labs",
+        icon: "bi-building",
+        color: "#2a5298",
+        bg: "rgba(42,82,152,0.1)",
+      },
+      {
+        endpoint: "/teachers",
+        label: "Teachers",
+        sub: "Faculty members",
+        icon: "bi-person-badge",
+        color: "#0891b2",
+        bg: "rgba(8,145,178,0.1)",
+      },
+      {
+        endpoint: "/students",
+        label: "Students",
+        sub: "Enrolled students",
+        icon: "bi-people",
+        color: "#16a34a",
+        bg: "rgba(22,163,74,0.1)",
+      },
+      {
+        endpoint: "/courses",
+        label: "Courses",
+        sub: "Course catalogue",
+        icon: "bi-book",
+        color: "#d97706",
+        bg: "rgba(217,119,6,0.1)",
+      },
+      {
+        endpoint: "/classes",
+        label: "Classes",
+        sub: "Active class sections",
+        icon: "bi-journals",
+        color: "#7c3aed",
+        bg: "rgba(124,58,237,0.1)",
+      },
+      {
+        endpoint: "/enrolments",
+        label: "Enrolments",
+        sub: "Total enrolment records",
+        icon: "bi-person-check",
+        color: "#dc2626",
+        bg: "rgba(220,38,38,0.1)",
+      },
+    ];
 
-        try {
-          const results = await Promise.all(
-            statCards.map((card) => apiGet(card.endpoint)),
-          );
+    // ============================================================
+    // LOAD STATS
+    // ============================================================
+    async function loadStats() {
+      const row = document.getElementById("stats-row");
 
-          row.innerHTML = statCards
-            .map(
-              (card, i) => `
+      try {
+        const results = await Promise.all(
+          statCards.map((card) => apiGet(card.endpoint)),
+        );
+
+        row.innerHTML = statCards
+          .map(
+            (card, i) => `
             <div class="col-lg-4 col-md-6">
                 <div class="stat-card" style="--stat-color:${card.color};--stat-bg:${card.bg}">
                     <div class="stat-icon">
@@ -324,38 +302,39 @@
                 </div>
             </div>
         `,
-            )
-            .join("");
-        } catch (err) {
-          row.innerHTML = `
+          )
+          .join("");
+      } catch (err) {
+        row.innerHTML = `
             <div class="col-12">
                 <div class="alert-custom alert-danger-custom">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     Could not load stats. Make sure Spring Boot is running on port 8080.
                 </div>
             </div>`;
-        }
       }
+    }
 
-      // ============================================================
-      // LOAD RECENT ENROLMENTS
-      // ============================================================
-      async function loadRecentEnrolments() {
-        const container = document.getElementById("recent-enrolments");
-        try {
-          const enrolments = await apiGet("/enrolments");
-          const recent = enrolments.slice(-6).reverse(); // last 6
+    // ============================================================
+    // LOAD RECENT ENROLMENTS
+    // ============================================================
+    async function loadRecentEnrolments() {
+      const container = document.getElementById("recent-enrolments");
+      try {
+        const enrolments = await apiGet("/enrolments");
+        const recent = enrolments.slice(-6).reverse(); // last 6
 
-          if (recent.length === 0) {
-            container.innerHTML = `
+        if (recent.length === 0) {
+          container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-inbox"></i>
                     <p>No enrolments yet</p>
                 </div>`;
-            return;
-          }
+          return;
+        }
 
-          container.innerHTML = `
+        container.innerHTML = `
+            <div style="overflow-x:auto;">
             <table class="table-custom" style="width:100%">
                 <thead>
                     <tr>
@@ -368,44 +347,45 @@
                 </thead>
                 <tbody>
                     ${recent
-                      .map(
-                        (e) => `
+            .map(
+              (e) => `
                         <tr>
                             <td><strong>${e.student.firstName} ${e.student.lastName}</strong></td>
                             <td>${e.classSection.course.courseCode}</td>
                             <td>Section ${e.classSection.sectionNumber}</td>
                             <td>
-                                <span class="badge-custom ${
-                                  e.status === "ENROLLED"
-                                    ? "badge-success"
-                                    : e.status === "DROPPED"
-                                      ? "badge-danger"
-                                      : "badge-muted"
-                                }">
+                                <span class="badge-custom ${e.status === "ENROLLED"
+                  ? "badge-success"
+                  : e.status === "DROPPED"
+                    ? "badge-danger"
+                    : "badge-muted"
+                }">
                                     ${e.status}
                                 </span>
                             </td>
                             <td style="color:var(--text-muted);font-size:12px">${e.enrolmentDate}</td>
                         </tr>
                     `,
-                      )
-                      .join("")}
+            )
+            .join("")}
                 </tbody>
-            </table>`;
-        } catch (err) {
-          container.innerHTML = `
+            </table>
+            </div>`;
+      } catch (err) {
+        container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-wifi-off"></i>
                 <p>Could not load enrolments</p>
             </div>`;
-        }
       }
+    }
 
-      // ============================================================
-      // INIT
-      // ============================================================
-      loadStats();
-      loadRecentEnrolments();
-    </script>
-  </body>
+    // ============================================================
+    // INIT
+    // ============================================================
+    loadStats();
+    loadRecentEnrolments();
+  </script>
+</body>
+
 </html>

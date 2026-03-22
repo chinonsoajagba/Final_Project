@@ -1,13 +1,5 @@
-/* ============================================================
-   UNIVERSITY SCHEDULING SYSTEM — Global JavaScript
-   Shared across all pages
-   ============================================================ */
-
 const API_BASE = "http://localhost:8080/api";
 
-/* ============================================================
-   FETCH HELPERS
-   ============================================================ */
 async function apiFetch(endpoint, options = {}) {
   try {
     const response = await fetch(`${API_BASE}${endpoint}`, {
@@ -18,7 +10,6 @@ async function apiFetch(endpoint, options = {}) {
       const err = await response.json();
       throw new Error(err.message || "Something went wrong");
     }
-    // 204 No Content (DELETE) has no body
     if (response.status === 204) return null;
     return await response.json();
   } catch (error) {
@@ -48,11 +39,7 @@ async function apiDelete(endpoint) {
   return apiFetch(endpoint, { method: "DELETE" });
 }
 
-/* ============================================================
-   TOAST NOTIFICATIONS
-   ============================================================ */
 function showToast(message, type = "success") {
-  // Remove existing toast
   const existing = document.getElementById("toast-notification");
   if (existing) existing.remove();
 
@@ -98,18 +85,12 @@ function showToast(message, type = "success") {
   }, 4000);
 }
 
-/* ============================================================
-   CONFIRMATION DIALOG
-   ============================================================ */
 function confirmDelete(
   message = "Are you sure you want to delete this record?",
 ) {
   return confirm(message);
 }
 
-/* ============================================================
-   SET ACTIVE SIDEBAR LINK
-   ============================================================ */
 function setActiveSidebarLink() {
   const currentPage = window.location.pathname.split("/").pop();
   document.querySelectorAll(".sidebar-link").forEach((link) => {
@@ -120,9 +101,6 @@ function setActiveSidebarLink() {
   });
 }
 
-/* ============================================================
-   UPDATE TOPBAR DATE
-   ============================================================ */
 function updateTopbarDate() {
   const el = document.getElementById("topbar-date");
   if (el) {
@@ -136,10 +114,28 @@ function updateTopbarDate() {
   }
 }
 
-/* ============================================================
-   RUN ON EVERY PAGE LOAD
-   ============================================================ */
+function toggleSidebar() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  if (!sidebar) return;
+  sidebar.classList.toggle("sidebar-open");
+  if (overlay) overlay.classList.toggle("active");
+}
+
+function setupSidebarOverlay() {
+  const overlay = document.createElement("div");
+  overlay.className = "sidebar-overlay";
+  overlay.id = "sidebar-overlay";
+  overlay.addEventListener("click", () => {
+    const sidebar = document.querySelector(".sidebar");
+    if (sidebar) sidebar.classList.remove("sidebar-open");
+    overlay.classList.remove("active");
+  });
+  document.body.appendChild(overlay);
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   setActiveSidebarLink();
   updateTopbarDate();
+  setupSidebarOverlay();
 });

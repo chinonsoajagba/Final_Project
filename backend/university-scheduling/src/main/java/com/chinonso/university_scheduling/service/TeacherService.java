@@ -17,19 +17,16 @@ public class TeacherService {
         this.teacherRepository = teacherRepository;
     }
 
-    // GET ALL
     public List<Teacher> getAllTeachers() {
         return teacherRepository.findAll();
     }
 
-    // GET BY ID
     public Teacher getTeacherById(Integer id) {
         return teacherRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(
                         "Teacher not found with ID: " + id));
     }
 
-    // CREATE
     public Teacher createTeacher(Teacher teacher) {
         if (teacherRepository.existsByEmployeeId(teacher.getEmployeeId())) {
             throw new IllegalArgumentException(
@@ -42,7 +39,6 @@ public class TeacherService {
         return teacherRepository.save(teacher);
     }
 
-    // UPDATE
     public Teacher updateTeacher(Integer id, Teacher updatedTeacher) {
         Teacher existing = getTeacherById(id);
 
@@ -68,13 +64,11 @@ public class TeacherService {
         return teacherRepository.save(existing);
     }
 
-    // DELETE
     public void deleteTeacher(Integer id) {
         Teacher teacher = getTeacherById(id);
         teacherRepository.delete(teacher);
     }
 
-    // GET BY DEPARTMENT
     public List<Teacher> getTeachersByDepartment(String department) {
         return teacherRepository.findByDepartment(department);
     }

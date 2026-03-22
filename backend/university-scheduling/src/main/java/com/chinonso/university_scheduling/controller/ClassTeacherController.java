@@ -20,32 +20,26 @@ public class ClassTeacherController {
         this.classTeacherService = classTeacherService;
     }
 
-    // GET /api/class-teachers
     @GetMapping
     public ResponseEntity<List<ClassTeacher>> getAllAssignments() {
         return ResponseEntity.ok(classTeacherService.getAllAssignments());
     }
 
-    // GET /api/class-teachers/{id}
     @GetMapping("/{id}")
     public ResponseEntity<ClassTeacher> getAssignmentById(@PathVariable Integer id) {
         return ResponseEntity.ok(classTeacherService.getAssignmentById(id));
     }
 
-    // GET /api/class-teachers/class/{classId}
     @GetMapping("/class/{classId}")
     public ResponseEntity<List<ClassTeacher>> getByClass(@PathVariable Integer classId) {
         return ResponseEntity.ok(classTeacherService.getAssignmentsByClass(classId));
     }
 
-    // GET /api/class-teachers/teacher/{teacherId}
     @GetMapping("/teacher/{teacherId}")
     public ResponseEntity<List<ClassTeacher>> getByTeacher(@PathVariable Integer teacherId) {
         return ResponseEntity.ok(classTeacherService.getAssignmentsByTeacher(teacherId));
     }
 
-    // POST /api/class-teachers/assign
-    // Body: { "classId": 1, "teacherId": 2, "role": "LECTURER" }
     @PostMapping("/assign")
     public ResponseEntity<ClassTeacher> assignTeacher(
             @RequestBody Map<String, Object> body) {
@@ -58,8 +52,6 @@ public class ClassTeacherController {
         return ResponseEntity.status(HttpStatus.CREATED).body(assignment);
     }
 
-    // PUT /api/class-teachers/{id}/role
-    // Body: { "role": "TEACHING_ASSISTANT" }
     @PutMapping("/{id}/role")
     public ResponseEntity<ClassTeacher> updateRole(
             @PathVariable Integer id,
@@ -69,7 +61,6 @@ public class ClassTeacherController {
         return ResponseEntity.ok(classTeacherService.updateRole(id, newRole));
     }
 
-    // DELETE /api/class-teachers/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> removeAssignment(@PathVariable Integer id) {
         classTeacherService.removeAssignment(id);
