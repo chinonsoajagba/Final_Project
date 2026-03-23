@@ -1,0 +1,86 @@
+package com.chinonso.university_scheduling.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
+
+    public SecurityConfig(JwtFilter jwtFilter) {
+        this.jwtFilter = jwtFilter;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+
+                        // ── PUBLIC ─────────────────────────────────────────
+                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/", "/*.html", "/*.css", "/*.js").permitAll()
+
+                        // ── ROOMS ──────────────────────────────────────────
+                        .requestMatchers("/api/rooms/**")
+                        .hasAnyRole("ADMIN")
+
+                        // ── TEACHERS ───────────────────────────────────────
+                        .requestMatchers("/api/teachers/**")
+                        .hasAnyRole("ADMIN")
+
+                        // ── STUDENTS ───────────────────────────────────────
+                        .requestMatchers("/api/students/**")
+                        .hasAnyRole("ADMIN", "ENROLLMENT_OFFICER")
+
+                        // ── COURSES ────────────────────────────────────────
+                        .requestMatchers("/api/courses/**")
+                        .hasAnyRole("ADMIN")
+
+                        // ── CLASSES ────────────────────────────────────────
+                        .requestMatchers("/api/classes/**")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER")
+
+                        // ── SCHEDULES ──────────────────────────────────────
+                        .requestMatchers("/api/schedules/**")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER")
+
+                        // ── ENROLMENTS ─────────────────────────────────────
+                        .requestMatchers("/api/enrolments/**")
+                        .hasAnyRole("ADMIN", "ENROLLMENT_OFFICER")
+
+                        // ── CLASS TEACHERS ─────────────────────────────────
+                        .requestMatchers("/api/class-teachers/**")
+                        .hasAnyRole("ADMIN")
+
+                        // ── STUDENT PORTAL ─────────────────────────────────
+                        .requestMatchers("/api/student-portal/**")
+                        .hasRole("STUDENT")
+
+                        // ── TEACHER PORTAL ─────────────────────────────────
+                        .requestMatchers("/api/teacher-portal/**")
+                        .hasRole("TEACHER")
+
+                        // everything else requires authentication
+                        .anyRequest().authenticated())
+                .addFilterBefore(jwtFilter,
+                        UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+}
