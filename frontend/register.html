@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register — University Scheduling System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark) 0%,
+          var(--primary-light) 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        margin: 0;
+      }
+      .register-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+      }
+      .register-logo {
+        width: 56px;
+        height: 56px;
+        background: var(--accent);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin: 0 auto 20px;
+      }
+      .register-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        text-align: center;
+        margin-bottom: 4px;
+      }
+      .register-subtitle {
+        font-size: 13px;
+        color: var(--text-muted);
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .btn-register {
+        width: 100%;
+        padding: 12px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--transition);
+        margin-top: 8px;
+      }
+      .btn-register:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+      }
+      .btn-register:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+      .role-info {
+        background: #f8fafc;
+        border: 1.5px solid var(--border);
+        border-radius: 9px;
+        padding: 12px 14px;
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 8px;
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="register-card">
+      <div class="register-logo">🎓</div>
+      <div class="register-title">Create Account</div>
+      <div class="register-subtitle">
+        University Scheduling Management System
+      </div>
+
+      <div id="register-alert"></div>
+
+      <div style="display: flex; flex-direction: column; gap: 14px">
+        <div>
+          <label class="form-label-custom">Email Address *</label>
+          <input
+            type="email"
+            id="f-email"
+            class="form-control-custom"
+            placeholder="e.g. j.smith@university.ac.uk"
+          />
+        </div>
+
+        <div>
+          <label class="form-label-custom">Password *</label>
+          <input
+            type="password"
+            id="f-password"
+            class="form-control-custom"
+            placeholder="Minimum 6 characters"
+          />
+        </div>
+
+        <div>
+          <label class="form-label-custom">Confirm Password *</label>
+          <input
+            type="password"
+            id="f-confirm"
+            class="form-control-custom"
+            placeholder="Repeat your password"
+          />
+        </div>
+
+        <div>
+          <label class="form-label-custom">Role *</label>
+          <select
+            id="f-role"
+            class="form-control-custom"
+            onchange="onRoleChange()"
+          >
+            <option value="">-- Select Role --</option>
+            <option value="ADMIN">Administrator</option>
+            <option value="ENROLLMENT_OFFICER">Enrollment Officer</option>
+            <option value="CLASS_HANDLER">Class Handler</option>
+            <option value="STUDENT">Student</option>
+            <option value="TEACHER">Teacher</option>
+          </select>
+        </div>
+
+        <!-- Linked ID field — only shown for STUDENT and TEACHER -->
+        <div id="linked-id-group" style="display: none">
+          <label class="form-label-custom" id="linked-id-label">
+            Student ID *
+          </label>
+          <input
+            type="number"
+            id="f-linkedId"
+            class="form-control-custom"
+            placeholder="Enter your ID number"
+          />
+          <div class="role-info" id="role-info" style="display: block">
+            <i class="bi bi-info-circle"></i>
+            <span id="role-info-text"></span>
+          </div>
+        </div>
+
+        <button id="register-btn" class="btn-register" onclick="register()">
+          Create Account
+        </button>
+
+        <p
+          style="
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin: 0;
+          "
+        >
+          Already have an account?
+          <a
+            href="login.html"
+            style="
+              color: var(--primary-light);
+              font-weight: 600;
+              text-decoration: none;
+            "
+          >
+            Sign in here
+          </a>
+        </p>
+      </div>
+    </div>
+
+    <script src="base.js"></script>
+    <script>
+      // If already logged in redirect away
+      document.addEventListener("DOMContentLoaded", () => {
+        if (getToken() && getRole()) {
+          redirectToDashboard(getRole());
+        }
+      });
+
+      // Show/hide linked ID field based on role
+      function onRoleChange() {
+        const role = document.getElementById("f-role").value;
+        const group = document.getElementById("linked-id-group");
+        const label = document.getElementById("linked-id-label");
+        const infoTxt = document.getElementById("role-info-text");
+
+        if (role === "STUDENT") {
+          group.style.display = "block";
+          label.textContent = "Your Student ID (from the students table) *";
+          infoTxt.textContent =
+            "Enter the numeric ID assigned to your student record. Ask your administrator if unsure.";
+        } else if (role === "TEACHER") {
+          group.style.display = "block";
+          label.textContent = "Your Teacher ID (from the teachers table) *";
+          infoTxt.textContent =
+            "Enter the numeric ID assigned to your teacher record. Ask your administrator if unsure.";
+        } else {
+          group.style.display = "none";
+          document.getElementById("f-linkedId").value = "";
+        }
+      }
+
+      async function register() {
+        const email = document.getElementById("f-email").value.trim();
+        const password = document.getElementById("f-password").value.trim();
+        const confirm = document.getElementById("f-confirm").value.trim();
+        const role = document.getElementById("f-role").value;
+        const linkedId = document.getElementById("f-linkedId").value;
+        const btn = document.getElementById("register-btn");
+
+        document.getElementById("register-alert").innerHTML = "";
+
+        // Validation
+        if (!email || !password || !confirm || !role) {
+          showAlert("Please fill in all required fields.", "danger");
+          return;
+        }
+        if (password.length < 6) {
+          showAlert("Password must be at least 6 characters.", "danger");
+          return;
+        }
+        if (password !== confirm) {
+          showAlert("Passwords do not match.", "danger");
+          return;
+        }
+        if ((role === "STUDENT" || role === "TEACHER") && !linkedId) {
+          showAlert("Please enter your ID number for this role.", "danger");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Creating account...";
+
+        try {
+          const response = await fetch(`${API_BASE}/auth/register`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              email,
+              password,
+              role,
+              linkedId: linkedId ? parseInt(linkedId) : null,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showAlert(data.message || "Registration failed.", "danger");
+            return;
+          }
+
+          // Save token and redirect
+          saveAuthData(data);
+          redirectToDashboard(data.role);
+        } catch (err) {
+          showAlert(
+            "Could not connect to server. Make sure Spring Boot is running.",
+            "danger",
+          );
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Create Account";
+        }
+      }
+
+      function showAlert(message, type) {
+        const colors = {
+          danger: "alert-danger-custom",
+          success: "alert-success-custom",
+        };
+        const icons = {
+          danger: "bi-x-circle-fill",
+          success: "bi-check-circle-fill",
+        };
+        document.getElementById("register-alert").innerHTML = `
+        <div class="alert-custom ${colors[type]}" style="margin-bottom:16px;">
+            <i class="bi ${icons[type]}"></i> ${message}
+        </div>`;
+      }
+    </script>
+  </body>
+</html>

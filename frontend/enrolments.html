@@ -71,6 +71,21 @@
         </div>
         <div class="topbar-right">
           <span class="topbar-date" id="topbar-date"></span>
+          <span id="topbar-user"
+                style="font-size:12px;color:var(--text-secondary);font-weight:500;">
+          </span>
+          <span id="topbar-role" class="topbar-badge"></span>
+          <button onclick="logout()"
+                  style="background:#fee2e2;color:#dc2626;border:none;
+                         padding:7px 14px;border-radius:8px;font-size:12px;
+                         font-weight:600;cursor:pointer;
+                         font-family:'DM Sans',sans-serif;
+                         display:flex;align-items:center;gap:6px;
+                         transition:var(--transition);"
+                  onmouseover="this.style.background='#fecaca'"
+                  onmouseout="this.style.background='#fee2e2'">
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
         </div>
       </header>
 
@@ -420,6 +435,7 @@
       // INIT — load everything on page load
       // ============================================================
       document.addEventListener("DOMContentLoaded", async () => {
+        if (!requireAuth(['ADMIN', 'ENROLLMENT_OFFICER'])) return;
         await Promise.all([
           loadStudentDropdowns(),
           loadClassDropdowns(),

@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login — University Scheduling System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="base.css" />
+    <style>
+      body {
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark) 0%,
+          var(--primary-light) 100%
+        );
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0;
+      }
+      .login-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        width: 100%;
+        max-width: 420px;
+        box-shadow: 0 24px 64px rgba(0, 0, 0, 0.2);
+      }
+      .login-logo {
+        width: 56px;
+        height: 56px;
+        background: var(--accent);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+        margin: 0 auto 20px;
+      }
+      .login-title {
+        font-size: 22px;
+        font-weight: 800;
+        color: var(--primary-dark);
+        text-align: center;
+        margin-bottom: 4px;
+      }
+      .login-subtitle {
+        font-size: 13px;
+        color: var(--text-muted);
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .input-group-custom {
+        position: relative;
+        margin-bottom: 16px;
+      }
+      .input-group-custom i {
+        position: absolute;
+        left: 14px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-muted);
+        font-size: 15px;
+        z-index: 1;
+      }
+      .input-group-custom input {
+        padding-left: 40px;
+      }
+      .btn-login {
+        width: 100%;
+        padding: 12px;
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+        font-family: "DM Sans", sans-serif;
+        transition: var(--transition);
+        margin-top: 8px;
+      }
+      .btn-login:hover {
+        background: var(--primary-light);
+        transform: translateY(-1px);
+      }
+      .btn-login:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-card">
+      <div class="login-logo">🎓</div>
+      <div class="login-title">UniSchedule</div>
+      <div class="login-subtitle">University Scheduling Management System</div>
+
+      <div id="login-alert"></div>
+
+      <div class="input-group-custom">
+        <i class="bi bi-envelope"></i>
+        <input
+          type="email"
+          id="f-email"
+          class="form-control-custom"
+          placeholder="Email address"
+          onkeydown="if (event.key === 'Enter') login();"
+        />
+      </div>
+
+      <div class="input-group-custom">
+        <i class="bi bi-lock"></i>
+        <input
+          type="password"
+          id="f-password"
+          class="form-control-custom"
+          placeholder="Password"
+          onkeydown="if (event.key === 'Enter') login();"
+        />
+      </div>
+
+      <button id="login-btn" class="btn-login" onclick="login()">
+        Sign In
+      </button>
+
+      <p
+        style="
+          text-align: center;
+          margin-top: 20px;
+          font-size: 13px;
+          color: var(--text-muted);
+        "
+      >
+        Don't have an account?
+        <a
+          href="register.html"
+          style="
+            color: var(--primary-light);
+            font-weight: 600;
+            text-decoration: none;
+          "
+        >
+          Register here
+        </a>
+      </p>
+    </div>
+
+    <script src="base.js"></script>
+    <script>
+      // If already logged in redirect to dashboard
+      document.addEventListener("DOMContentLoaded", () => {
+        if (getToken() && getRole()) {
+          redirectToDashboard(getRole());
+        }
+      });
+
+      async function login() {
+        const email = document.getElementById("f-email").value.trim();
+        const password = document.getElementById("f-password").value.trim();
+        const btn = document.getElementById("login-btn");
+        const alertDiv = document.getElementById("login-alert");
+
+        alertDiv.innerHTML = "";
+
+        if (!email || !password) {
+          showAlert("Please enter your email and password.", "danger");
+          return;
+        }
+
+        btn.disabled = true;
+        btn.textContent = "Signing in...";
+
+        try {
+          const response = await fetch(`${API_BASE}/auth/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            showAlert(
+              data.message || "Login failed. Please try again.",
+              "danger",
+            );
+            return;
+          }
+
+          // Save token and user info
+          saveAuthData(data);
+
+          // Redirect based on role
+          redirectToDashboard(data.role);
+        } catch (err) {
+          showAlert(
+            "Could not connect to server. Make sure Spring Boot is running.",
+            "danger",
+          );
+        } finally {
+          btn.disabled = false;
+          btn.textContent = "Sign In";
+        }
+      }
+
+      function showAlert(message, type) {
+        const colors = {
+          danger: "alert-danger-custom",
+          success: "alert-success-custom",
+        };
+        const icons = {
+          danger: "bi-x-circle-fill",
+          success: "bi-check-circle-fill",
+        };
+        document.getElementById("login-alert").innerHTML = `
+        <div class="alert-custom ${colors[type]}" style="margin-bottom:16px;">
+            <i class="bi ${icons[type]}"></i> ${message}
+        </div>`;
+      }
+    </script>
+  </body>
+</html>
