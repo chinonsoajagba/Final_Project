@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Dashboard - University Scheduling System</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    />
+    <link rel="stylesheet" href="base.css" />
+  </head>
+  <body>
+    <!-- SIDEBAR — simplified for teacher -->
+    <aside class="sidebar">
+      <a href="teacher-dashboard.html" class="sidebar-brand">
+        <div class="sidebar-brand-icon">🎓</div>
+        <div class="sidebar-brand-text">
+          <span>UniSchedule</span>
+          <span>Teacher Portal</span>
+        </div>
+      </a>
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-label">My Portal</div>
+        <a href="teacher-dashboard.html" class="sidebar-link active">
+          <i class="bi bi-grid-1x2-fill"></i> My Dashboard
+        </a>
+      </nav>
+      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+    </aside>
+
+    <!-- MAIN WRAPPER -->
+    <div class="main-wrapper">
+      <!-- TOP BAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <span class="topbar-title">Teacher Dashboard</span>
+          <span class="topbar-subtitle"
+            >Your assigned classes and enrolled students</span
+          >
+        </div>
+        <div class="topbar-right">
+          <span class="topbar-date" id="topbar-date"></span>
+          <span
+            id="topbar-user"
+            style="
+              font-size: 12px;
+              color: var(--text-secondary);
+              font-weight: 500;
+            "
+          >
+          </span>
+          <span id="topbar-role" class="topbar-badge"></span>
+          <button
+            onclick="logout()"
+            style="
+              background: #fee2e2;
+              color: #dc2626;
+              border: none;
+              padding: 7px 14px;
+              border-radius: 8px;
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              transition: var(--transition);
+            "
+            onmouseover="this.style.background = '#fecaca'"
+            onmouseout="this.style.background = '#fee2e2'"
+          >
+            <i class="bi bi-box-arrow-right"></i> Logout
+          </button>
+        </div>
+      </header>
+
+      <!-- PAGE CONTENT -->
+      <main class="page-content">
+        <!-- TEACHER PROFILE CARD -->
+        <div id="profile-section">
+          <div class="loading-state">
+            <div class="spinner-custom"></div>
+            <p>Loading your profile...</p>
+          </div>
+        </div>
+
+        <!-- MY CLASSES -->
+        <div class="card mt-4">
+          <div class="card-header-custom">
+            <h5><i class="bi bi-journals"></i> My Assigned Classes</h5>
+            <span
+              id="class-count"
+              style="
+                font-size: 12px;
+                color: var(--text-muted);
+                font-weight: 500;
+              "
+            >
+            </span>
+          </div>
+          <div class="card-body-custom p-0">
+            <div id="classes-container">
+              <div class="loading-state">
+                <div class="spinner-custom"></div>
+                <p>Loading your classes...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STUDENTS IN SELECTED CLASS -->
+        <div class="card mt-4" id="students-card" style="display: none">
+          <div class="card-header-custom">
+            <h5>
+              <i class="bi bi-people"></i>
+              Students in
+              <span
+                id="selected-class-label"
+                style="color: var(--primary-light)"
+              ></span>
+            </h5>
+            <button
+              onclick="closeStudentsPanel()"
+              style="
+                background: #f0f4f8;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 7px;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                font-family: &quot;DM Sans&quot;, sans-serif;
+                color: var(--text-secondary);
+              "
+            >
+              <i class="bi bi-x"></i> Close
+            </button>
+          </div>
+          <div class="card-body-custom p-0">
+            <div id="students-container"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="base.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        if (!requireAuth(["TEACHER"])) return;
+        loadProfile();
+        loadClasses();
+      });
+
+      // ============================================================
+      // LOAD TEACHER PROFILE
+      // ============================================================
+      async function loadProfile() {
+        const section = document.getElementById("profile-section");
+        try {
+          const teacher = await apiGet("/teacher-portal/me");
+
+          section.innerHTML = `
+            <div style="background:linear-gradient(135deg,var(--primary-dark) 0%,
+                         var(--primary-light) 100%);border-radius:var(--radius-lg);
+                         padding:28px 32px;color:white;
+                         display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+                <div style="width:70px;height:70px;border-radius:50%;
+                             background:rgba(255,255,255,0.15);
+                             display:flex;align-items:center;justify-content:center;
+                             font-size:26px;font-weight:800;flex-shrink:0;">
+                    ${teacher.firstName.charAt(0)}${teacher.lastName.charAt(0)}
+                </div>
+                <div style="flex:1;">
+                    <h4 style="font-weight:800;font-size:22px;margin:0 0 4px;">
+                        ${teacher.firstName} ${teacher.lastName}
+                    </h4>
+                    <p style="opacity:0.75;font-size:13.5px;margin:0 0 10px;">
+                        ${teacher.email}
+                    </p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                        <span style="background:rgba(255,255,255,0.15);
+                                     padding:4px 12px;border-radius:20px;
+                                     font-size:12px;font-weight:600;">
+                            <i class="bi bi-building"></i> ${teacher.department}
+                        </span>
+                        ${
+                          teacher.specialization
+                            ? `
+                        <span style="background:rgba(255,255,255,0.15);
+                                     padding:4px 12px;border-radius:20px;
+                                     font-size:12px;font-weight:600;">
+                            <i class="bi bi-award"></i> ${teacher.specialization}
+                        </span>`
+                            : ""
+                        }
+                        <span style="background:rgba(255,255,255,0.15);
+                                     padding:4px 12px;border-radius:20px;
+                                     font-size:12px;font-weight:600;">
+                            <i class="bi bi-clock"></i>
+                            Max ${teacher.maxHoursPerWeek}h/week
+                        </span>
+                    </div>
+                </div>
+            </div>`;
+        } catch (err) {
+          section.innerHTML = `
+            <div class="alert-custom alert-danger-custom"
+                 style="margin-bottom:16px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Could not load profile: ${err.message}
+            </div>`;
+        }
+      }
+
+      // ============================================================
+      // LOAD MY CLASSES
+      // ============================================================
+      async function loadClasses() {
+        const container = document.getElementById("classes-container");
+        try {
+          const classes = await apiGet("/teacher-portal/my-classes");
+          document.getElementById("class-count").textContent =
+            `${classes.length} class(es) assigned`;
+
+          if (classes.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-journals"></i>
+                    <p>No classes assigned to you yet.</p>
+                </div>`;
+            return;
+          }
+
+          const semesterBadge = {
+            FALL: "badge-warning",
+            SPRING: "badge-success",
+            SUMMER: "badge-info",
+          };
+
+          const roleBadge = {
+            LECTURER: "badge-primary",
+            TEACHING_ASSISTANT: "badge-muted",
+          };
+
+          container.innerHTML = `
+            <div style="overflow-x:auto;">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Section</th>
+                        <th>Room</th>
+                        <th>Semester</th>
+                        <th>Year</th>
+                        <th>Enrolment</th>
+                        <th>My Role</th>
+                        <th>Students</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${classes
+                      .map((c) => {
+                        const pct =
+                          c.maxEnrolment > 0
+                            ? Math.round(
+                                (c.enrolmentCount / c.maxEnrolment) * 100,
+                              )
+                            : 0;
+                        const barColor =
+                          pct >= 90
+                            ? "#dc2626"
+                            : pct >= 70
+                              ? "#d97706"
+                              : "#16a34a";
+                        return `
+                        <tr>
+                            <td>
+                                <span style="font-family:'DM Mono',monospace;
+                                             font-size:12px;font-weight:600;
+                                             color:var(--primary);background:#f0f4f8;
+                                             padding:3px 8px;border-radius:5px;">
+                                    ${c.courseCode}
+                                </span>
+                                <div style="font-size:11px;color:var(--text-muted);
+                                            margin-top:3px;">
+                                    ${c.courseName}
+                                </div>
+                            </td>
+                            <td style="font-weight:700;">
+                                Section ${c.section}
+                            </td>
+                            <td style="font-size:13px;">
+                                ${
+                                  c.room !== "TBA"
+                                    ? `<i class="bi bi-building"
+                                          style="color:var(--text-muted);"></i>
+                                       ${c.room}`
+                                    : `<span style="color:var(--text-muted);
+                                               font-style:italic;">TBA</span>`
+                                }
+                            </td>
+                            <td>
+                                <span class="badge-custom
+                                    ${semesterBadge[c.semester] || "badge-muted"}">
+                                    ${c.semester}
+                                </span>
+                            </td>
+                            <td style="font-size:13px;color:var(--text-secondary);">
+                                ${c.academicYear}
+                            </td>
+                            <td style="min-width:120px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <div style="flex:1;height:6px;background:#e2e8f0;
+                                                border-radius:3px;overflow:hidden;">
+                                        <div style="height:100%;width:${pct}%;
+                                                    background:${barColor};
+                                                    border-radius:3px;"></div>
+                                    </div>
+                                    <span style="font-size:12px;font-weight:600;
+                                                 color:${barColor};white-space:nowrap;">
+                                        ${c.enrolmentCount}/${c.maxEnrolment}
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge-custom
+                                    ${roleBadge[c.role] || "badge-muted"}">
+                                    ${c.role === "TEACHING_ASSISTANT" ? "TA" : c.role}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn-edit-custom"
+                                        onclick="viewStudents(${c.classId},
+                                                 '${c.courseCode} Section ${c.section}')">
+                                    <i class="bi bi-people"></i> View
+                                </button>
+                            </td>
+                        </tr>`;
+                      })
+                      .join("")}
+                </tbody>
+            </table>
+            </div>`;
+        } catch (err) {
+          container.innerHTML = `
+            <div class="alert-custom alert-danger-custom" style="margin:24px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Could not load classes: ${err.message}
+            </div>`;
+        }
+      }
+
+      // ============================================================
+      // VIEW STUDENTS IN A CLASS
+      // ============================================================
+      async function viewStudents(classId, label) {
+        const card = document.getElementById("students-card");
+        const container = document.getElementById("students-container");
+        const labelEl = document.getElementById("selected-class-label");
+
+        labelEl.textContent = label;
+        card.style.display = "block";
+        container.innerHTML = `
+        <div class="loading-state">
+            <div class="spinner-custom"></div>
+            <p>Loading students...</p>
+        </div>`;
+
+        // Scroll to it
+        card.scrollIntoView({ behavior: "smooth", block: "start" });
+
+        try {
+          const students = await apiGet(
+            `/teacher-portal/my-classes/${classId}/students`,
+          );
+
+          if (students.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-people"></i>
+                    <p>No students enrolled in this class yet.</p>
+                </div>`;
+            return;
+          }
+
+          const yearColors = {
+            1: "badge-success",
+            2: "badge-info",
+            3: "badge-warning",
+            4: "badge-primary",
+          };
+
+          container.innerHTML = `
+            <div style="overflow-x:auto;">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Program</th>
+                        <th>Year</th>
+                        <th>Enrolled On</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${students
+                      .map(
+                        (s, i) => `
+                        <tr>
+                            <td style="color:var(--text-muted);font-size:12px;">
+                                ${i + 1}
+                            </td>
+                            <td>
+                                <div style="display:flex;align-items:center;gap:9px;">
+                                    <div style="width:30px;height:30px;border-radius:50%;
+                                                background:linear-gradient(135deg,
+                                                #16a34a,#0891b2);color:white;
+                                                display:flex;align-items:center;
+                                                justify-content:center;font-size:11px;
+                                                font-weight:700;flex-shrink:0;">
+                                        ${s.firstName.charAt(0)}${s.lastName.charAt(0)}
+                                    </div>
+                                    <strong style="font-size:13px;">
+                                        ${s.firstName} ${s.lastName}
+                                    </strong>
+                                </div>
+                            </td>
+                            <td style="font-size:12px;color:var(--text-secondary);">
+                                ${s.email}
+                            </td>
+                            <td style="font-size:12px;">${s.program}</td>
+                            <td>
+                                <span class="badge-custom
+                                    ${yearColors[s.year] || "badge-muted"}">
+                                    Year ${s.year}
+                                </span>
+                            </td>
+                            <td style="font-size:12px;color:var(--text-muted);
+                                       font-family:'DM Mono',monospace;">
+                                ${s.enrolledOn}
+                            </td>
+                        </tr>
+                    `,
+                      )
+                      .join("")}
+                </tbody>
+            </table>
+            </div>`;
+        } catch (err) {
+          container.innerHTML = `
+            <div class="alert-custom alert-danger-custom" style="margin:16px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                ${err.message}
+            </div>`;
+        }
+      }
+
+      // ============================================================
+      // CLOSE STUDENTS PANEL
+      // ============================================================
+      function closeStudentsPanel() {
+        document.getElementById("students-card").style.display = "none";
+      }
+    </script>
+  </body>
+</html>
