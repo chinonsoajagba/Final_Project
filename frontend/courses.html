@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -24,35 +24,9 @@
           <span>Management System</span>
         </div>
       </a>
-      <nav class="sidebar-nav">
-        <div class="sidebar-section-label">Main</div>
-        <a href="dashboard.html" class="sidebar-link">
-          <i class="bi bi-grid-1x2-fill"></i> Dashboard
-        </a>
-        <div class="sidebar-section-label">Resources</div>
-        <a href="rooms.html" class="sidebar-link">
-          <i class="bi bi-building"></i> Rooms
-        </a>
-        <a href="teachers.html" class="sidebar-link">
-          <i class="bi bi-person-badge"></i> Teachers
-        </a>
-        <a href="students.html" class="sidebar-link">
-          <i class="bi bi-people"></i> Students
-        </a>
-        <a href="courses.html" class="sidebar-link">
-          <i class="bi bi-book"></i> Courses
-        </a>
-        <div class="sidebar-section-label">Scheduling</div>
-        <a href="classes.html" class="sidebar-link">
-          <i class="bi bi-journals"></i> Classes
-        </a>
-        <a href="schedules.html" class="sidebar-link">
-          <i class="bi bi-calendar3"></i> Schedules
-        </a>
-        <a href="enrolments.html" class="sidebar-link">
-          <i class="bi bi-person-check"></i> Enrolments
-        </a>
-      </nav>
+      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+    <!-- populated dynamically by base.js based on role -->
+</nav>
       <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
     </aside>
 
@@ -580,3 +554,4 @@
     </script>
   </body>
 </html>
+

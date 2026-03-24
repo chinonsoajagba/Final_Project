@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="base.css" />
   </head>
   <body>
-    <!-- SIDEBAR — simplified for student -->
+    <!-- SIDEBAR â€” simplified for student -->
     <aside class="sidebar">
       <a href="student-dashboard.html" class="sidebar-brand">
         <div class="sidebar-brand-icon">🎓</div>
@@ -24,12 +24,9 @@
           <span>Student Portal</span>
         </div>
       </a>
-      <nav class="sidebar-nav">
-        <div class="sidebar-section-label">My Portal</div>
-        <a href="student-dashboard.html" class="sidebar-link active">
-          <i class="bi bi-grid-1x2-fill"></i> My Dashboard
-        </a>
-      </nav>
+      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+    <!-- populated dynamically by base.js based on role -->
+</nav>
       <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
     </aside>
 
@@ -373,7 +370,7 @@
                                                 color:var(--text-secondary);
                                                 white-space:nowrap;min-width:100px;">
                                         ${s.startTime.substring(0, 5)}
-                                        –
+                                        â€“
                                         ${s.endTime.substring(0, 5)}
                                     </div>
                                     <div style="flex:1;">
@@ -419,3 +416,4 @@
     </script>
   </body>
 </html>
+

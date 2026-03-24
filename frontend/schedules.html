@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -24,34 +24,8 @@
           <span>Management System</span>
         </div>
       </a>
-      <nav class="sidebar-nav">
-        <div class="sidebar-section-label">Main</div>
-        <a href="dashboard.html" class="sidebar-link">
-          <i class="bi bi-grid-1x2-fill"></i> Dashboard
-        </a>
-        <div class="sidebar-section-label">Resources</div>
-        <a href="rooms.html" class="sidebar-link">
-          <i class="bi bi-building"></i> Rooms
-        </a>
-        <a href="teachers.html" class="sidebar-link">
-          <i class="bi bi-person-badge"></i> Teachers
-        </a>
-        <a href="students.html" class="sidebar-link">
-          <i class="bi bi-people"></i> Students
-        </a>
-        <a href="courses.html" class="sidebar-link">
-          <i class="bi bi-book"></i> Courses
-        </a>
-        <div class="sidebar-section-label">Scheduling</div>
-        <a href="classes.html" class="sidebar-link">
-          <i class="bi bi-journals"></i> Classes
-        </a>
-        <a href="schedules.html" class="sidebar-link">
-          <i class="bi bi-calendar3"></i> Schedules
-        </a>
-        <a href="enrolments.html" class="sidebar-link">
-          <i class="bi bi-person-check"></i> Enrolments
-        </a>
+      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+        <!-- populated dynamically by base.js based on role -->
       </nav>
       <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
     </aside>
@@ -60,7 +34,11 @@
     <div class="main-wrapper">
       <!-- TOP BAR -->
       <header class="topbar">
-        <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <button
+          class="sidebar-toggle"
+          onclick="toggleSidebar()"
+          aria-label="Toggle navigation"
+        >
           <i class="bi bi-list"></i>
         </button>
         <div class="topbar-left">
@@ -71,19 +49,36 @@
         </div>
         <div class="topbar-right">
           <span class="topbar-date" id="topbar-date"></span>
-          <span id="topbar-user"
-                style="font-size:12px;color:var(--text-secondary);font-weight:500;">
+          <span
+            id="topbar-user"
+            style="
+              font-size: 12px;
+              color: var(--text-secondary);
+              font-weight: 500;
+            "
+          >
           </span>
           <span id="topbar-role" class="topbar-badge"></span>
-          <button onclick="logout()"
-                  style="background:#fee2e2;color:#dc2626;border:none;
-                         padding:7px 14px;border-radius:8px;font-size:12px;
-                         font-weight:600;cursor:pointer;
-                         font-family:'DM Sans',sans-serif;
-                         display:flex;align-items:center;gap:6px;
-                         transition:var(--transition);"
-                  onmouseover="this.style.background='#fecaca'"
-                  onmouseout="this.style.background='#fee2e2'">
+          <button
+            onclick="logout()"
+            style="
+              background: #fee2e2;
+              color: #dc2626;
+              border: none;
+              padding: 7px 14px;
+              border-radius: 8px;
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              transition: var(--transition);
+            "
+            onmouseover="this.style.background = '#fecaca'"
+            onmouseout="this.style.background = '#fee2e2'"
+          >
             <i class="bi bi-box-arrow-right"></i> Logout
           </button>
           <button class="btn-primary-custom" onclick="openAddModal()">
@@ -306,7 +301,7 @@
       };
 
       document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(['ADMIN', 'CLASS_HANDLER'])) return;
+        if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
         scheduleModal = new bootstrap.Modal(
           document.getElementById("scheduleModal"),
         );
@@ -330,7 +325,6 @@
           .join("");
       }
 
-
       async function loadSchedules() {
         const container = document.getElementById("schedules-table-container");
         try {
@@ -344,7 +338,6 @@
             </div>`;
         }
       }
-
 
       function renderTable(schedules) {
         const container = document.getElementById("schedules-table-container");
@@ -413,7 +406,7 @@
                         </td>
                         <td>
                             <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;">
-                                ${start} – ${end}
+                                ${start} - ${end}
                             </span>
                         </td>
                         <td>
@@ -442,7 +435,6 @@
         </div>`;
       }
 
-
       function filterSchedules() {
         const search = document
           .getElementById("search-input")
@@ -461,7 +453,6 @@
         renderTable(filtered);
       }
 
-
       async function populateClassDropdown(selectedClassId = null) {
         try {
           const classes = await apiGet("/classes");
@@ -470,7 +461,7 @@
           classes.forEach((c) => {
             const opt = document.createElement("option");
             opt.value = c.classId;
-            opt.textContent = `${c.course.courseCode} — Section ${c.sectionNumber} (${c.semester})`;
+            opt.textContent = `${c.course.courseCode} â€” Section ${c.sectionNumber} (${c.semester})`;
             if (selectedClassId && c.classId === selectedClassId)
               opt.selected = true;
             select.appendChild(opt);
@@ -480,7 +471,6 @@
         }
       }
 
-
       function selectDay(day) {
         document
           .querySelectorAll(".day-pill")
@@ -488,7 +478,6 @@
         document.getElementById(`day-${day}`).classList.add("selected");
         document.getElementById("f-dayOfWeek").value = day;
       }
-
 
       async function openAddModal() {
         editingScheduleId = null;
@@ -499,7 +488,6 @@
         await populateClassDropdown();
         scheduleModal.show();
       }
-
 
       async function openEditModal(id) {
         editingScheduleId = id;
@@ -527,7 +515,6 @@
           showToast("Could not load schedule details", "danger");
         }
       }
-
 
       async function saveSchedule() {
         const classId = document.getElementById("f-classId").value;
@@ -580,7 +567,6 @@
         }
       }
 
-
       async function deleteSchedule(id) {
         if (!confirmDelete("Delete this schedule slot? This cannot be undone."))
           return;
@@ -592,7 +578,6 @@
           showToast(err.message, "danger");
         }
       }
-
 
       function calcDuration(start, end) {
         const [sh, sm] = start.split(":").map(Number);

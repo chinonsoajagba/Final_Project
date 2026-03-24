@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="base.css" />
   </head>
   <body>
-    <!-- SIDEBAR — simplified for teacher -->
+    <!-- SIDEBAR â€” simplified for teacher -->
     <aside class="sidebar">
       <a href="teacher-dashboard.html" class="sidebar-brand">
         <div class="sidebar-brand-icon">🎓</div>
@@ -24,12 +24,9 @@
           <span>Teacher Portal</span>
         </div>
       </a>
-      <nav class="sidebar-nav">
-        <div class="sidebar-section-label">My Portal</div>
-        <a href="teacher-dashboard.html" class="sidebar-link active">
-          <i class="bi bi-grid-1x2-fill"></i> My Dashboard
-        </a>
-      </nav>
+      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+    <!-- populated dynamically by base.js based on role -->
+</nav>
       <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
     </aside>
 
@@ -472,3 +469,4 @@
     </script>
   </body>
 </html>
+

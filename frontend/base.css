@@ -167,6 +167,8 @@ body {
 .main-wrapper {
   margin-left: var(--sidebar-width);
   flex: 1;
+  min-width: 0;
+  overflow-x: hidden;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -187,6 +189,9 @@ body {
   top: 0;
   z-index: 100;
   box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .topbar-left {
@@ -274,6 +279,12 @@ body {
 
 .card-body-custom {
   padding: 24px;
+}
+
+/* Prevent wide tables from breaking the layout */
+[style*="overflow-x:auto"],
+[style*="overflow-x: auto"] {
+  max-width: 100%;
 }
 
 /* ============================================================
@@ -707,6 +718,24 @@ body {
     display: none;
   }
 
+  /* Hide email and date on all mobile/tablet — too wide */
+  #topbar-user,
+  .topbar-date {
+    display: none;
+  }
+
+  /* Prevent right section from pushing the title */
+  .topbar-right {
+    flex-shrink: 0;
+    gap: 8px;
+  }
+
+  /* Compact logout button */
+  .topbar-right button {
+    padding: 7px 12px !important;
+    font-size: 12px !important;
+  }
+
   .page-content {
     padding: 16px;
   }
@@ -730,14 +759,11 @@ body {
    SMALL MOBILE (≤ 480px)
    ============================================================ */
 @media (max-width: 480px) {
+  /* At smallest screens: also hide date and role badge */
   .topbar-date {
     display: none;
   }
-  
-  #topbar-user {
-    display: none;
-  }
-  
+
   #topbar-role {
     display: none;
   }
