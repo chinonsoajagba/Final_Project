@@ -162,7 +162,7 @@
           <h4 style="font-weight: 700; font-size: 20px; margin-bottom: 6px">
             Welcome to UniSchedule 👋
           </h4>
-          <p style="font-size: 13.5px; opacity: 0.75; margin: 0">
+          <p id="welcome-subtitle" style="font-size: 13.5px; opacity: 0.75; margin: 0">
             Manage all university rooms, teachers, students, courses, classes
             and enrolments from one place.
           </p>
@@ -192,7 +192,7 @@
                 </h5>
               </div>
               <div class="card-body-custom">
-                <div style="display: flex; flex-direction: column; gap: 10px">
+                <div id="quick-actions-list" style="display: flex; flex-direction: column; gap: 10px">
                   <a href="rooms.html" class="quick-action-btn">
                     <i class="bi bi-plus-circle"></i> Add New Room
                   </a>
@@ -221,8 +221,9 @@
           <div class="col-lg-8">
             <div class="card h-100">
               <div class="card-header-custom">
-                <h5><i class="bi bi-clock-history"></i> Recent Enrolments</h5>
+                <h5><i class="bi bi-clock-history"></i> <span id="recent-activity-title">Recent Enrolments</span></h5>
                 <a
+                  id="recent-activity-link"
                   href="enrolments.html"
                   style="
                     font-size: 12px;
@@ -235,7 +236,7 @@
                 </a>
               </div>
               <div class="card-body-custom p-0">
-                <div id="recent-enrolments">
+                <div id="recent-activity-body">
                   <div class="loading-state">
                     <div class="spinner-custom"></div>
                   </div>
@@ -278,162 +279,187 @@
     <script src="base.js"></script>
     <script>
       // ============================================================
-      // STAT CARD DEFINITIONS
+      // STAT CARD MASTER LIST — role field limits visibility
       // ============================================================
-      const statCards = [
-        {
-          endpoint: "/rooms",
-          label: "Total Rooms",
-          sub: "Active classrooms & labs",
-          icon: "bi-building",
-          color: "#2a5298",
-          bg: "rgba(42,82,152,0.1)",
-        },
-        {
-          endpoint: "/teachers",
-          label: "Teachers",
-          sub: "Faculty members",
-          icon: "bi-person-badge",
-          color: "#0891b2",
-          bg: "rgba(8,145,178,0.1)",
-        },
-        {
-          endpoint: "/students",
-          label: "Students",
-          sub: "Enrolled students",
-          icon: "bi-people",
-          color: "#16a34a",
-          bg: "rgba(22,163,74,0.1)",
-        },
-        {
-          endpoint: "/courses",
-          label: "Courses",
-          sub: "Course catalogue",
-          icon: "bi-book",
-          color: "#d97706",
-          bg: "rgba(217,119,6,0.1)",
-        },
-        {
-          endpoint: "/classes",
-          label: "Classes",
-          sub: "Active class sections",
-          icon: "bi-journals",
-          color: "#7c3aed",
-          bg: "rgba(124,58,237,0.1)",
-        },
-        {
-          endpoint: "/enrolments",
-          label: "Enrolments",
-          sub: "Total enrolment records",
-          icon: "bi-person-check",
-          color: "#dc2626",
-          bg: "rgba(220,38,38,0.1)",
-        },
+      const ALL_STAT_CARDS = [
+        { endpoint: "/rooms",      label: "Total Rooms",   sub: "Active classrooms & labs",  icon: "bi-building",     color: "#2a5298", bg: "rgba(42,82,152,0.1)",   roles: ["ADMIN"] },
+        { endpoint: "/teachers",   label: "Teachers",      sub: "Faculty members",           icon: "bi-person-badge", color: "#0891b2", bg: "rgba(8,145,178,0.1)",   roles: ["ADMIN"] },
+        { endpoint: "/students",   label: "Students",      sub: "Enrolled students",         icon: "bi-people",       color: "#16a34a", bg: "rgba(22,163,74,0.1)",   roles: ["ADMIN", "ENROLLMENT_OFFICER"] },
+        { endpoint: "/courses",    label: "Courses",       sub: "Course catalogue",          icon: "bi-book",         color: "#d97706", bg: "rgba(217,119,6,0.1)",   roles: ["ADMIN"] },
+        { endpoint: "/classes",    label: "Classes",       sub: "Active class sections",     icon: "bi-journals",     color: "#7c3aed", bg: "rgba(124,58,237,0.1)",  roles: ["ADMIN", "CLASS_HANDLER", "ENROLLMENT_OFFICER"] },
+        { endpoint: "/schedules",  label: "Schedules",     sub: "Time slots defined",        icon: "bi-calendar3",    color: "#0891b2", bg: "rgba(8,145,178,0.1)",   roles: ["CLASS_HANDLER"] },
+        { endpoint: "/enrolments", label: "Enrolments",    sub: "Total enrolment records",   icon: "bi-person-check", color: "#dc2626", bg: "rgba(220,38,38,0.1)",   roles: ["ADMIN", "ENROLLMENT_OFFICER"] },
       ];
 
+      // Quick actions per role
+      const QUICK_ACTIONS = {
+        ADMIN: [
+          { href: "rooms.html",      icon: "bi-plus-circle", label: "Add New Room" },
+          { href: "teachers.html",   icon: "bi-plus-circle", label: "Add New Teacher" },
+          { href: "students.html",   icon: "bi-plus-circle", label: "Add New Student" },
+          { href: "courses.html",    icon: "bi-plus-circle", label: "Add New Course" },
+          { href: "enrolments.html", icon: "bi-person-check", label: "Enrol a Student", highlight: true },
+        ],
+        ENROLLMENT_OFFICER: [
+          { href: "students.html",   icon: "bi-plus-circle",   label: "Add New Student" },
+          { href: "enrolments.html", icon: "bi-person-check",  label: "Enrol a Student", highlight: true },
+          { href: "enrolments.html", icon: "bi-person-dash",   label: "Manage Enrolments" },
+        ],
+        CLASS_HANDLER: [
+          { href: "classes.html",    icon: "bi-journals",      label: "Manage Classes" },
+          { href: "schedules.html",  icon: "bi-plus-circle",   label: "Add New Schedule", highlight: true },
+          { href: "schedules.html",  icon: "bi-calendar3",     label: "View All Schedules" },
+        ],
+      };
+
+      // Welcome subtitle per role
+      const WELCOME_SUBTITLES = {
+        ADMIN:              "Manage all university rooms, teachers, students, courses, classes and enrolments from one place.",
+        ENROLLMENT_OFFICER: "Manage student registrations and course enrolments for this semester.",
+        CLASS_HANDLER:      "Manage class sections, assign schedules and coordinate time slots.",
+      };
+
       // ============================================================
-      // LOAD STATS
+      // RENDER QUICK ACTIONS
       // ============================================================
-      async function loadStats() {
+      function renderQuickActions(role) {
+        const actions = QUICK_ACTIONS[role] || [];
+        const container = document.getElementById("quick-actions-list");
+        if (!container) return;
+
+        if (actions.length === 0) {
+          container.innerHTML = `<p style="color:var(--text-muted);font-size:13px;">No quick actions available.</p>`;
+          return;
+        }
+
+        container.innerHTML = actions.map(a => `
+          <a href="${a.href}" class="quick-action-btn"
+             ${a.highlight ? 'style="background:var(--primary);color:white;"' : ""}>
+            <i class="bi ${a.icon}"></i> ${a.label}
+          </a>`).join("");
+      }
+
+      // ============================================================
+      // RENDER WELCOME SUBTITLE
+      // ============================================================
+      function renderWelcomeSubtitle(role) {
+        const el = document.getElementById("welcome-subtitle");
+        if (el) el.textContent = WELCOME_SUBTITLES[role] || WELCOME_SUBTITLES.ADMIN;
+      }
+
+      // ============================================================
+      // LOAD STATS (role-filtered)
+      // ============================================================
+      async function loadStats(role) {
         const row = document.getElementById("stats-row");
+        const cards = ALL_STAT_CARDS.filter(c => c.roles.includes(role));
 
         try {
-          const results = await Promise.all(
-            statCards.map((card) => apiGet(card.endpoint)),
-          );
+          const results = await Promise.all(cards.map(c => apiGet(c.endpoint)));
 
-          row.innerHTML = statCards
-            .map(
-              (card, i) => `
+          row.innerHTML = cards.map((card, i) => `
             <div class="col-lg-4 col-md-6">
-                <div class="stat-card" style="--stat-color:${card.color};--stat-bg:${card.bg}">
-                    <div class="stat-icon">
-                        <i class="bi ${card.icon}"></i>
-                    </div>
-                    <div class="stat-info">
-                        <div class="stat-value">${results[i].length}</div>
-                        <div class="stat-label">${card.label}</div>
-                        <div class="stat-sub">${card.sub}</div>
-                    </div>
+              <div class="stat-card" style="--stat-color:${card.color};--stat-bg:${card.bg}">
+                <div class="stat-icon"><i class="bi ${card.icon}"></i></div>
+                <div class="stat-info">
+                  <div class="stat-value">${results[i].length}</div>
+                  <div class="stat-label">${card.label}</div>
+                  <div class="stat-sub">${card.sub}</div>
                 </div>
-            </div>
-        `,
-            )
-            .join("");
+              </div>
+            </div>`).join("");
         } catch (err) {
           row.innerHTML = `
             <div class="col-12">
-                <div class="alert-custom alert-danger-custom">
-                    <i class="bi bi-exclamation-triangle-fill"></i>
-                    Could not load stats. Make sure Spring Boot is running on port 8080.
-                </div>
+              <div class="alert-custom alert-danger-custom">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Could not load stats. Make sure Spring Boot is running on port 8080.
+              </div>
             </div>`;
         }
       }
 
       // ============================================================
-      // LOAD RECENT ENROLMENTS
+      // RECENT ACTIVITY — enrolments (ADMIN / ENROLLMENT_OFFICER)
       // ============================================================
       async function loadRecentEnrolments() {
-        const container = document.getElementById("recent-enrolments");
+        const container = document.getElementById("recent-activity-body");
         try {
           const enrolments = await apiGet("/enrolments");
-          const recent = enrolments.slice(-6).reverse(); // last 6
+          const recent = enrolments.slice(-6).reverse();
 
           if (recent.length === 0) {
-            container.innerHTML = `
-                <div class="empty-state">
-                    <i class="bi bi-inbox"></i>
-                    <p>No enrolments yet</p>
-                </div>`;
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-inbox"></i><p>No enrolments yet</p></div>`;
             return;
           }
 
           container.innerHTML = `
             <div style="overflow-x:auto;">
             <table class="table-custom" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Course</th>
-                        <th>Section</th>
-                        <th>Status</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${recent
-                      .map(
-                        (e) => `
-                        <tr>
-                            <td><strong>${e.student.firstName} ${e.student.lastName}</strong></td>
-                            <td>${e.classSection.course.courseCode}</td>
-                            <td>Section ${e.classSection.sectionNumber}</td>
-                            <td>
-                                <span class="badge-custom ${
-                                  e.status === "ENROLLED"
-                                    ? "badge-success"
-                                    : e.status === "DROPPED"
-                                      ? "badge-danger"
-                                      : "badge-muted"
-                                }">
-                                    ${e.status}
-                                </span>
-                            </td>
-                            <td style="color:var(--text-muted);font-size:12px">${e.enrolmentDate}</td>
-                        </tr>
-                    `,
-                      )
-                      .join("")}
-                </tbody>
+              <thead><tr>
+                <th>Student</th><th>Course</th><th>Section</th><th>Status</th><th>Date</th>
+              </tr></thead>
+              <tbody>
+                ${recent.map(e => `
+                <tr>
+                  <td><strong>${e.student.firstName} ${e.student.lastName}</strong></td>
+                  <td>${e.classSection.course.courseCode}</td>
+                  <td>Section ${e.classSection.sectionNumber}</td>
+                  <td>
+                    <span class="badge-custom ${
+                      e.status === "ENROLLED" ? "badge-success"
+                      : e.status === "DROPPED" ? "badge-danger"
+                      : "badge-muted"}">
+                      ${e.status}
+                    </span>
+                  </td>
+                  <td style="color:var(--text-muted);font-size:12px">${e.enrolmentDate}</td>
+                </tr>`).join("")}
+              </tbody>
             </table>
             </div>`;
         } catch (err) {
+          container.innerHTML = `<div class="empty-state"><i class="bi bi-wifi-off"></i><p>Could not load enrolments</p></div>`;
+        }
+      }
+
+      // ============================================================
+      // RECENT ACTIVITY — schedules (CLASS_HANDLER)
+      // ============================================================
+      async function loadRecentSchedules() {
+        const container = document.getElementById("recent-activity-body");
+        const dayLabels = { MON:"Monday", TUE:"Tuesday", WED:"Wednesday", THU:"Thursday", FRI:"Friday" };
+        try {
+          const schedules = await apiGet("/schedules");
+          const recent = schedules.slice(-6).reverse();
+
+          if (recent.length === 0) {
+            container.innerHTML = `<div class="empty-state"><i class="bi bi-calendar3"></i><p>No schedules yet</p></div>`;
+            return;
+          }
+
           container.innerHTML = `
-            <div class="empty-state">
-                <i class="bi bi-wifi-off"></i>
-                <p>Could not load enrolments</p>
+            <div style="overflow-x:auto;">
+            <table class="table-custom" style="width:100%">
+              <thead><tr>
+                <th>Course</th><th>Section</th><th>Day</th><th>Time</th><th>Frequency</th>
+              </tr></thead>
+              <tbody>
+                ${recent.map(s => `
+                <tr>
+                  <td><strong>${s.classSection.course.courseCode}</strong></td>
+                  <td>Section ${s.classSection.sectionNumber}</td>
+                  <td>${dayLabels[s.dayOfWeek] || s.dayOfWeek}</td>
+                  <td style="font-family:'DM Mono',monospace;font-size:12px">
+                    ${s.startTime.substring(0,5)} – ${s.endTime.substring(0,5)}
+                  </td>
+                  <td><span class="badge-custom ${s.frequency === "WEEKLY" ? "badge-success" : "badge-warning"}">${s.frequency}</span></td>
+                </tr>`).join("")}
+              </tbody>
+            </table>
             </div>`;
+        } catch (err) {
+          container.innerHTML = `<div class="empty-state"><i class="bi bi-wifi-off"></i><p>Could not load schedules</p></div>`;
         }
       }
 
@@ -441,10 +467,25 @@
       // INIT
       // ============================================================
       document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(["ADMIN", "ENROLLMENT_OFFICER", "CLASS_HANDLER"]))
-          return;
-        loadStats();
-        loadRecentEnrolments();
+        if (!requireAuth(["ADMIN", "ENROLLMENT_OFFICER", "CLASS_HANDLER"])) return;
+
+        const role = getRole();
+
+        renderWelcomeSubtitle(role);
+        renderQuickActions(role);
+        loadStats(role);
+
+        // Recent activity: enrolments for ADMIN/ENROLLMENT_OFFICER, schedules for CLASS_HANDLER
+        if (role === "CLASS_HANDLER") {
+          // Update the recent activity card header
+          const header = document.getElementById("recent-activity-title");
+          if (header) header.textContent = "Recent Schedules";
+          const viewAllLink = document.getElementById("recent-activity-link");
+          if (viewAllLink) { viewAllLink.href = "schedules.html"; }
+          loadRecentSchedules();
+        } else {
+          loadRecentEnrolments();
+        }
       });
     </script>
   </body>

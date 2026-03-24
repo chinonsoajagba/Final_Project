@@ -18,8 +18,6 @@ public class AuthController {
         this.authService = authService;
     }
 
-    // POST /api/auth/register
-    // Body: { "email": "x", "password": "x", "role": "ADMIN", "linkedId": null }
     @PostMapping("/register")
     public ResponseEntity<Map<String, Object>> register(
             @RequestBody Map<String, Object> body) {
@@ -36,8 +34,6 @@ public class AuthController {
                 authService.register(email, password, role, linkedId));
     }
 
-    // POST /api/auth/login
-    // Body: { "email": "x", "password": "x" }
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(
             @RequestBody Map<String, String> body) {

@@ -21,7 +21,6 @@ public class User {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    // Links to student_id or teacher_id depending on role
     @Column(name = "linked_id")
     private Long linkedId;
 

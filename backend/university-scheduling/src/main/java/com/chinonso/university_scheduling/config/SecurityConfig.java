@@ -56,7 +56,7 @@ public class SecurityConfig {
 
                         // ── CLASSES ────────────────────────────────────────
                         .requestMatchers("/api/classes/**")
-                        .hasAnyRole("ADMIN", "CLASS_HANDLER")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER", "ENROLLMENT_OFFICER")
 
                         // ── SCHEDULES ──────────────────────────────────────
                         .requestMatchers("/api/schedules/**")

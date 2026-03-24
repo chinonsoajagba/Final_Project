@@ -733,14 +733,29 @@ body {
   .topbar-date {
     display: none;
   }
+  
+  #topbar-user {
+    display: none;
+  }
+  
+  #topbar-role {
+    display: none;
+  }
 
   .topbar-right {
-    gap: 8px;
+    gap: 6px;
   }
 
   .btn-primary-custom {
-    padding: 8px 14px;
-    font-size: 12px;
+    padding: 7px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+  
+  .topbar-right button[onclick="logout()"] {
+    padding: 7px 10px !important;
+    font-size: 11px !important;
+    gap: 4px !important;
   }
 
   .stat-value {

@@ -203,6 +203,103 @@ function confirmDelete(
 }
 
 /* ============================================================
+   ROLE-BASED SIDEBAR RENDERER
+   Rewrites <nav class="sidebar-nav"> based on the stored role.
+   ============================================================ */
+function renderSidebar() {
+  const nav = document.querySelector(".sidebar-nav");
+  if (!nav) return;
+
+  const role = getRole();
+
+  // Define all possible nav items grouped by section
+  const allLinks = {
+    main: [
+      { href: "dashboard.html", icon: "bi-grid-1x2-fill", label: "Dashboard" },
+    ],
+    resources: [
+      {
+        href: "rooms.html",
+        icon: "bi-building",
+        label: "Rooms",
+        roles: ["ADMIN"],
+      },
+      {
+        href: "teachers.html",
+        icon: "bi-person-badge",
+        label: "Teachers",
+        roles: ["ADMIN"],
+      },
+      {
+        href: "students.html",
+        icon: "bi-people",
+        label: "Students",
+        roles: ["ADMIN", "ENROLLMENT_OFFICER"],
+      },
+      {
+        href: "courses.html",
+        icon: "bi-book",
+        label: "Courses",
+        roles: ["ADMIN"],
+      },
+    ],
+    scheduling: [
+      {
+        href: "classes.html",
+        icon: "bi-journals",
+        label: "Classes",
+        roles: ["ADMIN", "CLASS_HANDLER"],
+      },
+      {
+        href: "schedules.html",
+        icon: "bi-calendar3",
+        label: "Schedules",
+        roles: ["ADMIN", "CLASS_HANDLER"],
+      },
+      {
+        href: "enrolments.html",
+        icon: "bi-person-check",
+        label: "Enrolments",
+        roles: ["ADMIN", "ENROLLMENT_OFFICER"],
+      },
+    ],
+  };
+
+  // Filter helper — item visible if no role restriction, or current role is included
+  const visible = (item) => !item.roles || item.roles.includes(role);
+
+  const resourceLinks = allLinks.resources.filter(visible);
+  const schedulingLinks = allLinks.scheduling.filter(visible);
+
+  // Build HTML
+  let html = "";
+
+  // Main section (always shown)
+  html += `<div class="sidebar-section-label">Main</div>`;
+  for (const link of allLinks.main) {
+    html += `<a href="${link.href}" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
+  }
+
+  // Resources section (only if at least one link is visible)
+  if (resourceLinks.length > 0) {
+    html += `<div class="sidebar-section-label">Resources</div>`;
+    for (const link of resourceLinks) {
+      html += `<a href="${link.href}" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
+    }
+  }
+
+  // Scheduling section (only if at least one link is visible)
+  if (schedulingLinks.length > 0) {
+    html += `<div class="sidebar-section-label">Scheduling</div>`;
+    for (const link of schedulingLinks) {
+      html += `<a href="${link.href}" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
+    }
+  }
+
+  nav.innerHTML = html;
+}
+
+/* ============================================================
    SET ACTIVE SIDEBAR LINK
    ============================================================ */
 function setActiveSidebarLink() {
@@ -249,9 +346,33 @@ function updateTopbar() {
 }
 
 /* ============================================================
+   SIDEBAR TOGGLE (mobile hamburger)
+   ============================================================ */
+function toggleSidebar() {
+  const sidebar = document.querySelector(".sidebar");
+  const overlay = document.getElementById("sidebar-overlay");
+  if (!sidebar) return;
+
+  const isOpen = sidebar.classList.toggle("sidebar-open");
+  if (overlay) {
+    overlay.classList.toggle("active", isOpen);
+  }
+}
+
+/* ============================================================
    RUN ON EVERY PAGE LOAD
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  setActiveSidebarLink();
-  updateTopbar();
+  // Inject sidebar overlay backdrop once (avoids editing every HTML page)
+  if (!document.getElementById("sidebar-overlay")) {
+    const overlay = document.createElement("div");
+    overlay.id = "sidebar-overlay";
+    overlay.className = "sidebar-overlay";
+    overlay.addEventListener("click", toggleSidebar);
+    document.body.appendChild(overlay);
+  }
+
+  renderSidebar(); // role-filtered nav links
+  setActiveSidebarLink(); // highlight current page
+  updateTopbar(); // show user email + role badge
 });
