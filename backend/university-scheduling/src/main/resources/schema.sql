@@ -117,6 +117,20 @@ CREATE TABLE IF NOT EXISTS class_teacher (
 );
 
 -- ============================================================
+-- USER: users
+-- ============================================================
+CREATE TABLE IF NOT EXISTS users (
+    user_id    INT PRIMARY KEY AUTO_INCREMENT,
+    email      VARCHAR(100) NOT NULL UNIQUE,
+    password   VARCHAR(255) NOT NULL,
+    role       ENUM('ADMIN','ENROLLMENT_OFFICER','CLASS_HANDLER','STUDENT','TEACHER')
+               NOT NULL,
+    linked_id  INT DEFAULT NULL,
+    is_active  BOOLEAN NOT NULL DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- ============================================================
 -- INDEXES for faster conflict detection queries
 -- ============================================================
 CREATE INDEX idx_schedule_class     ON schedule(class_id);
@@ -124,3 +138,5 @@ CREATE INDEX idx_schedule_day_time  ON schedule(day_of_week, start_time, end_tim
 CREATE INDEX idx_enrolment_student  ON enrolment(student_id);
 CREATE INDEX idx_enrolment_class    ON enrolment(class_id);
 CREATE INDEX idx_class_room         ON class(room_id);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_role  ON users(role);

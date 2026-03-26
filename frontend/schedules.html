@@ -1,67 +1,52 @@
 ﻿<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schedules - University Scheduling System</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="base.css" />
-  </head>
-  <body>
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar-brand">
-        <div class="sidebar-brand-icon">🎓</div>
-        <div class="sidebar-brand-text">
-          <span>UniSchedule</span>
-          <span>Management System</span>
-        </div>
-      </a>
-      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
-        <!-- populated dynamically by base.js based on role -->
-      </nav>
-      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
-    </aside>
 
-    <!-- MAIN WRAPPER -->
-    <div class="main-wrapper">
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <button
-          class="sidebar-toggle"
-          onclick="toggleSidebar()"
-          aria-label="Toggle navigation"
-        >
-          <i class="bi bi-list"></i>
-        </button>
-        <div class="topbar-left">
-          <span class="topbar-title">Schedules</span>
-          <span class="topbar-subtitle"
-            >Manage all class time slots and days</span
-          >
-        </div>
-        <div class="topbar-right">
-          <span class="topbar-date" id="topbar-date"></span>
-          <span
-            id="topbar-user"
-            style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedules - University Scheduling System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="base.css" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">🎓</div>
+      <div class="sidebar-brand-text">
+        <span>UniSchedule</span>
+        <span>Management System</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+      <!-- populated dynamically by base.js based on role -->
+    </nav>
+    <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-left">
+        <span class="topbar-title">Schedules</span>
+        <span class="topbar-subtitle">Manage all class time slots and days</span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span id="topbar-user" style="
               font-size: 12px;
               color: var(--text-secondary);
               font-weight: 500;
-            "
-          >
-          </span>
-          <span id="topbar-role" class="topbar-badge"></span>
-          <button
-            onclick="logout()"
-            style="
+            ">
+        </span>
+        <span id="topbar-role" class="topbar-badge"></span>
+        <button onclick="logout()" style="
               background: #fee2e2;
               color: #dc2626;
               border: none;
@@ -75,44 +60,31 @@
               align-items: center;
               gap: 6px;
               transition: var(--transition);
-            "
-            onmouseover="this.style.background = '#fecaca'"
-            onmouseout="this.style.background = '#fee2e2'"
-          >
-            <i class="bi bi-box-arrow-right"></i> Logout
-          </button>
-          <button class="btn-primary-custom" onclick="openAddModal()">
-            <i class="bi bi-plus-lg"></i> Add Schedule
-          </button>
-        </div>
-      </header>
+            " onmouseover="this.style.background = '#fecaca'" onmouseout="this.style.background = '#fee2e2'">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+        <button class="btn-primary-custom" onclick="openAddModal()">
+          <i class="bi bi-plus-lg"></i> Add Schedule
+        </button>
+      </div>
+    </header>
 
-      <!-- PAGE CONTENT -->
-      <main class="page-content">
-        <div id="alert-area"></div>
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      <div id="alert-area"></div>
 
-        <!-- FILTER BAR -->
-        <div
-          style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap"
-        >
-          <div style="position: relative; flex: 1; min-width: 200px">
-            <i
-              class="bi bi-search"
-              style="
+      <!-- FILTER BAR -->
+      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap">
+        <div style="position: relative; flex: 1; min-width: 200px">
+          <i class="bi bi-search" style="
                 position: absolute;
                 left: 12px;
                 top: 50%;
                 transform: translateY(-50%);
                 color: var(--text-muted);
                 font-size: 14px;
-              "
-            ></i>
-            <input
-              type="text"
-              id="search-input"
-              placeholder="Search by course code..."
-              oninput="filterSchedules()"
-              style="
+              "></i>
+          <input type="text" id="search-input" placeholder="Search by course code..." oninput="filterSchedules()" style="
                 width: 100%;
                 padding: 9px 14px 9px 36px;
                 border: 1.5px solid var(--border);
@@ -121,13 +93,9 @@
                 font-family: &quot;DM Sans&quot;, sans-serif;
                 color: var(--text-primary);
                 background: white;
-              "
-            />
-          </div>
-          <select
-            id="day-filter"
-            onchange="filterSchedules()"
-            style="
+              " />
+        </div>
+        <select id="day-filter" onchange="filterSchedules()" style="
               padding: 9px 14px;
               border: 1.5px solid var(--border);
               border-radius: 8px;
@@ -136,224 +104,197 @@
               color: var(--text-primary);
               background: white;
               min-width: 140px;
-            "
-          >
-            <option value="">All Days</option>
-            <option value="MON">Monday</option>
-            <option value="TUE">Tuesday</option>
-            <option value="WED">Wednesday</option>
-            <option value="THU">Thursday</option>
-            <option value="FRI">Friday</option>
-          </select>
-        </div>
+            ">
+          <option value="">All Days</option>
+          <option value="MON">Monday</option>
+          <option value="TUE">Tuesday</option>
+          <option value="WED">Wednesday</option>
+          <option value="THU">Thursday</option>
+          <option value="FRI">Friday</option>
+        </select>
+      </div>
 
-        <!-- TABLE CARD -->
-        <div class="card">
-          <div class="card-header-custom">
-            <h5><i class="bi bi-calendar3"></i> All Schedules</h5>
-            <span
-              id="schedule-count"
-              style="
+      <!-- TABLE CARD -->
+      <div class="card">
+        <div class="card-header-custom">
+          <h5><i class="bi bi-calendar3"></i> All Schedules</h5>
+          <span id="schedule-count" style="
                 font-size: 12px;
                 color: var(--text-muted);
                 font-weight: 500;
-              "
-            ></span>
-          </div>
-          <div class="card-body-custom p-0">
-            <div id="schedules-table-container">
-              <div class="loading-state">
-                <div class="spinner-custom"></div>
-                <p>Loading schedules...</p>
-              </div>
-            </div>
-          </div>
+              "></span>
         </div>
-      </main>
-    </div>
-
-    <!-- ADD / EDIT MODAL -->
-    <div class="modal fade" id="scheduleModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered">
-        <div
-          class="modal-content"
-          style="
-            border-radius: var(--radius-lg);
-            border: none;
-            overflow: hidden;
-          "
-        >
-          <div class="modal-header-custom">
-            <h5 id="modal-title">Add New Schedule</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body" style="padding: 24px">
-            <div id="modal-alert"></div>
-            <div class="row g-3">
-              <div class="col-12">
-                <label class="form-label-custom">Class *</label>
-                <select id="f-classId" class="form-control-custom">
-                  <option value="">-- Select Class --</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label class="form-label-custom">Day of Week *</label>
-                <div
-                  id="day-pills-container"
-                  style="display: flex; gap: 8px; flex-wrap: wrap"
-                ></div>
-                <input type="hidden" id="f-dayOfWeek" />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Start Time *</label>
-                <input
-                  type="time"
-                  id="f-startTime"
-                  class="form-control-custom"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">End Time *</label>
-                <input type="time" id="f-endTime" class="form-control-custom" />
-              </div>
-              <div class="col-12">
-                <label class="form-label-custom">Frequency</label>
-                <select id="f-frequency" class="form-control-custom">
-                  <option value="WEEKLY">Weekly</option>
-                  <option value="BIWEEKLY">Biweekly</option>
-                </select>
-              </div>
+        <div class="card-body-custom p-0">
+          <div id="schedules-table-container">
+            <div class="loading-state">
+              <div class="spinner-custom"></div>
+              <p>Loading schedules...</p>
             </div>
-          </div>
-          <div
-            class="modal-footer"
-            style="padding: 16px 24px; border-top: 1px solid var(--border)"
-          >
-            <button
-              type="button"
-              class="btn-danger-custom"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn-primary-custom"
-              onclick="saveSchedule()"
-            >
-              <i class="bi bi-check-lg"></i>
-              <span id="save-btn-text">Save Schedule</span>
-            </button>
           </div>
         </div>
       </div>
+    </main>
+  </div>
+
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="
+            border-radius: var(--radius-lg);
+            border: none;
+            overflow: hidden;
+          ">
+        <div class="modal-header-custom">
+          <h5 id="modal-title">Add New Schedule</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding: 24px">
+          <div id="modal-alert"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Class *</label>
+              <select id="f-classId" class="form-control-custom">
+                <option value="">-- Select Class --</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Day of Week *</label>
+              <div id="day-pills-container" style="display: flex; gap: 8px; flex-wrap: wrap"></div>
+              <input type="hidden" id="f-dayOfWeek" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Start Time *</label>
+              <input type="time" id="f-startTime" class="form-control-custom" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">End Time *</label>
+              <input type="time" id="f-endTime" class="form-control-custom" />
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Frequency</label>
+              <select id="f-frequency" class="form-control-custom">
+                <option value="WEEKLY">Weekly</option>
+                <option value="BIWEEKLY">Biweekly</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
+          <button type="button" class="btn-danger-custom" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn-primary-custom" onclick="saveSchedule()">
+            <i class="bi bi-check-lg"></i>
+            <span id="save-btn-text">Save Schedule</span>
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <style>
-      .day-pill {
-        display: inline-block;
-        padding: 7px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 700;
-        border: 2px solid var(--border);
-        color: var(--text-secondary);
-        background: white;
-        transition: var(--transition);
-        user-select: none;
-        letter-spacing: 0.5px;
-      }
-      .day-pill.selected {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: white;
-      }
-      .day-pill:hover {
-        border-color: var(--primary-light);
-        color: var(--primary);
-      }
-    </style>
+  <style>
+    .day-pill {
+      display: inline-block;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 2px solid var(--border);
+      color: var(--text-secondary);
+      background: white;
+      transition: var(--transition);
+      user-select: none;
+      letter-spacing: 0.5px;
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="base.js"></script>
-    <script>
-      let editingScheduleId = null;
-      let scheduleModal;
-      let allSchedules = [];
+    .day-pill.selected {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
 
-      const dayLabels = {
-        MON: "Monday",
-        TUE: "Tuesday",
-        WED: "Wednesday",
-        THU: "Thursday",
-        FRI: "Friday",
-      };
-      const dayColors = {
-        MON: "#2a5298",
-        TUE: "#0891b2",
-        WED: "#16a34a",
-        THU: "#d97706",
-        FRI: "#7c3aed",
-      };
+    .day-pill:hover {
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+  </style>
 
-      document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
-        scheduleModal = new bootstrap.Modal(
-          document.getElementById("scheduleModal"),
-        );
-        buildDayPills();
-        loadSchedules();
-      });
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="base.js"></script>
+  <script>
+    let editingScheduleId = null;
+    let scheduleModal;
+    let allSchedules = [];
 
-      function buildDayPills() {
-        const container = document.getElementById("day-pills-container");
-        const days = ["MON", "TUE", "WED", "THU", "FRI"];
-        container.innerHTML = days
-          .map(
-            (day) => `
+    const dayLabels = {
+      MON: "Monday",
+      TUE: "Tuesday",
+      WED: "Wednesday",
+      THU: "Thursday",
+      FRI: "Friday",
+    };
+    const dayColors = {
+      MON: "#2a5298",
+      TUE: "#0891b2",
+      WED: "#16a34a",
+      THU: "#d97706",
+      FRI: "#7c3aed",
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
+      scheduleModal = new bootstrap.Modal(
+        document.getElementById("scheduleModal"),
+      );
+      buildDayPills();
+      loadSchedules();
+    });
+
+    function buildDayPills() {
+      const container = document.getElementById("day-pills-container");
+      const days = ["MON", "TUE", "WED", "THU", "FRI"];
+      container.innerHTML = days
+        .map(
+          (day) => `
         <label style="cursor:pointer;">
             <input type="radio" name="dayOfWeek" value="${day}"
-                   style="display:none;" onchange="selectDay('${day}')">
+                   style="display:none;" onclick="selectDay('${day}')">
             <span class="day-pill" id="day-${day}">${day}</span>
         </label>
     `,
-          )
-          .join("");
-      }
+        )
+        .join("");
+    }
 
-      async function loadSchedules() {
-        const container = document.getElementById("schedules-table-container");
-        try {
-          allSchedules = await apiGet("/schedules");
-          renderTable(allSchedules);
-        } catch (err) {
-          container.innerHTML = `
+    async function loadSchedules() {
+      const container = document.getElementById("schedules-table-container");
+      try {
+        allSchedules = await apiGet("/schedules");
+        renderTable(allSchedules);
+      } catch (err) {
+        container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 Failed to load schedules: ${err.message}
             </div>`;
-        }
       }
+    }
 
-      function renderTable(schedules) {
-        const container = document.getElementById("schedules-table-container");
-        document.getElementById("schedule-count").textContent =
-          `${schedules.length} slot(s)`;
+    function renderTable(schedules) {
+      const container = document.getElementById("schedules-table-container");
+      document.getElementById("schedule-count").textContent =
+        `${schedules.length} slot(s)`;
 
-        if (schedules.length === 0) {
-          container.innerHTML = `
+      if (schedules.length === 0) {
+        container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-calendar3"></i>
                 <p>No schedules found.</p>
             </div>`;
-          return;
-        }
+        return;
+      }
 
-        container.innerHTML = `
+      container.innerHTML = `
         <div style="overflow-x:auto;">
         <table class="table-custom">
             <thead>
@@ -370,12 +311,12 @@
             </thead>
             <tbody>
                 ${schedules
-                  .map((s, i) => {
-                    const start = s.startTime.substring(0, 5);
-                    const end = s.endTime.substring(0, 5);
-                    const dur = calcDuration(s.startTime, s.endTime);
-                    const color = dayColors[s.dayOfWeek] || "#64748b";
-                    return `
+          .map((s, i) => {
+            const start = s.startTime.substring(0, 5);
+            const end = s.endTime.substring(0, 5);
+            const dur = calcDuration(s.startTime, s.endTime);
+            const color = dayColors[s.dayOfWeek] || "#64748b";
+            return `
                     <tr>
                         <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
                         <td>
@@ -389,12 +330,11 @@
                             </span>
                         </td>
                         <td style="font-size:13px;">
-                            ${
-                              s.classSection.room
-                                ? `<i class="bi bi-building" style="color:var(--text-muted);"></i>
+                            ${s.classSection.room
+                ? `<i class="bi bi-building" style="color:var(--text-muted);"></i>
                                    ${s.classSection.room.roomCode}`
-                                : `<span style="color:var(--text-muted);font-style:italic;font-size:12px;">No room</span>`
-                            }
+                : `<span style="color:var(--text-muted);font-style:italic;font-size:12px;">No room</span>`
+              }
                         </td>
                         <td>
                             <span style="display:inline-flex;align-items:center;gap:6px;
@@ -428,192 +368,196 @@
                             </div>
                         </td>
                     </tr>`;
-                  })
-                  .join("")}
+          })
+          .join("")}
             </tbody>
         </table>
         </div>`;
-      }
+    }
 
-      function filterSchedules() {
-        const search = document
-          .getElementById("search-input")
-          .value.toLowerCase();
-        const day = document.getElementById("day-filter").value;
+    function filterSchedules() {
+      const search = document
+        .getElementById("search-input")
+        .value.toLowerCase();
+      const day = document.getElementById("day-filter").value;
 
-        const filtered = allSchedules.filter((s) => {
-          const matchSearch =
-            !search ||
-            s.classSection.course.courseCode.toLowerCase().includes(search) ||
-            s.classSection.course.courseName.toLowerCase().includes(search);
-          const matchDay = !day || s.dayOfWeek === day;
-          return matchSearch && matchDay;
+      const filtered = allSchedules.filter((s) => {
+        const matchSearch =
+          !search ||
+          s.classSection.course.courseCode.toLowerCase().includes(search) ||
+          s.classSection.course.courseName.toLowerCase().includes(search);
+        const matchDay = !day || s.dayOfWeek === day;
+        return matchSearch && matchDay;
+      });
+
+      renderTable(filtered);
+    }
+
+    async function populateClassDropdown(selectedClassId = null) {
+      try {
+        const classes = await apiGet("/classes");
+        const select = document.getElementById("f-classId");
+        select.innerHTML = '<option value="">-- Select Class --</option>';
+        classes.forEach((c) => {
+          const opt = document.createElement("option");
+          opt.value = c.classId;
+          opt.textContent = `${c.course.courseCode} - Section ${c.sectionNumber} (${c.semester})`;
+          if (selectedClassId && c.classId === selectedClassId)
+            opt.selected = true;
+          select.appendChild(opt);
         });
-
-        renderTable(filtered);
+      } catch (err) {
+        showModalAlert("Could not load classes.", "danger");
       }
+    }
 
-      async function populateClassDropdown(selectedClassId = null) {
-        try {
-          const classes = await apiGet("/classes");
-          const select = document.getElementById("f-classId");
-          select.innerHTML = '<option value="">-- Select Class --</option>';
-          classes.forEach((c) => {
-            const opt = document.createElement("option");
-            opt.value = c.classId;
-            opt.textContent = `${c.course.courseCode} â€” Section ${c.sectionNumber} (${c.semester})`;
-            if (selectedClassId && c.classId === selectedClassId)
-              opt.selected = true;
-            select.appendChild(opt);
-          });
-        } catch (err) {
-          showModalAlert("Could not load classes.", "danger");
-        }
-      }
+    function selectDay(day) {
+      document
+        .querySelectorAll(".day-pill")
+        .forEach((p) => p.classList.remove("selected"));
+      document.getElementById(`day-${day}`).classList.add("selected");
+      document.getElementById("f-dayOfWeek").value = day;
+    }
 
-      function selectDay(day) {
-        document
-          .querySelectorAll(".day-pill")
-          .forEach((p) => p.classList.remove("selected"));
-        document.getElementById(`day-${day}`).classList.add("selected");
-        document.getElementById("f-dayOfWeek").value = day;
-      }
+    async function openAddModal() {
+      editingScheduleId = null;
+      document.getElementById("modal-title").textContent = "Add New Schedule";
+      document.getElementById("save-btn-text").textContent = "Save Schedule";
+      document.getElementById("modal-alert").innerHTML = "";
+      clearForm();
+      await populateClassDropdown();
+      scheduleModal.show();
+    }
 
-      async function openAddModal() {
-        editingScheduleId = null;
-        document.getElementById("modal-title").textContent = "Add New Schedule";
-        document.getElementById("save-btn-text").textContent = "Save Schedule";
-        document.getElementById("modal-alert").innerHTML = "";
-        clearForm();
-        await populateClassDropdown();
+    async function openEditModal(id) {
+      editingScheduleId = id;
+      document.getElementById("modal-title").textContent = "Edit Schedule";
+      document.getElementById("save-btn-text").textContent =
+        "Update Schedule";
+      document.getElementById("modal-alert").innerHTML = "";
+
+      try {
+        const s = await apiGet(`/schedules/${id}`);
+        await populateClassDropdown(s.classSection.classId);
+        selectDay(s.dayOfWeek);
+        document.getElementById("f-dayOfWeek").value = s.dayOfWeek;
+        document.getElementById("f-startTime").value = s.startTime.substring(
+          0,
+          5,
+        );
+        document.getElementById("f-endTime").value = s.endTime.substring(
+          0,
+          5,
+        );
+        document.getElementById("f-frequency").value = s.frequency;
         scheduleModal.show();
+      } catch (err) {
+        showToast("Could not load schedule details", "danger");
+      }
+    }
+
+    async function saveSchedule() {
+      const classId = document.getElementById("f-classId").value;
+      const dayOfWeek = document.getElementById("f-dayOfWeek").value;
+      const startTime = document.getElementById("f-startTime").value;
+      const endTime = document.getElementById("f-endTime").value;
+      const frequency = document.getElementById("f-frequency").value;
+
+      if (!classId || !dayOfWeek || !startTime || !endTime) {
+        showModalAlert(
+          "Please fill in all required fields and select a day.",
+          "danger",
+        );
+        return;
       }
 
-      async function openEditModal(id) {
-        editingScheduleId = id;
-        document.getElementById("modal-title").textContent = "Edit Schedule";
-        document.getElementById("save-btn-text").textContent =
-          "Update Schedule";
-        document.getElementById("modal-alert").innerHTML = "";
-
-        try {
-          const s = await apiGet(`/schedules/${id}`);
-          await populateClassDropdown(s.classSection.classId);
-          selectDay(s.dayOfWeek);
-          document.getElementById("f-dayOfWeek").value = s.dayOfWeek;
-          document.getElementById("f-startTime").value = s.startTime.substring(
-            0,
-            5,
-          );
-          document.getElementById("f-endTime").value = s.endTime.substring(
-            0,
-            5,
-          );
-          document.getElementById("f-frequency").value = s.frequency;
-          scheduleModal.show();
-        } catch (err) {
-          showToast("Could not load schedule details", "danger");
-        }
+      if (startTime >= endTime) {
+        showModalAlert("End time must be after start time.", "danger");
+        return;
       }
 
-      async function saveSchedule() {
-        const classId = document.getElementById("f-classId").value;
-        const dayOfWeek = document.getElementById("f-dayOfWeek").value;
-        const startTime = document.getElementById("f-startTime").value;
-        const endTime = document.getElementById("f-endTime").value;
-        const frequency = document.getElementById("f-frequency").value;
+      const body = {
+        dayOfWeek,
+        startTime: startTime + ":00",
+        endTime: endTime + ":00",
+        frequency,
+      };
 
-        if (!classId || !dayOfWeek || !startTime || !endTime) {
-          showModalAlert(
-            "Please fill in all required fields and select a day.",
-            "danger",
-          );
-          return;
-        }
-
-        if (startTime >= endTime) {
-          showModalAlert("End time must be after start time.", "danger");
-          return;
-        }
-
-        const body = {
-          dayOfWeek,
-          startTime: startTime + ":00",
-          endTime: endTime + ":00",
-          frequency,
-        };
-
-        try {
-          if (editingScheduleId) {
-            await apiFetch(
-              `/schedules/${editingScheduleId}?classId=${classId}`,
-              {
-                method: "PUT",
-                body: JSON.stringify(body),
-              },
-            );
-            showToast("Schedule updated successfully!", "success");
-          } else {
-            await apiFetch(`/schedules?classId=${classId}`, {
-              method: "POST",
+      try {
+        if (editingScheduleId) {
+          await apiFetch(
+            `/schedules/${editingScheduleId}?classId=${classId}`,
+            {
+              method: "PUT",
               body: JSON.stringify(body),
-            });
-            showToast("Schedule added successfully!", "success");
-          }
-          scheduleModal.hide();
-          loadSchedules();
-        } catch (err) {
-          showModalAlert(err.message, "danger");
+            },
+          );
+          showToast("Schedule updated successfully!", "success");
+        } else {
+          await apiFetch(`/schedules?classId=${classId}`, {
+            method: "POST",
+            body: JSON.stringify(body),
+          });
+          showToast("Schedule added successfully!", "success");
         }
+        scheduleModal.hide();
+        loadSchedules();
+      } catch (err) {
+        showModalAlert(err.message, "danger");
       }
+    }
 
-      async function deleteSchedule(id) {
-        if (!confirmDelete("Delete this schedule slot? This cannot be undone."))
-          return;
-        try {
-          await apiDelete(`/schedules/${id}`);
-          showToast("Schedule deleted.", "success");
-          loadSchedules();
-        } catch (err) {
-          showToast(err.message, "danger");
-        }
+    async function deleteSchedule(id) {
+      if (!confirmDelete("Delete this schedule slot? This cannot be undone."))
+        return;
+      try {
+        await apiDelete(`/schedules/${id}`);
+        showToast("Schedule deleted.", "success");
+        loadSchedules();
+      } catch (err) {
+        showToast(err.message, "danger");
       }
+    }
 
-      function calcDuration(start, end) {
-        const [sh, sm] = start.split(":").map(Number);
-        const [eh, em] = end.split(":").map(Number);
-        const mins = eh * 60 + em - (sh * 60 + sm);
-        const h = Math.floor(mins / 60);
-        const m = mins % 60;
-        return h > 0 ? `${h}h${m > 0 ? ` ${m}m` : ""}` : `${m}m`;
-      }
+    function calcDuration(start, end) {
+      const [sh, sm] = start.split(":").map(Number);
+      const [eh, em] = end.split(":").map(Number);
+      const mins = eh * 60 + em - (sh * 60 + sm);
+      const h = Math.floor(mins / 60);
+      const m = mins % 60;
+      return h > 0 ? `${h}h${m > 0 ? ` ${m}m` : ""}` : `${m}m`;
+    }
 
-      function clearForm() {
-        document.getElementById("f-classId").innerHTML =
-          '<option value="">-- Select Class --</option>';
-        document.getElementById("f-dayOfWeek").value = "";
-        document.getElementById("f-startTime").value = "";
-        document.getElementById("f-endTime").value = "";
-        document.getElementById("f-frequency").value = "WEEKLY";
-        document
-          .querySelectorAll(".day-pill")
-          .forEach((p) => p.classList.remove("selected"));
-      }
+    function clearForm() {
+      document.getElementById("f-classId").innerHTML =
+        '<option value="">-- Select Class --</option>';
+      document.getElementById("f-dayOfWeek").value = "";
+      document.getElementById("f-startTime").value = "";
+      document.getElementById("f-endTime").value = "";
+      document.getElementById("f-frequency").value = "WEEKLY";
+      document
+        .querySelectorAll(".day-pill")
+        .forEach((p) => p.classList.remove("selected"));
+      document
+        .querySelectorAll('input[name="dayOfWeek"]')
+        .forEach((r) => (r.checked = false));
+    }
 
-      function showModalAlert(message, type) {
-        const colors = {
-          danger: "alert-danger-custom",
-          success: "alert-success-custom",
-        };
-        const icons = {
-          danger: "bi-x-circle-fill",
-          success: "bi-check-circle-fill",
-        };
-        document.getElementById("modal-alert").innerHTML = `
+    function showModalAlert(message, type) {
+      const colors = {
+        danger: "alert-danger-custom",
+        success: "alert-success-custom",
+      };
+      const icons = {
+        danger: "bi-x-circle-fill",
+        success: "bi-check-circle-fill",
+      };
+      document.getElementById("modal-alert").innerHTML = `
         <div class="alert-custom ${colors[type]}">
             <i class="bi ${icons[type]}"></i> ${message}
         </div>`;
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

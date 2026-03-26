@@ -25,8 +25,8 @@
         </div>
       </a>
       <nav class="sidebar-nav" id="dynamic-sidebar-nav">
-    <!-- populated dynamically by base.js based on role -->
-</nav>
+        <!-- populated dynamically by base.js based on role -->
+      </nav>
       <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
     </aside>
 
@@ -34,7 +34,11 @@
     <div class="main-wrapper">
       <!-- TOP BAR -->
       <header class="topbar">
-        <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <button
+          class="sidebar-toggle"
+          onclick="toggleSidebar()"
+          aria-label="Toggle navigation"
+        >
           <i class="bi bi-list"></i>
         </button>
         <div class="topbar-left">
@@ -45,19 +49,36 @@
         </div>
         <div class="topbar-right">
           <span class="topbar-date" id="topbar-date"></span>
-          <span id="topbar-user"
-                style="font-size:12px;color:var(--text-secondary);font-weight:500;">
+          <span
+            id="topbar-user"
+            style="
+              font-size: 12px;
+              color: var(--text-secondary);
+              font-weight: 500;
+            "
+          >
           </span>
           <span id="topbar-role" class="topbar-badge"></span>
-          <button onclick="logout()"
-                  style="background:#fee2e2;color:#dc2626;border:none;
-                         padding:7px 14px;border-radius:8px;font-size:12px;
-                         font-weight:600;cursor:pointer;
-                         font-family:'DM Sans',sans-serif;
-                         display:flex;align-items:center;gap:6px;
-                         transition:var(--transition);"
-                  onmouseover="this.style.background='#fecaca'"
-                  onmouseout="this.style.background='#fee2e2'">
+          <button
+            onclick="logout()"
+            style="
+              background: #fee2e2;
+              color: #dc2626;
+              border: none;
+              padding: 7px 14px;
+              border-radius: 8px;
+              font-size: 12px;
+              font-weight: 600;
+              cursor: pointer;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              transition: var(--transition);
+            "
+            onmouseover="this.style.background = '#fecaca'"
+            onmouseout="this.style.background = '#fee2e2'"
+          >
             <i class="bi bi-box-arrow-right"></i> Logout
           </button>
           <button class="btn-primary-custom" onclick="openAddModal()">
@@ -294,11 +315,10 @@
       let allClasses = [];
 
       document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(['ADMIN', 'CLASS_HANDLER'])) return;
+        if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
         classModal = new bootstrap.Modal(document.getElementById("classModal"));
         loadClasses();
       });
-
 
       async function loadClasses() {
         const container = document.getElementById("classes-table-container");
@@ -313,7 +333,6 @@
             </div>`;
         }
       }
-
 
       function renderTable(classes) {
         const container = document.getElementById("classes-table-container");
@@ -445,7 +464,6 @@
         </div>`;
       }
 
-
       function filterClasses() {
         const search = document
           .getElementById("search-input")
@@ -467,7 +485,6 @@
         renderTable(filtered);
       }
 
-
       async function populateDropdowns(
         selectedCourseId = null,
         selectedRoomId = null,
@@ -484,7 +501,7 @@
           courses.forEach((c) => {
             const opt = document.createElement("option");
             opt.value = c.courseId;
-            opt.textContent = `${c.courseCode} â€” ${c.courseName} (Level ${c.level})`;
+            opt.textContent = `${c.courseCode} - ${c.courseName} (Level ${c.level})`;
             if (selectedCourseId && c.courseId === selectedCourseId)
               opt.selected = true;
             courseSelect.appendChild(opt);
@@ -496,7 +513,7 @@
           rooms.forEach((r) => {
             const opt = document.createElement("option");
             opt.value = r.roomId;
-            opt.textContent = `${r.roomCode} â€” ${r.building} (Cap: ${r.capacity})`;
+            opt.textContent = `${r.roomCode} - ${r.building} (Cap: ${r.capacity})`;
             if (selectedRoomId && r.roomId === selectedRoomId)
               opt.selected = true;
             roomSelect.appendChild(opt);
@@ -509,7 +526,6 @@
         }
       }
 
-
       async function openAddModal() {
         editingClassId = null;
         document.getElementById("modal-title").textContent = "Add New Class";
@@ -519,7 +535,6 @@
         await populateDropdowns();
         classModal.show();
       }
-
 
       async function openEditModal(id) {
         editingClassId = id;
@@ -543,7 +558,6 @@
           showToast("Could not load class details", "danger");
         }
       }
-
 
       async function saveClass() {
         const courseId = document.getElementById("f-courseId").value;
@@ -602,7 +616,6 @@
         }
       }
 
-
       async function deleteClass(id, label) {
         if (!confirmDelete(`Delete class "${label}"? This cannot be undone.`))
           return;
@@ -614,7 +627,6 @@
           showToast(err.message, "danger");
         }
       }
-
 
       function clearForm() {
         document.getElementById("f-courseId").innerHTML =
@@ -645,4 +657,3 @@
     </script>
   </body>
 </html>
-

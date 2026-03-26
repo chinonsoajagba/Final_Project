@@ -37,8 +37,13 @@ public class AuthService {
                     "Email '" + email + "' is already registered.");
         }
 
-        String hashed = passwordEncoder.encode(rawPassword);
-        User user = new User(email, hashed, role, linkedId);
+        User user = User.builder()
+                .email(email)
+                .password(passwordEncoder.encode(rawPassword))
+                .role(User.Role.STUDENT)
+                .linkedId(linkedId)
+                .isActive(true)
+                .build();
         User saved = userRepository.save(user);
 
         String token = jwtUtil.generateToken(email, role.name());

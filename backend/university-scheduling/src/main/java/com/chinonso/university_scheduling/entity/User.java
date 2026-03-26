@@ -1,9 +1,14 @@
 package com.chinonso.university_scheduling.entity;
 
 import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Table(name = "users")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class User {
 
     @Id
@@ -25,67 +30,10 @@ public class User {
     private Long linkedId;
 
     @Column(name = "is_active", nullable = false)
+    @Builder.Default
     private Boolean isActive = true;
 
     public enum Role {
         ADMIN, ENROLLMENT_OFFICER, CLASS_HANDLER, STUDENT, TEACHER
-    }
-
-    public User() {
-    }
-
-    public User(String email, String password, Role role, Long linkedId) {
-        this.email = email;
-        this.password = password;
-        this.role = role;
-        this.linkedId = linkedId;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String p) {
-        this.password = p;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
-
-    public Long getLinkedId() {
-        return linkedId;
-    }
-
-    public void setLinkedId(Long id) {
-        this.linkedId = id;
-    }
-
-    public Boolean getIsActive() {
-        return isActive;
-    }
-
-    public void setIsActive(Boolean a) {
-        this.isActive = a;
     }
 }

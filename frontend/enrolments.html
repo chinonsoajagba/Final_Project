@@ -86,7 +86,7 @@
 
       <!-- PAGE CONTENT -->
       <main class="page-content">
-        <!-- WARNING BANNER â€” visible to enrollment officers -->
+        <!-- WARNING BANNER - visible to enrollment officers -->
         <div
           id="conflict-warning-banner"
           style="
@@ -254,7 +254,7 @@
                 <h5><i class="bi bi-person-plus-fill"></i> Enrol a Student</h5>
               </div>
               <div class="card-body-custom">
-                <!-- CONFLICT ERROR BOX â€” shown when backend rejects -->
+                <!-- CONFLICT ERROR BOX - shown when backend rejects -->
                 <div
                   id="conflict-box"
                   style="display: none; margin-bottom: 20px"
@@ -310,7 +310,7 @@
                   </div>
                 </div>
 
-                <!-- SUCCESS BOX â€” shown on successful enrolment -->
+                <!-- SUCCESS BOX - shown on successful enrolment -->
                 <div
                   id="success-box"
                   style="display: none; margin-bottom: 20px"
@@ -379,7 +379,7 @@
                     </select>
                   </div>
 
-                  <!-- STUDENT INFO CARD â€” shown after selecting a student -->
+                  <!-- STUDENT INFO CARD - shown after selecting a student -->
                   <div
                     id="student-info"
                     style="
@@ -431,7 +431,7 @@
                     </select>
                   </div>
 
-                  <!-- CLASS INFO CARD â€” shown after selecting a class -->
+                  <!-- CLASS INFO CARD - shown after selecting a class -->
                   <div
                     id="class-info"
                     style="
@@ -587,7 +587,7 @@
       let allClasses = [];
 
       // ============================================================
-      // INIT â€” load everything on page load
+      // INIT - load everything on page load
       // ============================================================
       document.addEventListener("DOMContentLoaded", async () => {
         if (!requireAuth(["ADMIN", "ENROLLMENT_OFFICER"])) return;
@@ -608,7 +608,7 @@
           const dropSelect = document.getElementById("drop-studentId");
 
           allStudents.forEach((s) => {
-            const label = `${s.firstName} ${s.lastName} â€” Year ${s.yearOfStudy} (${s.program})`;
+            const label = `${s.firstName} ${s.lastName} - Year ${s.yearOfStudy} (${s.program})`;
             [enrolSelect, dropSelect].forEach((sel) => {
               const opt = document.createElement("option");
               opt.value = s.studentId;
@@ -636,7 +636,7 @@
 
           allClasses.forEach((c) => {
             const label =
-              `${c.course.courseCode} â€” Section ${c.sectionNumber} ` +
+              `${c.course.courseCode} - Section ${c.sectionNumber} ` +
               `(${c.semester}) [${c.currentEnrolment}/${c.maxEnrolment}]`;
             [enrolSelect, dropSelect].forEach((sel) => {
               const opt = document.createElement("option");
@@ -659,7 +659,7 @@
       }
 
       // ============================================================
-      // ON STUDENT SELECT â€” show student info card
+      // ON STUDENT SELECT - show student info card
       // ============================================================
       function onStudentChange() {
         const select = document.getElementById("f-studentId");
@@ -684,7 +684,7 @@
       }
 
       // ============================================================
-      // ON CLASS SELECT â€” show class info card
+      // ON CLASS SELECT - show class info card
       // ============================================================
       function onClassChange() {
         const select = document.getElementById("f-classId");
@@ -741,7 +741,7 @@
       }
 
       // ============================================================
-      // ENROL STUDENT â€” calls /api/enrolments/enrol
+      // ENROL STUDENT - calls /api/enrolments/enrol
       // ============================================================
       async function enrolStudent() {
         const studentId = document.getElementById("f-studentId").value;
@@ -791,7 +791,7 @@
       }
 
       // ============================================================
-      // DROP STUDENT â€” calls /api/enrolments/drop
+      // DROP STUDENT - calls /api/enrolments/drop
       // ============================================================
       async function dropStudent() {
         const studentId = document.getElementById("drop-studentId").value;
@@ -969,7 +969,7 @@
                                                     '${e.student.firstName} ${e.student.lastName}')">
                                        <i class="bi bi-person-dash"></i> Drop
                                    </button>`
-                                : `<span style="color:var(--text-muted);font-size:12px;">â€”</span>`
+                                : `<span style="color:var(--text-muted);font-size:12px;">-</span>`
                             }
                         </td>
                     </tr>`;
@@ -1022,7 +1022,7 @@
               const opt = document.createElement("option");
               opt.value = c.classId;
               opt.textContent =
-                `${c.course.courseCode} â€” Section ${c.sectionNumber} ` +
+                `${c.course.courseCode} - Section ${c.sectionNumber} ` +
                 `(${c.semester}) [${c.currentEnrolment}/${c.maxEnrolment}]`;
               opt.dataset.courseCode = c.course.courseCode;
               opt.dataset.courseName = c.course.courseName;
