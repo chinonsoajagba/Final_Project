@@ -268,6 +268,9 @@
       let editingCourseId = null;
       let courseModal;
       let allCourses = [];
+      let currentFilteredCourses = [];
+      let currentPage = 1;
+      const pageSize = 10;
 
       document.addEventListener("DOMContentLoaded", () => {
         if (!requireAuth(['ADMIN'])) return;
@@ -285,7 +288,7 @@
         try {
           allCourses = await apiGet("/courses");
           populateDeptFilter();
-          renderTable(allCourses);
+          filterCourses();
         } catch (err) {
           container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
@@ -312,12 +315,12 @@
       // ============================================================
       // RENDER TABLE
       // ============================================================
-      function renderTable(courses) {
+      function renderTable() {
         const container = document.getElementById("courses-table-container");
         document.getElementById("course-count").textContent =
-          `${courses.length} course(s)`;
+          `${currentFilteredCourses.length} course(s)`;
 
-        if (courses.length === 0) {
+        if (currentFilteredCourses.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-book"></i>
@@ -364,11 +367,13 @@
                 </tr>
             </thead>
             <tbody>
-                ${courses
+                ${paginateData(currentFilteredCourses, currentPage, pageSize)
                   .map(
-                    (c, i) => `
+                    (c, i) => {
+                      const globalIndex = (currentPage - 1) * pageSize + i + 1;
+                      return `
                     <tr>
-                        <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                        <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                         <td>
                             <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;
                                          background:#f0f4f8;padding:4px 10px;border-radius:6px;
@@ -408,13 +413,21 @@
                             </div>
                         </td>
                     </tr>
-                `,
+                `;}
                   )
                   .join("")}
             </tbody>
         </table>
-        </div>`;
+        </div>
+        <div id="courses-pagination"></div>`;
+        
+        renderPagination(currentFilteredCourses.length, currentPage, pageSize, "courses-pagination", "goToPage");
       }
+      
+      window.goToPage = function(page) {
+          currentPage = page;
+          renderTable();
+      };
 
       // ============================================================
       // FILTER
@@ -426,7 +439,7 @@
         const level = document.getElementById("level-filter").value;
         const dept = document.getElementById("dept-filter").value;
 
-        const filtered = allCourses.filter((c) => {
+        currentFilteredCourses = allCourses.filter((c) => {
           const matchSearch =
             !search ||
             c.courseCode.toLowerCase().includes(search) ||
@@ -435,8 +448,8 @@
           const matchDept = !dept || c.department === dept;
           return matchSearch && matchLevel && matchDept;
         });
-
-        renderTable(filtered);
+        currentPage = 1;
+        renderTable();
       }
 
       // ============================================================

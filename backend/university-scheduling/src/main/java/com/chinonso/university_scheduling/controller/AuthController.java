@@ -25,13 +25,15 @@ public class AuthController {
         String email = body.get("email").toString();
         String password = body.get("password").toString();
         User.Role role = User.Role.valueOf(body.get("role").toString());
-        Long linkedId = body.get("linkedId") != null
-                && !body.get("linkedId").toString().equals("null")
-                        ? Long.valueOf(body.get("linkedId").toString())
-                        : null;
+        String firstName = body.get("firstName") != null ? body.get("firstName").toString() : null;
+        String lastName = body.get("lastName") != null ? body.get("lastName").toString() : null;
+        String program = body.get("program") != null ? body.get("program").toString() : null;
+        Integer yearOfStudy = body.get("yearOfStudy") != null && !body.get("yearOfStudy").toString().isEmpty() ? Integer.valueOf(body.get("yearOfStudy").toString()) : null;
+        String department = body.get("department") != null ? body.get("department").toString() : null;
+        String employeeId = body.get("employeeId") != null ? body.get("employeeId").toString() : null;
 
         return ResponseEntity.ok(
-                authService.register(email, password, role, linkedId));
+                authService.register(email, password, role, firstName, lastName, program, yearOfStudy, department, employeeId));
     }
 
     @PostMapping("/login")

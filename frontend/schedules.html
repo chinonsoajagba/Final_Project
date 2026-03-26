@@ -225,6 +225,9 @@
     let editingScheduleId = null;
     let scheduleModal;
     let allSchedules = [];
+    let currentFilteredSchedules = [];
+    let currentPage = 1;
+    const pageSize = 10;
 
     const dayLabels = {
       MON: "Monday",
@@ -270,7 +273,7 @@
       const container = document.getElementById("schedules-table-container");
       try {
         allSchedules = await apiGet("/schedules");
-        renderTable(allSchedules);
+        filterSchedules();
       } catch (err) {
         container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
@@ -280,12 +283,12 @@
       }
     }
 
-    function renderTable(schedules) {
+    function renderTable() {
       const container = document.getElementById("schedules-table-container");
       document.getElementById("schedule-count").textContent =
-        `${schedules.length} slot(s)`;
+        `${currentFilteredSchedules.length} slot(s)`;
 
-      if (schedules.length === 0) {
+      if (currentFilteredSchedules.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-calendar3"></i>
@@ -310,15 +313,16 @@
                 </tr>
             </thead>
             <tbody>
-                ${schedules
+                ${paginateData(currentFilteredSchedules, currentPage, pageSize)
           .map((s, i) => {
+            const globalIndex = (currentPage - 1) * pageSize + i + 1;
             const start = s.startTime.substring(0, 5);
             const end = s.endTime.substring(0, 5);
             const dur = calcDuration(s.startTime, s.endTime);
             const color = dayColors[s.dayOfWeek] || "#64748b";
             return `
                     <tr>
-                        <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                        <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                         <td>
                             <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;
                                          color:var(--primary);background:#f0f4f8;
@@ -372,8 +376,16 @@
           .join("")}
             </tbody>
         </table>
-        </div>`;
+        </div>
+        <div id="schedules-pagination"></div>`;
+
+      renderPagination(currentFilteredSchedules.length, currentPage, pageSize, "schedules-pagination", "goToPage");
     }
+
+    window.goToPage = function (page) {
+      currentPage = page;
+      renderTable();
+    };
 
     function filterSchedules() {
       const search = document
@@ -390,7 +402,9 @@
         return matchSearch && matchDay;
       });
 
-      renderTable(filtered);
+      currentFilteredSchedules = filtered;
+      currentPage = 1;
+      renderTable();
     }
 
     async function populateClassDropdown(selectedClassId = null) {

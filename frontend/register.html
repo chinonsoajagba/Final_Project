@@ -151,20 +151,80 @@
           </select>
         </div>
 
-        <!-- Linked ID field — only shown for STUDENT and TEACHER -->
-        <div id="linked-id-group" style="display: none">
-          <label class="form-label-custom" id="linked-id-label">
-            Student ID *
-          </label>
-          <input
-            type="number"
-            id="f-linkedId"
-            class="form-control-custom"
-            placeholder="Enter your ID number"
-          />
-          <div class="role-info" id="role-info" style="display: block">
-            <i class="bi bi-info-circle"></i>
-            <span id="role-info-text"></span>
+        <!-- Dynamic Profile Fields container -->
+        <div
+          id="dynamic-profile-group"
+          style="
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 8px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+          "
+        >
+          <div
+            style="
+              font-size: 14px;
+              font-weight: 700;
+              color: var(--primary-light);
+            "
+          >
+            Profile Information
+          </div>
+
+          <div class="row g-2">
+            <div class="col-6">
+              <label class="form-label-custom">First Name *</label>
+              <input
+                type="text"
+                id="f-firstName"
+                class="form-control-custom"
+                placeholder="First Name"
+              />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Last Name *</label>
+              <input
+                type="text"
+                id="f-lastName"
+                class="form-control-custom"
+                placeholder="Last Name"
+              />
+            </div>
+          </div>
+
+          <div id="f-program-group">
+            <label class="form-label-custom" id="f-program-label"
+              >Department / Program *</label
+            >
+            <input
+              type="text"
+              id="f-program"
+              class="form-control-custom"
+              placeholder="e.g. Computer Science"
+            />
+          </div>
+
+          <div id="f-year-group" style="display: none">
+            <label class="form-label-custom">Year of Study *</label>
+            <select id="f-year" class="form-control-custom">
+              <option value="">-- Select Year --</option>
+              <option value="1">Year 1</option>
+              <option value="2">Year 2</option>
+              <option value="3">Year 3</option>
+              <option value="4">Year 4</option>
+            </select>
+          </div>
+
+          <div id="f-emp-group" style="display: none">
+            <label class="form-label-custom">Employee ID *</label>
+            <input
+              type="text"
+              id="f-employeeId"
+              class="form-control-custom"
+              placeholder="e.g. TCH-12345"
+            />
           </div>
         </div>
 
@@ -204,26 +264,28 @@
         }
       });
 
-      // Show/hide linked ID field based on role
       function onRoleChange() {
         const role = document.getElementById("f-role").value;
-        const group = document.getElementById("linked-id-group");
-        const label = document.getElementById("linked-id-label");
-        const infoTxt = document.getElementById("role-info-text");
+        const group = document.getElementById("dynamic-profile-group");
+        const progGroup = document.getElementById("f-program-group");
+        const progLabel = document.getElementById("f-program-label");
+        const yearGroup = document.getElementById("f-year-group");
+        const empGroup = document.getElementById("f-emp-group");
 
         if (role === "STUDENT") {
-          group.style.display = "block";
-          label.textContent = "Your Student ID (from the students table) *";
-          infoTxt.textContent =
-            "Enter the numeric ID assigned to your student record. Ask your administrator if unsure.";
+          group.style.display = "flex";
+          progGroup.style.display = "block";
+          progLabel.textContent = "Program / Major *";
+          yearGroup.style.display = "block";
+          empGroup.style.display = "none";
         } else if (role === "TEACHER") {
-          group.style.display = "block";
-          label.textContent = "Your Teacher ID (from the teachers table) *";
-          infoTxt.textContent =
-            "Enter the numeric ID assigned to your teacher record. Ask your administrator if unsure.";
+          group.style.display = "flex";
+          progGroup.style.display = "block";
+          progLabel.textContent = "Department *";
+          yearGroup.style.display = "none";
+          empGroup.style.display = "block";
         } else {
           group.style.display = "none";
-          document.getElementById("f-linkedId").value = "";
         }
       }
 
@@ -232,14 +294,18 @@
         const password = document.getElementById("f-password").value.trim();
         const confirm = document.getElementById("f-confirm").value.trim();
         const role = document.getElementById("f-role").value;
-        const linkedId = document.getElementById("f-linkedId").value;
+        const firstName = document.getElementById("f-firstName").value.trim();
+        const lastName = document.getElementById("f-lastName").value.trim();
+        const program = document.getElementById("f-program").value.trim();
+        const yearOfStudy = document.getElementById("f-year").value;
+        const employeeId = document.getElementById("f-employeeId").value.trim();
         const btn = document.getElementById("register-btn");
 
         document.getElementById("register-alert").innerHTML = "";
 
         // Validation
         if (!email || !password || !confirm || !role) {
-          showAlert("Please fill in all required fields.", "danger");
+          showAlert("Please fill in all basic required fields.", "danger");
           return;
         }
         if (password.length < 6) {
@@ -250,9 +316,20 @@
           showAlert("Passwords do not match.", "danger");
           return;
         }
-        if ((role === "STUDENT" || role === "TEACHER") && !linkedId) {
-          showAlert("Please enter your ID number for this role.", "danger");
-          return;
+
+        if (role === "STUDENT" || role === "TEACHER") {
+          if (!firstName || !lastName || !program) {
+            showAlert("Please fill in all profile information.", "danger");
+            return;
+          }
+          if (role === "STUDENT" && !yearOfStudy) {
+            showAlert("Please select a Year of Study.", "danger");
+            return;
+          }
+          if (role === "TEACHER" && !employeeId) {
+            showAlert("Please provide your Employee ID.", "danger");
+            return;
+          }
         }
 
         btn.disabled = true;
@@ -266,7 +343,12 @@
               email,
               password,
               role,
-              linkedId: linkedId ? parseInt(linkedId) : null,
+              firstName: firstName || null,
+              lastName: lastName || null,
+              program: program || null,
+              department: program || null,
+              yearOfStudy: yearOfStudy ? parseInt(yearOfStudy) : null,
+              employeeId: employeeId || null,
             }),
           });
 

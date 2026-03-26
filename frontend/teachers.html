@@ -1,65 +1,52 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Teachers - University Scheduling System</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="base.css" />
-  </head>
-  <body>
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar-brand">
-        <div class="sidebar-brand-icon">🎓</div>
-        <div class="sidebar-brand-text">
-          <span>UniSchedule</span>
-          <span>Management System</span>
-        </div>
-      </a>
-      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
-        <!-- populated dynamically by base.js based on role -->
-      </nav>
-      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
-    </aside>
 
-    <!-- MAIN WRAPPER -->
-    <div class="main-wrapper">
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <button
-          class="sidebar-toggle"
-          onclick="toggleSidebar()"
-          aria-label="Toggle navigation"
-        >
-          <i class="bi bi-list"></i>
-        </button>
-        <div class="topbar-left">
-          <span class="topbar-title">Teachers</span>
-          <span class="topbar-subtitle">Manage all faculty members</span>
-        </div>
-        <div class="topbar-right">
-          <span class="topbar-date" id="topbar-date"></span>
-          <span
-            id="topbar-user"
-            style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Teachers - University Scheduling System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="base.css" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">🎓</div>
+      <div class="sidebar-brand-text">
+        <span>UniSchedule</span>
+        <span>Management System</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+      <!-- populated dynamically by base.js based on role -->
+    </nav>
+    <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-left">
+        <span class="topbar-title">Teachers</span>
+        <span class="topbar-subtitle">Manage all faculty members</span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span id="topbar-user" style="
               font-size: 12px;
               color: var(--text-secondary);
               font-weight: 500;
-            "
-          >
-          </span>
-          <span id="topbar-role" class="topbar-badge"></span>
-          <button
-            onclick="logout()"
-            style="
+            ">
+        </span>
+        <span id="topbar-role" class="topbar-badge"></span>
+        <button onclick="logout()" style="
               background: #fee2e2;
               color: #dc2626;
               border: none;
@@ -73,193 +60,151 @@
               align-items: center;
               gap: 6px;
               transition: var(--transition);
-            "
-            onmouseover="this.style.background = '#fecaca'"
-            onmouseout="this.style.background = '#fee2e2'"
-          >
-            <i class="bi bi-box-arrow-right"></i> Logout
-          </button>
-          <button class="btn-primary-custom" onclick="openAddModal()">
-            <i class="bi bi-plus-lg"></i> Add Teacher
-          </button>
-        </div>
-      </header>
+            " onmouseover="this.style.background = '#fecaca'" onmouseout="this.style.background = '#fee2e2'">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+        <button class="btn-primary-custom" onclick="openAddModal()">
+          <i class="bi bi-plus-lg"></i> Add Teacher
+        </button>
+      </div>
+    </header>
 
-      <!-- PAGE CONTENT -->
-      <main class="page-content">
-        <div id="alert-area"></div>
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      <div id="alert-area"></div>
 
-        <div class="card">
-          <div class="card-header-custom">
-            <h5><i class="bi bi-person-badge"></i> All Teachers</h5>
-            <span
-              id="teacher-count"
-              style="
+      <div class="card">
+        <div class="card-header-custom">
+          <h5><i class="bi bi-person-badge"></i> All Teachers</h5>
+          <span id="teacher-count" style="
                 font-size: 12px;
                 color: var(--text-muted);
                 font-weight: 500;
-              "
-            ></span>
-          </div>
-          <div class="card-body-custom p-0">
-            <div id="teachers-table-container">
-              <div class="loading-state">
-                <div class="spinner-custom"></div>
-                <p>Loading teachers...</p>
-              </div>
-            </div>
-          </div>
+              "></span>
         </div>
-      </main>
-    </div>
-
-    <!-- ============================================================
-     ADD / EDIT MODAL
-     ============================================================ -->
-    <div class="modal fade" id="teacherModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div
-          class="modal-content"
-          style="
-            border-radius: var(--radius-lg);
-            border: none;
-            overflow: hidden;
-          "
-        >
-          <div class="modal-header-custom">
-            <h5 id="modal-title">Add New Teacher</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body" style="padding: 24px">
-            <div id="modal-alert"></div>
-            <div class="row g-3">
-              <div class="col-6">
-                <label class="form-label-custom">First Name *</label>
-                <input
-                  type="text"
-                  id="f-firstName"
-                  class="form-control-custom"
-                  placeholder="e.g. James"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Last Name *</label>
-                <input
-                  type="text"
-                  id="f-lastName"
-                  class="form-control-custom"
-                  placeholder="e.g. Okafor"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Employee ID *</label>
-                <input
-                  type="text"
-                  id="f-employeeId"
-                  class="form-control-custom"
-                  placeholder="e.g. EMP007"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Email *</label>
-                <input
-                  type="email"
-                  id="f-email"
-                  class="form-control-custom"
-                  placeholder="e.g. j.okafor@uni.ac.uk"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Department *</label>
-                <input
-                  type="text"
-                  id="f-department"
-                  class="form-control-custom"
-                  placeholder="e.g. Computer Science"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Specialization</label>
-                <input
-                  type="text"
-                  id="f-specialization"
-                  class="form-control-custom"
-                  placeholder="e.g. Databases & AI"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Max Hours Per Week</label>
-                <input
-                  type="number"
-                  id="f-maxHours"
-                  class="form-control-custom"
-                  placeholder="Default: 20"
-                  min="1"
-                  max="40"
-                />
-              </div>
+        <div class="card-body-custom p-0">
+          <div id="teachers-table-container">
+            <div class="loading-state">
+              <div class="spinner-custom"></div>
+              <p>Loading teachers...</p>
             </div>
-          </div>
-          <div
-            class="modal-footer"
-            style="padding: 16px 24px; border-top: 1px solid var(--border)"
-          >
-            <button
-              type="button"
-              class="btn-danger-custom"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn-primary-custom"
-              onclick="saveTeacher()"
-            >
-              <i class="bi bi-check-lg"></i>
-              <span id="save-btn-text">Save Teacher</span>
-            </button>
           </div>
         </div>
       </div>
+    </main>
+  </div>
+
+  <!-- ============================================================
+     ADD / EDIT MODAL
+     ============================================================ -->
+  <div class="modal fade" id="teacherModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="
+            border-radius: var(--radius-lg);
+            border: none;
+            overflow: hidden;
+          ">
+        <div class="modal-header-custom">
+          <h5 id="modal-title">Add New Teacher</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding: 24px">
+          <div id="modal-alert"></div>
+          <div class="row g-3">
+            <div class="col-6">
+              <label class="form-label-custom">First Name *</label>
+              <input type="text" id="f-firstName" class="form-control-custom" placeholder="e.g. James" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Last Name *</label>
+              <input type="text" id="f-lastName" class="form-control-custom" placeholder="e.g. Okafor" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Employee ID *</label>
+              <input type="text" id="f-employeeId" class="form-control-custom" placeholder="e.g. EMP007" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Email *</label>
+              <input type="email" id="f-email" class="form-control-custom" placeholder="e.g. j.okafor@uni.ac.uk" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Department *</label>
+              <input type="text" id="f-department" class="form-control-custom" placeholder="e.g. Computer Science" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Specialization</label>
+              <input type="text" id="f-specialization" class="form-control-custom" placeholder="e.g. Databases & AI" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Max Hours Per Week</label>
+              <input type="number" id="f-maxHours" class="form-control-custom" placeholder="Default: 20" min="1"
+                max="40" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
+          <button type="button" class="btn-danger-custom" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn-primary-custom" onclick="saveTeacher()">
+            <i class="bi bi-check-lg"></i>
+            <span id="save-btn-text">Save Teacher</span>
+          </button>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="base.js"></script>
-    <script>
-      let editingTeacherId = null;
-      let teacherModal;
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="base.js"></script>
+  <script>
+    let editingTeacherId = null;
+    let teacherModal;
+    let allTeachers = [];
+    let currentFilteredTeachers = [];
+    let currentPage = 1;
+    const pageSize = 10;
 
-      document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(["ADMIN"])) return;
-        teacherModal = new bootstrap.Modal(
-          document.getElementById("teacherModal"),
-        );
-        loadTeachers();
-      });
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!requireAuth(["ADMIN"])) return;
+      teacherModal = new bootstrap.Modal(
+        document.getElementById("teacherModal"),
+      );
+      loadTeachers();
+    });
 
-      // ============================================================
-      // LOAD ALL TEACHERS
-      // ============================================================
-      async function loadTeachers() {
-        const container = document.getElementById("teachers-table-container");
-        try {
-          const teachers = await apiGet("/teachers");
+    // ============================================================
+    // LOAD ALL TEACHERS
+    // ============================================================
+    async function loadTeachers() {
+      const container = document.getElementById("teachers-table-container");
+      try {
+        allTeachers = await apiGet("/teachers");
+        filterTeachers();
+
+        function filterTeachers() {
+          currentFilteredTeachers = allTeachers;
+          currentPage = 1;
+          renderTable();
+        }
+
+        function renderTable() {
+          const container = document.getElementById("teachers-table-container");
           document.getElementById("teacher-count").textContent =
-            `${teachers.length} teacher(s) total`;
+            `${currentFilteredTeachers.length} teacher(s) total`;
 
-          if (teachers.length === 0) {
+          if (currentFilteredTeachers.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-person-badge"></i>
                     <p>No teachers found. Click "Add Teacher" to get started.</p>
                 </div>`;
             return;
-          }          container.innerHTML = `
+          }
+
+          const paginatedTeachers = paginateData(currentFilteredTeachers, currentPage, pageSize);
+
+          container.innerHTML = `
             <div style="overflow-x:auto;max-width:100%;">
             <table class="table-custom" style="min-width:700px;">
                 <thead> 
@@ -275,11 +220,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    ${teachers
-                      .map(
-                        (t, i) => `
+                    ${paginatedTeachers
+              .map(
+                (t, i) => {
+                  const globalIndex = (currentPage - 1) * pageSize + i + 1;
+                  return `
                         <tr>
-                            <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                            <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                             <td>
                                 <div style="display:flex;align-items:center;gap:10px;">
                                     <div style="width:34px;height:34px;border-radius:50%;
@@ -310,154 +257,165 @@
                                     <button class="btn-edit-custom" onclick="openEditModal(${t.teacherId})">
                                         <i class="bi bi-pencil"></i> Edit
                                     </button>
-                                    <button class="btn-danger-custom" onclick="deleteTeacher(${t.teacherId}, '${t.firstName} ${t.lastName}')">
+                                    <button class="btn-danger-custom" onclick="deleteTeacher(${t.teacherId}, '${t.firstName.replace(/'/g, "\\'")} ${t.lastName.replace(/'/g, "\\'")}')">
                                         <i class="bi bi-trash"></i> Delete
                                     </button>
                                 </div>
                             </td>
                         </tr>
-                    `,
-                      )
-                      .join("")}
+                    `;
+                }
+              )
+              .join("")}
                 </tbody>
             </table>
-            </div>`;
-        } catch (err) {
-          container.innerHTML = `
+            </div>
+            <div id="teachers-pagination"></div>`;
+
+          renderPagination(currentFilteredTeachers.length, currentPage, pageSize, "teachers-pagination", "goToPage");
+        }
+
+        window.goToPage = function (page) {
+          currentPage = page;
+          renderTable();
+        };
+      } catch (err) {
+        container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 Failed to load teachers: ${err.message}
             </div>`;
-        }
       }
+    }
 
-      // ============================================================
-      // OPEN ADD MODAL
-      // ============================================================
-      function openAddModal() {
-        editingTeacherId = null;
-        document.getElementById("modal-title").textContent = "Add New Teacher";
-        document.getElementById("save-btn-text").textContent = "Save Teacher";
-        document.getElementById("modal-alert").innerHTML = "";
-        clearForm();
+    // ============================================================
+    // OPEN ADD MODAL
+    // ============================================================
+    function openAddModal() {
+      editingTeacherId = null;
+      document.getElementById("modal-title").textContent = "Add New Teacher";
+      document.getElementById("save-btn-text").textContent = "Save Teacher";
+      document.getElementById("modal-alert").innerHTML = "";
+      clearForm();
+      teacherModal.show();
+    }
+
+    // ============================================================
+    // OPEN EDIT MODAL
+    // ============================================================
+    async function openEditModal(id) {
+      editingTeacherId = id;
+      document.getElementById("modal-title").textContent = "Edit Teacher";
+      document.getElementById("save-btn-text").textContent = "Update Teacher";
+      document.getElementById("modal-alert").innerHTML = "";
+      try {
+        const t = await apiGet(`/teachers/${id}`);
+        document.getElementById("f-firstName").value = t.firstName;
+        document.getElementById("f-lastName").value = t.lastName;
+        document.getElementById("f-employeeId").value = t.employeeId;
+        document.getElementById("f-email").value = t.email;
+        document.getElementById("f-department").value = t.department;
+        document.getElementById("f-specialization").value =
+          t.specialization || "";
+        document.getElementById("f-maxHours").value = t.maxHoursPerWeek;
         teacherModal.show();
+      } catch (err) {
+        showToast("Could not load teacher details", "danger");
+      }
+    }
+
+    // ============================================================
+    // SAVE (CREATE OR UPDATE)
+    // ============================================================
+    async function saveTeacher() {
+      const firstName = document.getElementById("f-firstName").value.trim();
+      const lastName = document.getElementById("f-lastName").value.trim();
+      const employeeId = document.getElementById("f-employeeId").value.trim();
+      const email = document.getElementById("f-email").value.trim();
+      const department = document.getElementById("f-department").value.trim();
+      const specialization = document
+        .getElementById("f-specialization")
+        .value.trim();
+      const maxHoursPerWeek =
+        parseInt(document.getElementById("f-maxHours").value) || 20;
+
+      if (!firstName || !lastName || !employeeId || !email || !department) {
+        showModalAlert("Please fill in all required fields.", "danger");
+        return;
       }
 
-      // ============================================================
-      // OPEN EDIT MODAL
-      // ============================================================
-      async function openEditModal(id) {
-        editingTeacherId = id;
-        document.getElementById("modal-title").textContent = "Edit Teacher";
-        document.getElementById("save-btn-text").textContent = "Update Teacher";
-        document.getElementById("modal-alert").innerHTML = "";
-        try {
-          const t = await apiGet(`/teachers/${id}`);
-          document.getElementById("f-firstName").value = t.firstName;
-          document.getElementById("f-lastName").value = t.lastName;
-          document.getElementById("f-employeeId").value = t.employeeId;
-          document.getElementById("f-email").value = t.email;
-          document.getElementById("f-department").value = t.department;
-          document.getElementById("f-specialization").value =
-            t.specialization || "";
-          document.getElementById("f-maxHours").value = t.maxHoursPerWeek;
-          teacherModal.show();
-        } catch (err) {
-          showToast("Could not load teacher details", "danger");
+      const payload = {
+        firstName,
+        lastName,
+        employeeId,
+        email,
+        department,
+        specialization,
+        maxHoursPerWeek,
+      };
+
+      try {
+        if (editingTeacherId) {
+          await apiPut(`/teachers/${editingTeacherId}`, payload);
+          showToast("Teacher updated successfully!", "success");
+        } else {
+          await apiPost("/teachers", payload);
+          showToast("Teacher added successfully!", "success");
         }
+        teacherModal.hide();
+        loadTeachers();
+      } catch (err) {
+        showModalAlert(err.message, "danger");
       }
+    }
 
-      // ============================================================
-      // SAVE (CREATE OR UPDATE)
-      // ============================================================
-      async function saveTeacher() {
-        const firstName = document.getElementById("f-firstName").value.trim();
-        const lastName = document.getElementById("f-lastName").value.trim();
-        const employeeId = document.getElementById("f-employeeId").value.trim();
-        const email = document.getElementById("f-email").value.trim();
-        const department = document.getElementById("f-department").value.trim();
-        const specialization = document
-          .getElementById("f-specialization")
-          .value.trim();
-        const maxHoursPerWeek =
-          parseInt(document.getElementById("f-maxHours").value) || 20;
-
-        if (!firstName || !lastName || !employeeId || !email || !department) {
-          showModalAlert("Please fill in all required fields.", "danger");
-          return;
-        }
-
-        const payload = {
-          firstName,
-          lastName,
-          employeeId,
-          email,
-          department,
-          specialization,
-          maxHoursPerWeek,
-        };
-
-        try {
-          if (editingTeacherId) {
-            await apiPut(`/teachers/${editingTeacherId}`, payload);
-            showToast("Teacher updated successfully!", "success");
-          } else {
-            await apiPost("/teachers", payload);
-            showToast("Teacher added successfully!", "success");
-          }
-          teacherModal.hide();
-          loadTeachers();
-        } catch (err) {
-          showModalAlert(err.message, "danger");
-        }
+    // ============================================================
+    // DELETE
+    // ============================================================
+    async function deleteTeacher(id, name) {
+      if (!confirmDelete(`Delete teacher "${name}"? This cannot be undone.`))
+        return;
+      try {
+        await apiDelete(`/teachers/${id}`);
+        showToast(`Teacher "${name}" deleted.`, "success");
+        loadTeachers();
+      } catch (err) {
+        showToast(err.message, "danger");
       }
+    }
 
-      // ============================================================
-      // DELETE
-      // ============================================================
-      async function deleteTeacher(id, name) {
-        if (!confirmDelete(`Delete teacher "${name}"? This cannot be undone.`))
-          return;
-        try {
-          await apiDelete(`/teachers/${id}`);
-          showToast(`Teacher "${name}" deleted.`, "success");
-          loadTeachers();
-        } catch (err) {
-          showToast(err.message, "danger");
-        }
-      }
+    // ============================================================
+    // HELPERS
+    // ============================================================
+    function clearForm() {
+      [
+        "f-firstName",
+        "f-lastName",
+        "f-employeeId",
+        "f-email",
+        "f-department",
+        "f-specialization",
+        "f-maxHours",
+      ].forEach((id) => {
+        document.getElementById(id).value = "";
+      });
+    }
 
-      // ============================================================
-      // HELPERS
-      // ============================================================
-      function clearForm() {
-        [
-          "f-firstName",
-          "f-lastName",
-          "f-employeeId",
-          "f-email",
-          "f-department",
-          "f-specialization",
-          "f-maxHours",
-        ].forEach((id) => {
-          document.getElementById(id).value = "";
-        });
-      }
-
-      function showModalAlert(message, type) {
-        const colors = {
-          danger: "alert-danger-custom",
-          success: "alert-success-custom",
-        };
-        const icons = {
-          danger: "bi-x-circle-fill",
-          success: "bi-check-circle-fill",
-        };
-        document.getElementById("modal-alert").innerHTML = `
+    function showModalAlert(message, type) {
+      const colors = {
+        danger: "alert-danger-custom",
+        success: "alert-success-custom",
+      };
+      const icons = {
+        danger: "bi-x-circle-fill",
+        success: "bi-check-circle-fill",
+      };
+      document.getElementById("modal-alert").innerHTML = `
         <div class="alert-custom ${colors[type]}">
             <i class="bi ${icons[type]}"></i> ${message}
         </div>`;
-      }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

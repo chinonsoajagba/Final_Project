@@ -50,13 +50,14 @@ body {
    ============================================================ */
 .sidebar {
   width: var(--sidebar-width);
-  min-height: 100vh;
+  height: 100vh;
   background: var(--primary-dark);
   display: flex;
   flex-direction: column;
   position: fixed;
   top: 0;
   left: 0;
+  bottom: 0;
   z-index: 1000;
   transition: var(--transition);
   overflow-y: auto;
@@ -759,6 +760,7 @@ body {
    SMALL MOBILE (≤ 480px)
    ============================================================ */
 @media (max-width: 480px) {
+
   /* At smallest screens: also hide date and role badge */
   .topbar-date {
     display: none;
@@ -777,7 +779,7 @@ body {
     font-size: 11px;
     gap: 4px;
   }
-  
+
   .topbar-right button[onclick="logout()"] {
     padding: 7px 10px !important;
     font-size: 11px !important;
@@ -799,4 +801,57 @@ body {
   .modal-dialog {
     margin: 8px;
   }
+}
+
+/* ============================================================
+   PAGINATION CLASSES
+   ============================================================ */
+.pagination-container {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+  margin-top: 20px !important;
+  padding: 10px 0 !important;
+}
+
+.btn-page {
+  background: white;
+  border: 1.5px solid var(--border);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  min-width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-page:hover:not(:disabled) {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: var(--primary-light);
+}
+
+.btn-page.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.btn-page:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #f8fafc;
+}
+
+.pagination-dots {
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0 4px;
 }

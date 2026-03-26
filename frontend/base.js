@@ -219,6 +219,12 @@ function renderSidebar() {
     ],
     resources: [
       {
+        href: "users.html",
+        icon: "bi-person-gear",
+        label: "Users",
+        roles: ["ADMIN"],
+      },
+      {
         href: "rooms.html",
         icon: "bi-building",
         label: "Rooms",
@@ -376,3 +382,53 @@ document.addEventListener("DOMContentLoaded", () => {
   setActiveSidebarLink(); // highlight current page
   updateTopbar(); // show user email + role badge
 });
+
+/* ============================================================
+   PAGINATION HELPERS
+   ============================================================ */
+function paginateData(dataArray, currentPage, pageSize) {
+  const start = (currentPage - 1) * pageSize;
+  return dataArray.slice(start, start + pageSize);
+}
+
+function renderPagination(totalItems, currentPage, pageSize, containerId, onPageChangeFuncName) {
+  const totalPages = Math.ceil(totalItems / pageSize);
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  if (totalItems <= pageSize) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let html = '<div class="pagination-container">';
+
+  html += `<button class="btn-page" ${currentPage === 1 ? "disabled" : ""} onclick="window.${onPageChangeFuncName}(${currentPage - 1})">
+             <i class="bi bi-chevron-left"></i>
+           </button>`;
+
+  // Show max 5 pages around the current page to avoid clutter
+  let startPage = Math.max(1, currentPage - 2);
+  let endPage = Math.min(totalPages, currentPage + 2);
+
+  if (startPage > 1) {
+    html += `<button class="btn-page" onclick="window.${onPageChangeFuncName}(1)">1</button>`;
+    if (startPage > 2) html += `<span class="pagination-dots">...</span>`;
+  }
+
+  for (let i = startPage; i <= endPage; i++) {
+    html += `<button class="btn-page ${i === currentPage ? "active" : ""}" onclick="window.${onPageChangeFuncName}(${i})">${i}</button>`;
+  }
+
+  if (endPage < totalPages) {
+    if (endPage < totalPages - 1) html += `<span class="pagination-dots">...</span>`;
+    html += `<button class="btn-page" onclick="window.${onPageChangeFuncName}(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `<button class="btn-page" ${currentPage === totalPages ? "disabled" : ""} onclick="window.${onPageChangeFuncName}(${currentPage + 1})">
+             <i class="bi bi-chevron-right"></i>
+           </button>`;
+
+  html += "</div>";
+  container.innerHTML = html;
+}

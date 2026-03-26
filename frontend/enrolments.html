@@ -585,6 +585,9 @@
       let allEnrolments = [];
       let allStudents = [];
       let allClasses = [];
+      let currentFilteredEnrolments = [];
+      let currentPage = 1;
+      const pageSize = 10;
 
       // ============================================================
       // INIT - load everything on page load
@@ -678,7 +681,7 @@
         document.getElementById("student-name").textContent =
           `${opt.dataset.firstName} ${opt.dataset.lastName}`;
         document.getElementById("student-meta").textContent =
-          `Year ${opt.dataset.year} â€¢ ${opt.dataset.program}`;
+          `Year ${opt.dataset.year} - ${opt.dataset.program}`;
 
         infoBox.style.display = "block";
       }
@@ -847,12 +850,7 @@
         const container = document.getElementById("enrolments-table-container");
         try {
           allEnrolments = await apiGet("/enrolments");
-          const filter = document.getElementById("status-filter").value;
-          renderTable(
-            filter
-              ? allEnrolments.filter((e) => e.status === filter)
-              : allEnrolments,
-          );
+          filterEnrolments();
         } catch (err) {
           container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
@@ -865,12 +863,12 @@
       // ============================================================
       // RENDER ENROLMENTS TABLE
       // ============================================================
-      function renderTable(enrolments) {
+      function renderTable() {
         const container = document.getElementById("enrolments-table-container");
         document.getElementById("enrolment-count").textContent =
-          `${enrolments.length} record(s)`;
+          `${currentFilteredEnrolments.length} record(s)`;
 
-        if (enrolments.length === 0) {
+        if (currentFilteredEnrolments.length === 0) {
           container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-person-check"></i>
@@ -901,13 +899,14 @@
                 </tr>
             </thead>
             <tbody>
-                ${enrolments
+                ${paginateData(currentFilteredEnrolments, currentPage, pageSize)
                   .map((e, i) => {
+                    const globalIndex = (currentPage - 1) * pageSize + i + 1;
                     const yearMatch =
                       e.student.yearOfStudy === e.classSection.course.level;
                     return `
                     <tr>
-                        <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                        <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                         <td>
                             <div style="display:flex;align-items:center;gap:9px;">
                                 <div style="width:30px;height:30px;border-radius:50%;
@@ -977,8 +976,22 @@
                   .join("")}
             </tbody>
         </table>
-        </div>`;
+        </div>
+        <div id="enrolments-pagination"></div>`;
+
+        renderPagination(
+          currentFilteredEnrolments.length,
+          currentPage,
+          pageSize,
+          "enrolments-pagination",
+          "goToPage",
+        );
       }
+
+      window.goToPage = function (page) {
+        currentPage = page;
+        renderTable();
+      };
 
       // ============================================================
       // QUICK DROP FROM TABLE ROW
@@ -1000,11 +1013,11 @@
       // ============================================================
       function filterEnrolments() {
         const filter = document.getElementById("status-filter").value;
-        renderTable(
-          filter
-            ? allEnrolments.filter((e) => e.status === filter)
-            : allEnrolments,
-        );
+        currentFilteredEnrolments = filter
+          ? allEnrolments.filter((e) => e.status === filter)
+          : allEnrolments;
+        currentPage = 1;
+        renderTable();
       }
 
       // ============================================================

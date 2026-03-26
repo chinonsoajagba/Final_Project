@@ -1,67 +1,52 @@
 ﻿<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Classes - University Scheduling System</title>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-    />
-    <link rel="stylesheet" href="base.css" />
-  </head>
-  <body>
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <a href="dashboard.html" class="sidebar-brand">
-        <div class="sidebar-brand-icon">🎓</div>
-        <div class="sidebar-brand-text">
-          <span>UniSchedule</span>
-          <span>Management System</span>
-        </div>
-      </a>
-      <nav class="sidebar-nav" id="dynamic-sidebar-nav">
-        <!-- populated dynamically by base.js based on role -->
-      </nav>
-      <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
-    </aside>
 
-    <!-- MAIN WRAPPER -->
-    <div class="main-wrapper">
-      <!-- TOP BAR -->
-      <header class="topbar">
-        <button
-          class="sidebar-toggle"
-          onclick="toggleSidebar()"
-          aria-label="Toggle navigation"
-        >
-          <i class="bi bi-list"></i>
-        </button>
-        <div class="topbar-left">
-          <span class="topbar-title">Classes</span>
-          <span class="topbar-subtitle"
-            >Manage all class sections and assignments</span
-          >
-        </div>
-        <div class="topbar-right">
-          <span class="topbar-date" id="topbar-date"></span>
-          <span
-            id="topbar-user"
-            style="
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Classes - University Scheduling System</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" />
+  <link rel="stylesheet" href="base.css" />
+</head>
+
+<body>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="dashboard.html" class="sidebar-brand">
+      <div class="sidebar-brand-icon">🎓</div>
+      <div class="sidebar-brand-text">
+        <span>UniSchedule</span>
+        <span>Management System</span>
+      </div>
+    </a>
+    <nav class="sidebar-nav" id="dynamic-sidebar-nav">
+      <!-- populated dynamically by base.js based on role -->
+    </nav>
+    <div class="sidebar-footer">University Scheduling System &copy; 2025</div>
+  </aside>
+
+  <!-- MAIN WRAPPER -->
+  <div class="main-wrapper">
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <button class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+        <i class="bi bi-list"></i>
+      </button>
+      <div class="topbar-left">
+        <span class="topbar-title">Classes</span>
+        <span class="topbar-subtitle">Manage all class sections and assignments</span>
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-date" id="topbar-date"></span>
+        <span id="topbar-user" style="
               font-size: 12px;
               color: var(--text-secondary);
               font-weight: 500;
-            "
-          >
-          </span>
-          <span id="topbar-role" class="topbar-badge"></span>
-          <button
-            onclick="logout()"
-            style="
+            ">
+        </span>
+        <span id="topbar-role" class="topbar-badge"></span>
+        <button onclick="logout()" style="
               background: #fee2e2;
               color: #dc2626;
               border: none;
@@ -75,44 +60,32 @@
               align-items: center;
               gap: 6px;
               transition: var(--transition);
-            "
-            onmouseover="this.style.background = '#fecaca'"
-            onmouseout="this.style.background = '#fee2e2'"
-          >
-            <i class="bi bi-box-arrow-right"></i> Logout
-          </button>
-          <button class="btn-primary-custom" onclick="openAddModal()">
-            <i class="bi bi-plus-lg"></i> Add Class
-          </button>
-        </div>
-      </header>
+            " onmouseover="this.style.background = '#fecaca'" onmouseout="this.style.background = '#fee2e2'">
+          <i class="bi bi-box-arrow-right"></i> Logout
+        </button>
+        <button class="btn-primary-custom" onclick="openAddModal()">
+          <i class="bi bi-plus-lg"></i> Add Class
+        </button>
+      </div>
+    </header>
 
-      <!-- PAGE CONTENT -->
-      <main class="page-content">
-        <div id="alert-area"></div>
+    <!-- PAGE CONTENT -->
+    <main class="page-content">
+      <div id="alert-area"></div>
 
-        <!-- FILTER BAR -->
-        <div
-          style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap"
-        >
-          <div style="position: relative; flex: 1; min-width: 200px">
-            <i
-              class="bi bi-search"
-              style="
+      <!-- FILTER BAR -->
+      <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap">
+        <div style="position: relative; flex: 1; min-width: 200px">
+          <i class="bi bi-search" style="
                 position: absolute;
                 left: 12px;
                 top: 50%;
                 transform: translateY(-50%);
                 color: var(--text-muted);
                 font-size: 14px;
-              "
-            ></i>
-            <input
-              type="text"
-              id="search-input"
-              placeholder="Search by course code or section..."
-              oninput="filterClasses()"
-              style="
+              "></i>
+          <input type="text" id="search-input" placeholder="Search by course code or section..."
+            oninput="filterClasses()" style="
                 width: 100%;
                 padding: 9px 14px 9px 36px;
                 border: 1.5px solid var(--border);
@@ -121,246 +94,247 @@
                 font-family: &quot;DM Sans&quot;, sans-serif;
                 color: var(--text-primary);
                 background: white;
-              "
-            />
-          </div>
-          <select
-            id="semester-filter"
-            onchange="filterClasses()"
-            style="
-              padding: 9px 14px;
-              border: 1.5px solid var(--border);
-              border-radius: 8px;
-              font-size: 13.5px;
-              font-family: &quot;DM Sans&quot;, sans-serif;
-              color: var(--text-primary);
-              background: white;
-              min-width: 140px;
-            "
-          >
-            <option value="">All Semesters</option>
-            <option value="FALL">Fall</option>
-            <option value="SPRING">Spring</option>
-            <option value="SUMMER">Summer</option>
-          </select>
-          <select
-            id="status-filter"
-            onchange="filterClasses()"
-            style="
-              padding: 9px 14px;
-              border: 1.5px solid var(--border);
-              border-radius: 8px;
-              font-size: 13.5px;
-              font-family: &quot;DM Sans&quot;, sans-serif;
-              color: var(--text-primary);
-              background: white;
-              min-width: 140px;
-            "
-          >
-            <option value="">All Statuses</option>
-            <option value="SCHEDULED">Scheduled</option>
-            <option value="ONGOING">Ongoing</option>
-            <option value="COMPLETED">Completed</option>
-          </select>
+              " />
         </div>
+        <select id="semester-filter" onchange="filterClasses()" style="
+              padding: 9px 14px;
+              border: 1.5px solid var(--border);
+              border-radius: 8px;
+              font-size: 13.5px;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              color: var(--text-primary);
+              background: white;
+              min-width: 140px;
+            ">
+          <option value="">All Semesters</option>
+          <option value="FALL">Fall</option>
+          <option value="SPRING">Spring</option>
+          <option value="SUMMER">Summer</option>
+        </select>
+        <select id="status-filter" onchange="filterClasses()" style="
+              padding: 9px 14px;
+              border: 1.5px solid var(--border);
+              border-radius: 8px;
+              font-size: 13.5px;
+              font-family: &quot;DM Sans&quot;, sans-serif;
+              color: var(--text-primary);
+              background: white;
+              min-width: 140px;
+            ">
+          <option value="">All Statuses</option>
+          <option value="SCHEDULED">Scheduled</option>
+          <option value="ONGOING">Ongoing</option>
+          <option value="COMPLETED">Completed</option>
+        </select>
+      </div>
 
-        <!-- TABLE CARD -->
-        <div class="card">
-          <div class="card-header-custom">
-            <h5><i class="bi bi-journals"></i> All Classes</h5>
-            <span
-              id="class-count"
-              style="
+      <!-- TABLE CARD -->
+      <div class="card">
+        <div class="card-header-custom">
+          <h5><i class="bi bi-journals"></i> All Classes</h5>
+          <span id="class-count" style="
                 font-size: 12px;
                 color: var(--text-muted);
                 font-weight: 500;
-              "
-            ></span>
-          </div>
-          <div class="card-body-custom p-0">
-            <div id="classes-table-container">
-              <div class="loading-state">
-                <div class="spinner-custom"></div>
-                <p>Loading classes...</p>
-              </div>
+              "></span>
+        </div>
+        <div class="card-body-custom p-0">
+          <div id="classes-table-container">
+            <div class="loading-state">
+              <div class="spinner-custom"></div>
+              <p>Loading classes...</p>
             </div>
           </div>
         </div>
-      </main>
-    </div>
+      </div>
+    </main>
+  </div>
 
-    <!-- ADD / EDIT MODAL -->
-    <div class="modal fade" id="classModal" tabindex="-1">
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div
-          class="modal-content"
-          style="
+  <!-- ADD / EDIT MODAL -->
+  <div class="modal fade" id="classModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content" style="
             border-radius: var(--radius-lg);
             border: none;
             overflow: hidden;
-          "
-        >
-          <div class="modal-header-custom">
-            <h5 id="modal-title">Add New Class</h5>
-            <button
-              type="button"
-              class="btn-close"
-              data-bs-dismiss="modal"
-            ></button>
-          </div>
-          <div class="modal-body" style="padding: 24px">
-            <div id="modal-alert"></div>
-            <div class="row g-3">
-              <div class="col-12">
-                <label class="form-label-custom">Course *</label>
-                <select id="f-courseId" class="form-control-custom">
-                  <option value="">-- Select Course --</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Section Number *</label>
-                <input
-                  type="text"
-                  id="f-sectionNumber"
-                  class="form-control-custom"
-                  placeholder="e.g. 01, A, B"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Academic Year *</label>
-                <input
-                  type="text"
-                  id="f-academicYear"
-                  class="form-control-custom"
-                  placeholder="e.g. 2024/2025"
-                />
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Semester *</label>
-                <select id="f-semester" class="form-control-custom">
-                  <option value="">-- Select Semester --</option>
-                  <option value="FALL">Fall</option>
-                  <option value="SPRING">Spring</option>
-                  <option value="SUMMER">Summer</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Status</label>
-                <select id="f-status" class="form-control-custom">
-                  <option value="SCHEDULED">Scheduled</option>
-                  <option value="ONGOING">Ongoing</option>
-                  <option value="COMPLETED">Completed</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label class="form-label-custom">Room (Optional)</label>
-                <select id="f-roomId" class="form-control-custom">
-                  <option value="">-- No Room Assigned --</option>
-                </select>
-              </div>
-              <div class="col-6">
-                <label class="form-label-custom">Max Enrolment *</label>
-                <input
-                  type="number"
-                  id="f-maxEnrolment"
-                  class="form-control-custom"
-                  placeholder="e.g. 60"
-                  min="1"
-                />
-              </div>
-              <div class="col-6" style="display: flex; align-items: flex-end">
-                <p
-                  style="
+          ">
+        <div class="modal-header-custom">
+          <h5 id="modal-title">Add New Class</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding: 24px">
+          <div id="modal-alert"></div>
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-custom">Course *</label>
+              <select id="f-courseId" class="form-control-custom">
+                <option value="">-- Select Course --</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Section Number *</label>
+              <input type="text" id="f-sectionNumber" class="form-control-custom" placeholder="e.g. 01, A, B" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Academic Year *</label>
+              <input type="text" id="f-academicYear" class="form-control-custom" placeholder="e.g. 2024/2025" />
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Semester *</label>
+              <select id="f-semester" class="form-control-custom">
+                <option value="">-- Select Semester --</option>
+                <option value="FALL">Fall</option>
+                <option value="SPRING">Spring</option>
+                <option value="SUMMER">Summer</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Status</label>
+              <select id="f-status" class="form-control-custom">
+                <option value="SCHEDULED">Scheduled</option>
+                <option value="ONGOING">Ongoing</option>
+                <option value="COMPLETED">Completed</option>
+              </select>
+            </div>
+            <div class="col-12">
+              <label class="form-label-custom">Room (Optional)</label>
+              <select id="f-roomId" class="form-control-custom">
+                <option value="">-- No Room Assigned --</option>
+              </select>
+            </div>
+            <div class="col-6">
+              <label class="form-label-custom">Max Enrolment *</label>
+              <input type="number" id="f-maxEnrolment" class="form-control-custom" placeholder="e.g. 60" min="1" />
+            </div>
+            <div class="col-6" style="display: flex; align-items: flex-end">
+              <p style="
                     font-size: 12px;
                     color: var(--text-muted);
                     margin: 0;
                     padding-bottom: 4px;
-                  "
-                >
-                  <i class="bi bi-info-circle"></i>
-                  Max enrolment cannot exceed the selected room's capacity.
-                </p>
-              </div>
+                  ">
+                <i class="bi bi-info-circle"></i>
+                Max enrolment cannot exceed the selected room's capacity.
+              </p>
             </div>
           </div>
-          <div
-            class="modal-footer"
-            style="padding: 16px 24px; border-top: 1px solid var(--border)"
-          >
-            <button
-              type="button"
-              class="btn-danger-custom"
-              data-bs-dismiss="modal"
-            >
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn-primary-custom"
-              onclick="saveClass()"
-            >
-              <i class="bi bi-check-lg"></i>
-              <span id="save-btn-text">Save Class</span>
-            </button>
-          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
+          <button type="button" class="btn-danger-custom" data-bs-dismiss="modal">
+            Cancel
+          </button>
+          <button type="button" class="btn-primary-custom" onclick="saveClass()">
+            <i class="bi bi-check-lg"></i>
+            <span id="save-btn-text">Save Class</span>
+          </button>
         </div>
       </div>
     </div>
+  </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="base.js"></script>
-    <script>
-      let editingClassId = null;
-      let classModal;
-      let allClasses = [];
+  <!-- MANAGE TEACHERS MODAL -->
+  <div class="modal fade" id="teachersModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius: var(--radius-lg); border: none; overflow: hidden;">
+        <div class="modal-header-custom">
+          <h5>Manage Class Teachers</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding: 24px">
+          <div id="teachers-alert"></div>
 
-      document.addEventListener("DOMContentLoaded", () => {
-        if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
-        classModal = new bootstrap.Modal(document.getElementById("classModal"));
-        loadClasses();
-      });
+          <div style="margin-bottom: 20px;">
+            <h6 style="color:var(--text-primary); font-size:14px; font-weight:700;">Assigned Teachers</h6>
+            <ul id="assigned-teachers-list" style="list-style:none; padding:0; margin:10px 0;">
+              <!-- rendered via js -->
+            </ul>
+          </div>
 
-      async function loadClasses() {
-        const container = document.getElementById("classes-table-container");
-        try {
-          allClasses = await apiGet("/classes");
-          renderTable(allClasses);
-        } catch (err) {
-          container.innerHTML = `
+          <hr style="border-color: var(--border); margin: 20px 0;" />
+
+          <h6 style="color:var(--text-primary); font-size:14px; font-weight:700;">Assign New Teacher</h6>
+          <div class="row g-2 mt-2">
+            <div class="col-8">
+              <select id="f-assignTeacherId" class="form-control-custom">
+                <option value="">-- Select Teacher --</option>
+              </select>
+            </div>
+            <div class="col-4">
+              <select id="f-assignRole" class="form-control-custom">
+                <option value="PRIMARY">PRIMARY</option>
+                <option value="ASSISTANT">ASSISTANT</option>
+              </select>
+            </div>
+          </div>
+          <button class="btn-primary-custom w-100 mt-3" onclick="assignTeacher()">Assign Teacher</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="base.js"></script>
+  <script>
+    let editingClassId = null;
+    let classModal;
+    let teachersModal;
+    let currentManageClassId = null;
+    let allGlobalTeachers = [];
+    let allClasses = [];
+    let currentFilteredClasses = [];
+    let currentPage = 1;
+    const pageSize = 10;
+
+    document.addEventListener("DOMContentLoaded", () => {
+      if (!requireAuth(["ADMIN", "CLASS_HANDLER"])) return;
+      classModal = new bootstrap.Modal(document.getElementById("classModal"));
+      teachersModal = new bootstrap.Modal(document.getElementById("teachersModal"));
+      loadClasses();
+    });
+
+    async function loadClasses() {
+      const container = document.getElementById("classes-table-container");
+      try {
+        allClasses = await apiGet("/classes");
+        filterClasses();
+      } catch (err) {
+        container.innerHTML = `
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 Failed to load classes: ${err.message}
             </div>`;
-        }
       }
+    }
 
-      function renderTable(classes) {
-        const container = document.getElementById("classes-table-container");
-        document.getElementById("class-count").textContent =
-          `${classes.length} class(es)`;
+    function renderTable() {
+      const container = document.getElementById("classes-table-container");
+      document.getElementById("class-count").textContent =
+        `${currentFilteredClasses.length} class(es)`;
 
-        if (classes.length === 0) {
-          container.innerHTML = `
+      if (currentFilteredClasses.length === 0) {
+        container.innerHTML = `
             <div class="empty-state">
                 <i class="bi bi-journals"></i>
                 <p>No classes found.</p>
             </div>`;
-          return;
-        }
+        return;
+      }
 
-        const statusBadge = {
-          SCHEDULED: "badge-info",
-          ONGOING: "badge-success",
-          COMPLETED: "badge-muted",
-        };
+      const statusBadge = {
+        SCHEDULED: "badge-info",
+        ONGOING: "badge-success",
+        COMPLETED: "badge-muted",
+      };
 
-        const semesterBadge = {
-          FALL: "badge-warning",
-          SPRING: "badge-success",
-          SUMMER: "badge-info",
-        };
+      const semesterBadge = {
+        FALL: "badge-warning",
+        SPRING: "badge-success",
+        SUMMER: "badge-info",
+      };
 
-        container.innerHTML = `
+      const paginatedClasses = paginateData(currentFilteredClasses, currentPage, pageSize);
+
+      container.innerHTML = `
         <div style="overflow-x:auto;">
         <table class="table-custom">
             <thead>
@@ -377,23 +351,24 @@
                 </tr>
             </thead>
             <tbody>
-                ${classes
-                  .map((c, i) => {
-                    const enrolPct =
-                      c.maxEnrolment > 0
-                        ? Math.round(
-                            (c.currentEnrolment / c.maxEnrolment) * 100,
-                          )
-                        : 0;
-                    const barColor =
-                      enrolPct >= 90
-                        ? "#dc2626"
-                        : enrolPct >= 70
-                          ? "#d97706"
-                          : "#16a34a";
-                    return `
+                ${paginatedClasses
+          .map((c, i) => {
+            const globalIndex = (currentPage - 1) * pageSize + i + 1;
+            const enrolPct =
+              c.maxEnrolment > 0
+                ? Math.round(
+                  (c.currentEnrolment / c.maxEnrolment) * 100,
+                )
+                : 0;
+            const barColor =
+              enrolPct >= 90
+                ? "#dc2626"
+                : enrolPct >= 70
+                  ? "#d97706"
+                  : "#16a34a";
+            return `
                     <tr>
-                        <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                        <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                         <td>
                             <div>
                                 <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;
@@ -412,15 +387,14 @@
                             </span>
                         </td>
                         <td>
-                            ${
-                              c.room
-                                ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;">
+                            ${c.room
+                ? `<span style="display:inline-flex;align-items:center;gap:5px;font-size:13px;">
                                        <i class="bi bi-building" style="color:var(--text-muted);"></i>
                                        ${c.room.roomCode}
                                        <span style="color:var(--text-muted);font-size:11px;">(cap:${c.room.capacity})</span>
                                    </span>`
-                                : `<span style="color:var(--text-muted);font-size:12px;font-style:italic;">Not assigned</span>`
-                            }
+                : `<span style="color:var(--text-muted);font-size:12px;font-style:italic;">Not assigned</span>`
+              }
                         </td>
                         <td>
                             <span class="badge-custom ${semesterBadge[c.semester] || "badge-muted"}">
@@ -448,6 +422,9 @@
                         </td>
                         <td>
                             <div style="display:flex;gap:6px;">
+                                <button class="btn-edit-custom" onclick="openTeachersModal(${c.classId})" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">
+                                    <i class="bi bi-people"></i> Teachers
+                                </button>
                                 <button class="btn-edit-custom" onclick="openEditModal(${c.classId})">
                                     <i class="bi bi-pencil"></i> Edit
                                 </button>
@@ -457,203 +434,301 @@
                             </div>
                         </td>
                     </tr>`;
-                  })
-                  .join("")}
+          })
+          .join("")}
             </tbody>
         </table>
-        </div>`;
-      }
+        </div>
+        <div id="classes-pagination"></div>`;
 
-      function filterClasses() {
-        const search = document
-          .getElementById("search-input")
-          .value.toLowerCase();
-        const semester = document.getElementById("semester-filter").value;
-        const status = document.getElementById("status-filter").value;
+      renderPagination(currentFilteredClasses.length, currentPage, pageSize, "classes-pagination", "goToPage");
+    }
 
-        const filtered = allClasses.filter((c) => {
-          const matchSearch =
-            !search ||
-            c.course.courseCode.toLowerCase().includes(search) ||
-            c.sectionNumber.toLowerCase().includes(search) ||
-            c.course.courseName.toLowerCase().includes(search);
-          const matchSemester = !semester || c.semester === semester;
-          const matchStatus = !status || c.status === status;
-          return matchSearch && matchSemester && matchStatus;
+    window.goToPage = function (page) {
+      currentPage = page;
+      renderTable();
+    };
+
+    function filterClasses() {
+      const search = document
+        .getElementById("search-input")
+        .value.toLowerCase();
+      const semester = document.getElementById("semester-filter").value;
+      const status = document.getElementById("status-filter").value;
+
+      currentFilteredClasses = allClasses.filter((c) => {
+        const matchSearch =
+          !search ||
+          c.course.courseCode.toLowerCase().includes(search) ||
+          c.sectionNumber.toLowerCase().includes(search) ||
+          c.course.courseName.toLowerCase().includes(search);
+        const matchSemester = !semester || c.semester === semester;
+        const matchStatus = !status || c.status === status;
+        return matchSearch && matchSemester && matchStatus;
+      });
+
+      currentPage = 1;
+      renderTable();
+    }
+
+    async function populateDropdowns(
+      selectedCourseId = null,
+      selectedRoomId = null,
+    ) {
+      try {
+        const [courses, rooms] = await Promise.all([
+          apiGet("/courses"),
+          apiGet("/rooms/active"),
+        ]);
+
+        const courseSelect = document.getElementById("f-courseId");
+        courseSelect.innerHTML =
+          '<option value="">-- Select Course --</option>';
+        courses.forEach((c) => {
+          const opt = document.createElement("option");
+          opt.value = c.courseId;
+          opt.textContent = `${c.courseCode} - ${c.courseName} (Level ${c.level})`;
+          if (selectedCourseId && c.courseId === selectedCourseId)
+            opt.selected = true;
+          courseSelect.appendChild(opt);
         });
 
-        renderTable(filtered);
-      }
-
-      async function populateDropdowns(
-        selectedCourseId = null,
-        selectedRoomId = null,
-      ) {
-        try {
-          const [courses, rooms] = await Promise.all([
-            apiGet("/courses"),
-            apiGet("/rooms/active"),
-          ]);
-
-          const courseSelect = document.getElementById("f-courseId");
-          courseSelect.innerHTML =
-            '<option value="">-- Select Course --</option>';
-          courses.forEach((c) => {
-            const opt = document.createElement("option");
-            opt.value = c.courseId;
-            opt.textContent = `${c.courseCode} - ${c.courseName} (Level ${c.level})`;
-            if (selectedCourseId && c.courseId === selectedCourseId)
-              opt.selected = true;
-            courseSelect.appendChild(opt);
-          });
-
-          const roomSelect = document.getElementById("f-roomId");
-          roomSelect.innerHTML =
-            '<option value="">-- No Room Assigned --</option>';
-          rooms.forEach((r) => {
-            const opt = document.createElement("option");
-            opt.value = r.roomId;
-            opt.textContent = `${r.roomCode} - ${r.building} (Cap: ${r.capacity})`;
-            if (selectedRoomId && r.roomId === selectedRoomId)
-              opt.selected = true;
-            roomSelect.appendChild(opt);
-          });
-        } catch (err) {
-          showModalAlert(
-            "Could not load courses or rooms. Is Spring Boot running?",
-            "danger",
-          );
-        }
-      }
-
-      async function openAddModal() {
-        editingClassId = null;
-        document.getElementById("modal-title").textContent = "Add New Class";
-        document.getElementById("save-btn-text").textContent = "Save Class";
-        document.getElementById("modal-alert").innerHTML = "";
-        clearForm();
-        await populateDropdowns();
-        classModal.show();
-      }
-
-      async function openEditModal(id) {
-        editingClassId = id;
-        document.getElementById("modal-title").textContent = "Edit Class";
-        document.getElementById("save-btn-text").textContent = "Update Class";
-        document.getElementById("modal-alert").innerHTML = "";
-
-        try {
-          const c = await apiGet(`/classes/${id}`);
-          await populateDropdowns(
-            c.course.courseId,
-            c.room ? c.room.roomId : null,
-          );
-          document.getElementById("f-sectionNumber").value = c.sectionNumber;
-          document.getElementById("f-academicYear").value = c.academicYear;
-          document.getElementById("f-semester").value = c.semester;
-          document.getElementById("f-status").value = c.status;
-          document.getElementById("f-maxEnrolment").value = c.maxEnrolment;
-          classModal.show();
-        } catch (err) {
-          showToast("Could not load class details", "danger");
-        }
-      }
-
-      async function saveClass() {
-        const courseId = document.getElementById("f-courseId").value;
-        const sectionNumber = document
-          .getElementById("f-sectionNumber")
-          .value.trim();
-        const academicYear = document
-          .getElementById("f-academicYear")
-          .value.trim();
-        const semester = document.getElementById("f-semester").value;
-        const status = document.getElementById("f-status").value;
-        const roomId = document.getElementById("f-roomId").value || null;
-        const maxEnrolment = document.getElementById("f-maxEnrolment").value;
-
-        if (
-          !courseId ||
-          !sectionNumber ||
-          !academicYear ||
-          !semester ||
-          !maxEnrolment
-        ) {
-          showModalAlert("Please fill in all required fields.", "danger");
-          return;
-        }
-
-        const body = {
-          sectionNumber,
-          academicYear,
-          semester,
-          status,
-          maxEnrolment: parseInt(maxEnrolment),
-        };
-
-        try {
-          const roomParam = roomId ? `&roomId=${roomId}` : "";
-          if (editingClassId) {
-            await apiFetch(
-              `/classes/${editingClassId}?courseId=${courseId}${roomParam}`,
-              {
-                method: "PUT",
-                body: JSON.stringify(body),
-              },
-            );
-            showToast("Class updated successfully!", "success");
-          } else {
-            await apiFetch(`/classes?courseId=${courseId}${roomParam}`, {
-              method: "POST",
-              body: JSON.stringify(body),
-            });
-            showToast("Class added successfully!", "success");
-          }
-          classModal.hide();
-          loadClasses();
-        } catch (err) {
-          showModalAlert(err.message, "danger");
-        }
-      }
-
-      async function deleteClass(id, label) {
-        if (!confirmDelete(`Delete class "${label}"? This cannot be undone.`))
-          return;
-        try {
-          await apiDelete(`/classes/${id}`);
-          showToast(`Class "${label}" deleted.`, "success");
-          loadClasses();
-        } catch (err) {
-          showToast(err.message, "danger");
-        }
-      }
-
-      function clearForm() {
-        document.getElementById("f-courseId").innerHTML =
-          '<option value="">-- Select Course --</option>';
-        document.getElementById("f-roomId").innerHTML =
+        const roomSelect = document.getElementById("f-roomId");
+        roomSelect.innerHTML =
           '<option value="">-- No Room Assigned --</option>';
-        document.getElementById("f-sectionNumber").value = "";
-        document.getElementById("f-academicYear").value = "";
-        document.getElementById("f-semester").value = "";
-        document.getElementById("f-status").value = "SCHEDULED";
-        document.getElementById("f-maxEnrolment").value = "";
+        rooms.forEach((r) => {
+          const opt = document.createElement("option");
+          opt.value = r.roomId;
+          opt.textContent = `${r.roomCode} - ${r.building} (Cap: ${r.capacity})`;
+          if (selectedRoomId && r.roomId === selectedRoomId)
+            opt.selected = true;
+          roomSelect.appendChild(opt);
+        });
+      } catch (err) {
+        showModalAlert(
+          "Could not load courses or rooms. Is Spring Boot running?",
+          "danger",
+        );
+      }
+    }
+
+    async function openAddModal() {
+      editingClassId = null;
+      document.getElementById("modal-title").textContent = "Add New Class";
+      document.getElementById("save-btn-text").textContent = "Save Class";
+      document.getElementById("modal-alert").innerHTML = "";
+      clearForm();
+      await populateDropdowns();
+      classModal.show();
+    }
+
+    async function openEditModal(id) {
+      editingClassId = id;
+      document.getElementById("modal-title").textContent = "Edit Class";
+      document.getElementById("save-btn-text").textContent = "Update Class";
+      document.getElementById("modal-alert").innerHTML = "";
+
+      try {
+        const c = await apiGet(`/classes/${id}`);
+        await populateDropdowns(
+          c.course.courseId,
+          c.room ? c.room.roomId : null,
+        );
+        document.getElementById("f-sectionNumber").value = c.sectionNumber;
+        document.getElementById("f-academicYear").value = c.academicYear;
+        document.getElementById("f-semester").value = c.semester;
+        document.getElementById("f-status").value = c.status;
+        document.getElementById("f-maxEnrolment").value = c.maxEnrolment;
+        classModal.show();
+      } catch (err) {
+        showToast("Could not load class details", "danger");
+      }
+    }
+
+    async function saveClass() {
+      const courseId = document.getElementById("f-courseId").value;
+      const sectionNumber = document
+        .getElementById("f-sectionNumber")
+        .value.trim();
+      const academicYear = document
+        .getElementById("f-academicYear")
+        .value.trim();
+      const semester = document.getElementById("f-semester").value;
+      const status = document.getElementById("f-status").value;
+      const roomId = document.getElementById("f-roomId").value || null;
+      const maxEnrolment = document.getElementById("f-maxEnrolment").value;
+
+      if (
+        !courseId ||
+        !sectionNumber ||
+        !academicYear ||
+        !semester ||
+        !maxEnrolment
+      ) {
+        showModalAlert("Please fill in all required fields.", "danger");
+        return;
       }
 
-      function showModalAlert(message, type) {
-        const colors = {
-          danger: "alert-danger-custom",
-          success: "alert-success-custom",
-        };
-        const icons = {
-          danger: "bi-x-circle-fill",
-          success: "bi-check-circle-fill",
-        };
-        document.getElementById("modal-alert").innerHTML = `
+      const body = {
+        sectionNumber,
+        academicYear,
+        semester,
+        status,
+        maxEnrolment: parseInt(maxEnrolment),
+      };
+
+      try {
+        const roomParam = roomId ? `&roomId=${roomId}` : "";
+        if (editingClassId) {
+          await apiFetch(
+            `/classes/${editingClassId}?courseId=${courseId}${roomParam}`,
+            {
+              method: "PUT",
+              body: JSON.stringify(body),
+            },
+          );
+          showToast("Class updated successfully!", "success");
+        } else {
+          await apiFetch(`/classes?courseId=${courseId}${roomParam}`, {
+            method: "POST",
+            body: JSON.stringify(body),
+          });
+          showToast("Class added successfully!", "success");
+        }
+        classModal.hide();
+        loadClasses();
+      } catch (err) {
+        showModalAlert(err.message, "danger");
+      }
+    }
+
+    async function deleteClass(id, label) {
+      if (!confirmDelete(`Delete class "${label}"? This cannot be undone.`))
+        return;
+      try {
+        await apiDelete(`/classes/${id}`);
+        showToast(`Class "${label}" deleted.`, "success");
+        loadClasses();
+      } catch (err) {
+        showToast(err.message, "danger");
+      }
+    }
+
+    function clearForm() {
+      document.getElementById("f-courseId").innerHTML =
+        '<option value="">-- Select Course --</option>';
+      document.getElementById("f-roomId").innerHTML =
+        '<option value="">-- No Room Assigned --</option>';
+      document.getElementById("f-sectionNumber").value = "";
+      document.getElementById("f-academicYear").value = "";
+      document.getElementById("f-semester").value = "";
+      document.getElementById("f-status").value = "SCHEDULED";
+      document.getElementById("f-maxEnrolment").value = "";
+    }
+
+    function showModalAlert(message, type) {
+      const colors = {
+        danger: "alert-danger-custom",
+        success: "alert-success-custom",
+      };
+      const icons = {
+        danger: "bi-x-circle-fill",
+        success: "bi-check-circle-fill",
+      };
+      document.getElementById("modal-alert").innerHTML = `
         <div class="alert-custom ${colors[type]}">
             <i class="bi ${icons[type]}"></i> ${message}
         </div>`;
+    }
+
+    function showTeacherAlert(message, type) {
+      document.getElementById("teachers-alert").innerHTML = `<div class="alert alert-${type} alert-dismissible fade show">
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>`;
+    }
+
+    async function openTeachersModal(classId) {
+      currentManageClassId = classId;
+      document.getElementById("teachers-alert").innerHTML = "";
+      const list = document.getElementById("assigned-teachers-list");
+      list.innerHTML = `<li style="font-size:13px; color:var(--text-muted);"><div class="spinner-custom"></div> Loading...</li>`;
+
+      if (allGlobalTeachers.length === 0) {
+        try {
+          allGlobalTeachers = await apiGet("/teachers");
+          const sel = document.getElementById("f-assignTeacherId");
+          allGlobalTeachers.forEach(t => {
+            sel.innerHTML += `<option value="${t.teacherId}">${t.firstName} ${t.lastName} (${t.department})</option>`;
+          });
+        } catch (e) {
+          console.error("Failed to load teachers for dropdown", e);
+        }
       }
-    </script>
-  </body>
+
+      teachersModal.show();
+      loadAssignedTeachers();
+    }
+
+    async function loadAssignedTeachers() {
+      try {
+        const list = document.getElementById("assigned-teachers-list");
+        const assignments = await apiGet("/class-teachers/class/" + currentManageClassId);
+        if (assignments.length === 0) {
+          list.innerHTML = '<li style="font-size:13px; color:var(--text-muted); font-style:italic;">No teachers assigned yet.</li>';
+          return;
+        }
+
+        list.innerHTML = assignments.map(a => `
+                <li style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
+                    <div>
+                        <div style="font-size:13px; font-weight:600; color:var(--text-primary);">
+                          ${a.teacher.firstName} ${a.teacher.lastName}
+                        </div>
+                        <div style="font-size:11px; color:var(--primary); font-weight:700;">
+                          ${a.role}
+                        </div>
+                    </div>
+                    <button class="btn-danger-custom" style="padding:4px 8px; font-size:12px;" onclick="removeTeacherAssignment(${a.id})">
+                        <i class="bi bi-x"></i>
+                    </button>
+                </li>
+            `).join("");
+      } catch (e) {
+        console.error(e);
+        showTeacherAlert("Failed to load assignments.", "danger");
+      }
+    }
+
+    async function assignTeacher() {
+      const teacherId = document.getElementById("f-assignTeacherId").value;
+      const role = document.getElementById("f-assignRole").value;
+      if (!teacherId) return showTeacherAlert("Please select a teacher.", "danger");
+
+      try {
+        await apiPost("/class-teachers/assign", {
+          classId: currentManageClassId,
+          teacherId: parseInt(teacherId),
+          role: role
+        });
+        showTeacherAlert("Teacher assigned successfully!", "success");
+        loadAssignedTeachers();
+      } catch (err) {
+        showTeacherAlert(err.message, "danger");
+      }
+    }
+
+    async function removeTeacherAssignment(id) {
+      if (!confirm("Remove this teacher from this class?")) return;
+      try {
+        await apiDelete("/class-teachers/" + id);
+        loadAssignedTeachers();
+      } catch (err) {
+        showTeacherAlert(err.message, "danger");
+      }
+    }
+
+  </script>
+</body>
+
 </html>

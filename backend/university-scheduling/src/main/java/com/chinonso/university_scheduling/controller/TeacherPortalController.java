@@ -112,9 +112,16 @@ public class TeacherPortalController {
         }
 
         private Long getLinkedId(String email) {
-                return userRepository.findByEmail(email)
+                Long linkedId = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "User not found: " + email))
                                 .getLinkedId();
+
+                if (linkedId == null) {
+                        throw new ResourceNotFoundException(
+                                        "Your account is not linked to a Teacher profile. "
+                                                        + "Please contact an administrator.");
+                }
+                return linkedId;
         }
 }

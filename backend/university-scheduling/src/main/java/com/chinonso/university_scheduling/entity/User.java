@@ -1,5 +1,7 @@
 package com.chinonso.university_scheduling.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -19,6 +21,7 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 100)
     private String email;
 
+    @JsonIgnore
     @Column(name = "password", nullable = false, length = 255)
     private String password;
 
@@ -29,6 +32,7 @@ public class User {
     @Column(name = "linked_id")
     private Long linkedId;
 
+    @JsonProperty("isActive")
     @Column(name = "is_active", nullable = false)
     @Builder.Default
     private Boolean isActive = true;

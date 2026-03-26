@@ -77,9 +77,16 @@ public class StudentPortalController {
         }
 
         private Long getLinkedId(String email) {
-                return userRepository.findByEmail(email)
+                Long linkedId = userRepository.findByEmail(email)
                                 .orElseThrow(() -> new ResourceNotFoundException(
                                                 "User not found: " + email))
                                 .getLinkedId();
+
+                if (linkedId == null) {
+                        throw new ResourceNotFoundException(
+                                        "Your account is not linked to a Student profile. "
+                                                        + "Please contact an administrator.");
+                }
+                return linkedId;
         }
 }

@@ -24,27 +24,28 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .cors(cors -> {}) // enable CORS with our CorsConfig bean
+                .cors(cors -> {
+                }) // enable CORS with our CorsConfig bean
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
 
                         // ── PUBLIC ─────────────────────────────────────────
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/students/active", "/api/teachers/active").permitAll()
                         .requestMatchers(
                                 "/",
                                 "/*.html",
                                 "/*.css",
                                 "/*.js",
-                                "/favicon.ico"
-                        ).permitAll()
+                                "/favicon.ico")
+                        .permitAll()
 
                         // ── ROOMS ──────────────────────────────────────────
                         .requestMatchers("/api/rooms/**")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER", "ENROLLMENT_OFFICER")
 
                         // ── TEACHERS ───────────────────────────────────────
                         .requestMatchers("/api/teachers/**")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER", "ENROLLMENT_OFFICER")
 
                         // ── STUDENTS ───────────────────────────────────────
                         .requestMatchers("/api/students/**")
@@ -52,7 +53,7 @@ public class SecurityConfig {
 
                         // ── COURSES ────────────────────────────────────────
                         .requestMatchers("/api/courses/**")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER", "ENROLLMENT_OFFICER")
 
                         // ── CLASSES ────────────────────────────────────────
                         .requestMatchers("/api/classes/**")
@@ -68,7 +69,11 @@ public class SecurityConfig {
 
                         // ── CLASS TEACHERS ─────────────────────────────────
                         .requestMatchers("/api/class-teachers/**")
-                        .hasAnyRole("ADMIN")
+                        .hasAnyRole("ADMIN", "CLASS_HANDLER")
+
+                        // ── USER MANAGEMENT ────────────────────────────────
+                        .requestMatchers("/api/users/**")
+                        .hasRole("ADMIN")
 
                         // ── STUDENT PORTAL ─────────────────────────────────
                         .requestMatchers("/api/student-portal/**")

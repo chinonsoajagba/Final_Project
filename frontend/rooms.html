@@ -210,6 +210,10 @@
     <script>
       let editingRoomId = null;
       let roomModal;
+      let allRooms = [];
+      let currentFilteredRooms = [];
+      let currentPage = 1;
+      const pageSize = 10;
 
       document.addEventListener("DOMContentLoaded", () => {
         if (!requireAuth(['ADMIN'])) return;
@@ -223,11 +227,29 @@
       async function loadRooms() {
         const container = document.getElementById("rooms-table-container");
         try {
-          const rooms = await apiGet("/rooms");
-          document.getElementById("room-count").textContent =
-            `${rooms.length} room(s) total`;
+          allRooms = await apiGet("/rooms");
+          filterRooms();
+        } catch (err) {
+          container.innerHTML = `
+            <div class="alert-custom alert-danger-custom" style="margin:24px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Failed to load rooms: ${err.message}
+            </div>`;
+        }
+      }
 
-          if (rooms.length === 0) {
+      function filterRooms() {
+          currentFilteredRooms = allRooms;
+          currentPage = 1;
+          renderTable();
+      }
+
+      function renderTable() {
+        const container = document.getElementById("rooms-table-container");
+        document.getElementById("room-count").textContent =
+          `${currentFilteredRooms.length} room(s) total`;
+
+        if (currentFilteredRooms.length === 0) {
             container.innerHTML = `
                 <div class="empty-state">
                     <i class="bi bi-building"></i>
@@ -253,11 +275,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    ${rooms
+                    ${paginateData(currentFilteredRooms, currentPage, pageSize)
                       .map(
-                        (r, i) => `
+                        (r, i) => {
+                          const globalIndex = (currentPage - 1) * pageSize + i + 1;
+                          return `
                         <tr>
-                            <td style="color:var(--text-muted);font-size:12px">${i + 1}</td>
+                            <td style="color:var(--text-muted);font-size:12px">${globalIndex}</td>
                             <td><strong style="font-family:'DM Mono',monospace;font-size:13px">${r.roomCode}</strong></td>
                             <td>${r.building}</td>
                             <td>
@@ -293,20 +317,21 @@
                                 </div>
                             </td>
                         </tr>
-                    `,
+                    `;}
                       )
                       .join("")}
                 </tbody>
             </table>
-            </div>`;
-        } catch (err) {
-          container.innerHTML = `
-            <div class="alert-custom alert-danger-custom" style="margin:24px;">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                Failed to load rooms: ${err.message}
-            </div>`;
-        }
+            </div>
+            <div id="rooms-pagination"></div>`;
+            
+        renderPagination(currentFilteredRooms.length, currentPage, pageSize, "rooms-pagination", "goToPage");
       }
+      
+      window.goToPage = function(page) {
+          currentPage = page;
+          renderTable();
+      };
 
       // ============================================================
       // FORMAT HELPERS
