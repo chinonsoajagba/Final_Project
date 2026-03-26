@@ -89,7 +89,7 @@ Tools : VSCode / IntelliJ IDEA, Maven, MySQL Workbench, Postman
    (Creates the university_scheduling database and all 9 tables
    including the users authentication table)
 3. Open your project root on terminal and run:
-   mysql -u root -p university_scheduling < backend/src/main/resources/seed-data.sql
+   mysql -u root -p university_scheduling < backend/university-scheduling/src/main/resources/seed-data.sql
    Enter your DB password when prompted
    (Inserts sample rooms, teachers, students, courses and classes)
 
