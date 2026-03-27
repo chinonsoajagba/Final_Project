@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -662,7 +662,7 @@
                   sel.innerHTML += `<option value="${t.teacherId}">${t.firstName} ${t.lastName} (${t.department})</option>`;
               });
           } catch(e) {
-              console.error("Failed to load teachers for dropdown", e);
+              showTeacherAlert("Failed to load teacher list. Please try again.", "danger");
           }
       }
       
@@ -695,7 +695,6 @@
               </li>
           `).join("");
       } catch(e) {
-          console.error(e);
           showTeacherAlert("Failed to load assignments.", "danger");
       }
     }

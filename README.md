@@ -1,5 +1,5 @@
 UNIVERSITY CLASSROOM AND SCHEDULING MANAGEMENT SYSTEM
-Middlesex University — BSc Information Technology
+Middlesex University - BSc Information Technology
 Student: Chinonso Ajagba David | ID: M01071973
 ======================================================
 
@@ -24,11 +24,13 @@ role-based authentication system.
 - Five user roles: Administrator, Enrollment Officer, Class Handler,
   Student, Teacher
 - Each role sees only what they are permitted to access
-- Student portal — personal timetable and enrolled classes
-- Teacher portal — assigned classes, personal timetable, and enrolled students
-- Class Teacher Assignment — Assign Lecturers and Teaching Assistants to a given class
-- Dynamic Registration — Automatically provisions Teacher and Student backend profiles on signup
-- Client-Side Pagination — Real-time frontend search filtering and page navigation for infinite scaling
+- Student portal - personal timetable and enrolled classes
+- Teacher portal - assigned classes, personal timetable, and enrolled students
+- Class Teacher Assignment - Assign Lecturers and Teaching Assistants to a given class
+- Dynamic Registration - Automatically provisions Teacher and Student backend profiles on signup
+- Client-Side Pagination - Real-time frontend search filtering and page navigation for infinite scaling
+- Self-Service Password Management - Authenticated users can securely update their own passwords
+- Synchronized Data Integrity - Cascading deletes ensure deleting a User cleans up their Teacher/Student profile and vice versa
 
 ## SYSTEM REQUIREMENTS
 
@@ -44,7 +46,7 @@ role-based authentication system.
 Final_project/
 ├── backend/ <- Spring Boot REST API
 │ └── src/main/
-│ ├── java/com/university/scheduling/
+│ ├── java/com/chinonso/university_scheduling/
 │ │ ├── SchedulingApplication.java
 │ │ ├── entity/ <- 9 JPA entities (incl. User)
 │ │ ├── repository/ <- 9 Spring Data repositories
@@ -72,7 +74,7 @@ Final_project/
 │ ├── enrolments.html <- Admin + Enrollment Officer
 │ ├── student-dashboard.html <- Student portal
 │ └── teacher-dashboard.html <- Teacher portal
-└── README.txt
+└── README.md
 
 ## TECHNOLOGY STACK
 
@@ -116,25 +118,30 @@ Tools : VSCode / IntelliJ IDEA, Maven, MySQL Workbench, Postman
    (Runs on http://127.0.0.1:5500/login.html)
 4. OR double-click any HTML file to open directly in browser
 
-## USER ACCOUNTS & ROLES
+## USER ACCOUNTS, ROLES & ACCESS
 
 The system has 5 roles. Each role sees only their permitted pages.
 
-## ROLE ACCESS
-
-Administrator : Full access — all pages and all operations
+Administrator : Full access - all pages and all operations
 Enrollment Officer: Students page + Enrolments page only
 Class Handler : Classes page + Schedules page only
-Student : Personal dashboard — own classes and timetable
-Teacher : Personal dashboard — own classes and students
+Student : Personal dashboard - own classes and timetable
+Teacher : Personal dashboard - own timetable, assigned classes and students
 
 DEFAULT ADMIN ACCOUNT (pre-loaded):
 Email : admin@university.ac.uk
 Password: admin123
 
+SEEDED TEST ACCOUNTS (created automatically on first startup):
+All seeded teachers and students are given the default password: password123
+Example - log in as a teacher : j.okafor@university.ac.uk / password123
+Example - log in as a student : c.ajagba@student.ac.uk / password123
+
 To create accounts for other roles, go to register.html and select
 the appropriate role. The registration form uses a dynamic interface
 to automatically create backend profiles for Students and Teachers!
+Alternatively, when an Administrator creates a Teacher or Student directly
+via the admin dashboard, a login account is automatically provisioned for them.
 
 ## REGISTERING USERS
 
@@ -179,11 +186,12 @@ GET /api/teacher-portal/me
 GET /api/teacher-portal/my-classes
 GET /api/teacher-portal/my-classes/{id}/students
 GET /api/teacher-portal/my-schedule
+PUT /api/users/{id}/reset-password
 
 ## CONFLICT DETECTION LOGIC
 
 All conflict checks are in:
-backend/src/main/java/com/university/scheduling/service/EnrolmentService.java
+backend/src/main/java/com/chinonso/university_scheduling/service/EnrolmentService.java
 
 Checks run in this order on every enrolment attempt:
 
@@ -220,7 +228,7 @@ After running seed-data.sql the database contains:
 -> Log out and log in with the correct role
 
 Page redirects to login.html unexpectedly:
--> Your session token has expired — log in again
+-> Your session token has expired - log in again
 
 Page shows no data but no error:
 -> Open browser DevTools (F12) -> Console tab for details
@@ -229,7 +237,3 @@ Port 8080 already in use:
 -> Change server.port=8081 in application.properties
 -> Update API_BASE in frontend/base.js to:
 const API_BASE = 'http://localhost:8081/api';
-
-```
-
-```

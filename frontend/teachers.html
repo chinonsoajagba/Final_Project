@@ -140,6 +140,10 @@
               <input type="number" id="f-maxHours" class="form-control-custom" placeholder="Default: 20" min="1"
                 max="40" />
             </div>
+            <div class="col-12" id="f-password-row">
+              <label class="form-label-custom">Initial Password <span style="font-size:11px;color:var(--text-muted);">(leave blank for default: password123)</span></label>
+              <input type="password" id="f-password" class="form-control-custom" placeholder="Set login password" autocomplete="new-password" />
+            </div>
           </div>
         </div>
         <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
@@ -296,6 +300,7 @@
       document.getElementById("modal-title").textContent = "Add New Teacher";
       document.getElementById("save-btn-text").textContent = "Save Teacher";
       document.getElementById("modal-alert").innerHTML = "";
+      document.getElementById("f-password-row").style.display = "";
       clearForm();
       teacherModal.show();
     }
@@ -308,6 +313,7 @@
       document.getElementById("modal-title").textContent = "Edit Teacher";
       document.getElementById("save-btn-text").textContent = "Update Teacher";
       document.getElementById("modal-alert").innerHTML = "";
+      document.getElementById("f-password-row").style.display = "none";
       try {
         const t = await apiGet(`/teachers/${id}`);
         document.getElementById("f-firstName").value = t.firstName;
@@ -345,14 +351,14 @@
       }
 
       const payload = {
-        firstName,
-        lastName,
-        employeeId,
-        email,
-        department,
-        specialization,
-        maxHoursPerWeek,
+        firstName, lastName, employeeId, email, department,
+        specialization, maxHoursPerWeek,
       };
+
+      if (!editingTeacherId) {
+        const pw = document.getElementById("f-password").value.trim();
+        if (pw) payload.password = pw;
+      }
 
       try {
         if (editingTeacherId) {
@@ -388,17 +394,9 @@
     // HELPERS
     // ============================================================
     function clearForm() {
-      [
-        "f-firstName",
-        "f-lastName",
-        "f-employeeId",
-        "f-email",
-        "f-department",
-        "f-specialization",
-        "f-maxHours",
-      ].forEach((id) => {
-        document.getElementById(id).value = "";
-      });
+      ["f-firstName","f-lastName","f-employeeId","f-email",
+       "f-department","f-specialization","f-maxHours","f-password",
+      ].forEach((id) => { document.getElementById(id).value = ""; });
     }
 
     function showModalAlert(message, type) {

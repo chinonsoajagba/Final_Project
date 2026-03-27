@@ -1,20 +1,33 @@
 package com.chinonso.university_scheduling.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.chinonso.university_scheduling.entity.Teacher;
+import com.chinonso.university_scheduling.entity.User;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
 import com.chinonso.university_scheduling.repository.TeacherRepository;
+import com.chinonso.university_scheduling.repository.UserRepository;
 
 import java.util.List;
 
 @Service
 public class TeacherService {
 
-    private final TeacherRepository teacherRepository;
+    private static final Logger log = LoggerFactory.getLogger(TeacherService.class);
 
-    public TeacherService(TeacherRepository teacherRepository) {
+    private final TeacherRepository teacherRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    public TeacherService(TeacherRepository teacherRepository,
+                          UserRepository userRepository,
+                          PasswordEncoder passwordEncoder) {
         this.teacherRepository = teacherRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Teacher> getAllTeachers() {
@@ -28,6 +41,10 @@ public class TeacherService {
     }
 
     public Teacher createTeacher(Teacher teacher) {
+        return createTeacher(teacher, "password123");
+    }
+
+    public Teacher createTeacher(Teacher teacher, String rawPassword) {
         if (teacherRepository.existsByEmployeeId(teacher.getEmployeeId())) {
             throw new IllegalArgumentException(
                     "Employee ID '" + teacher.getEmployeeId() + "' already exists");
@@ -36,7 +53,22 @@ public class TeacherService {
             throw new IllegalArgumentException(
                     "Email '" + teacher.getEmail() + "' is already registered");
         }
-        return teacherRepository.save(teacher);
+
+        Teacher saved = teacherRepository.save(teacher);
+
+        if (userRepository.findByEmail(saved.getEmail()).isEmpty()) {
+            User u = new User();
+            u.setEmail(saved.getEmail());
+            u.setPassword(passwordEncoder.encode(
+                    (rawPassword != null && !rawPassword.isBlank()) ? rawPassword : "password123"));
+            u.setRole(User.Role.TEACHER);
+            u.setLinkedId(saved.getTeacherId().longValue());
+            u.setIsActive(true);
+            userRepository.save(u);
+            log.info("Login account created for new teacher: {}", saved.getEmail());
+        }
+
+        return saved;
     }
 
     public Teacher updateTeacher(Integer id, Teacher updatedTeacher) {
@@ -66,6 +98,7 @@ public class TeacherService {
 
     public void deleteTeacher(Integer id) {
         Teacher teacher = getTeacherById(id);
+        userRepository.findByEmail(teacher.getEmail()).ifPresent(userRepository::delete);
         teacherRepository.delete(teacher);
     }
 

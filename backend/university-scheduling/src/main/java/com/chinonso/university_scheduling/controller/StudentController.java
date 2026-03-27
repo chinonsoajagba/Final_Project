@@ -41,8 +41,19 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student> createStudent(@Valid @RequestBody Student student) {
-        Student created = studentService.createStudent(student);
+    public ResponseEntity<Student> createStudent(@RequestBody java.util.Map<String, Object> body) {
+        Student student = new Student();
+        student.setFirstName((String) body.get("firstName"));
+        student.setLastName((String) body.get("lastName"));
+        student.setEmail((String) body.get("email"));
+        student.setProgram((String) body.get("program"));
+        Object year = body.get("yearOfStudy");
+        student.setYearOfStudy(year != null ? Integer.parseInt(year.toString()) : 1);
+        String status = (String) body.getOrDefault("enrolmentStatus", "ACTIVE");
+        student.setEnrolmentStatus(com.chinonso.university_scheduling.entity.Student.EnrolmentStatus.valueOf(status));
+
+        String password = (String) body.getOrDefault("password", null);
+        Student created = studentService.createStudent(student, password);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

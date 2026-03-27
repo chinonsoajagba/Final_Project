@@ -22,7 +22,7 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    // Generate token — stores email and role inside
+    // Generate token - stores email and role inside
     public String generateToken(String email, String role) {
         return Jwts.builder()
                 .setSubject(email)

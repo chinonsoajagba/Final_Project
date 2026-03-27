@@ -36,8 +36,19 @@ public class TeacherController {
     }
 
     @PostMapping
-    public ResponseEntity<Teacher> createTeacher(@Valid @RequestBody Teacher teacher) {
-        Teacher created = teacherService.createTeacher(teacher);
+    public ResponseEntity<Teacher> createTeacher(@RequestBody java.util.Map<String, Object> body) {
+        Teacher teacher = new Teacher();
+        teacher.setFirstName((String) body.get("firstName"));
+        teacher.setLastName((String) body.get("lastName"));
+        teacher.setEmployeeId((String) body.get("employeeId"));
+        teacher.setEmail((String) body.get("email"));
+        teacher.setDepartment((String) body.get("department"));
+        teacher.setSpecialization((String) body.getOrDefault("specialization", null));
+        Object maxH = body.get("maxHoursPerWeek");
+        teacher.setMaxHoursPerWeek(maxH != null ? Integer.parseInt(maxH.toString()) : 20);
+
+        String password = (String) body.getOrDefault("password", null);
+        Teacher created = teacherService.createTeacher(teacher, password);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

@@ -1,7 +1,7 @@
 -- ============================================================
 -- UNIVERSITY CLASSROOM AND SCHEDULING MANAGEMENT SYSTEM
 -- Database Schema + Seed Data
--- Run this manually in MySQL Workbench or CLI
+-- Run this manually in MySQL Workbench or CLI 
 -- ============================================================
 
 CREATE DATABASE IF NOT EXISTS university_scheduling;

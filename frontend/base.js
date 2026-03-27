@@ -1,5 +1,5 @@
 /* ============================================================
-   UNIVERSITY SCHEDULING SYSTEM — Global JavaScript
+   UNIVERSITY SCHEDULING SYSTEM - Global JavaScript
    Updated with JWT authentication
    ============================================================ */
 
@@ -38,20 +38,18 @@ function clearAuthData() {
 
 /* ============================================================
    AUTH GUARD
-   Call this at the top of every protected page
-   Pass allowed roles as an array e.g. ['ADMIN', 'CLASS_HANDLER']
    ============================================================ */
 function requireAuth(allowedRoles) {
   const token = getToken();
   const role = getRole();
 
-  // No token at all — send to login
+  // No token at all - send to login
   if (!token || !role) {
     window.location.href = "login.html";
     return false;
   }
 
-  // Role not allowed on this page — redirect to their dashboard
+  // Role not allowed on this page - redirect to their dashboard
   if (allowedRoles && !allowedRoles.includes(role)) {
     redirectToDashboard(role);
     return false;
@@ -83,7 +81,7 @@ function logout() {
 }
 
 /* ============================================================
-   FETCH HELPERS — all requests include JWT token
+   FETCH HELPERS - all requests include JWT token
    ============================================================ */
 async function apiFetch(endpoint, options = {}) {
   const token = getToken();
@@ -204,7 +202,6 @@ function confirmDelete(
 
 /* ============================================================
    ROLE-BASED SIDEBAR RENDERER
-   Rewrites <nav class="sidebar-nav"> based on the stored role.
    ============================================================ */
 function renderSidebar() {
   const nav = document.querySelector(".sidebar-nav");
@@ -212,7 +209,6 @@ function renderSidebar() {
 
   const role = getRole();
 
-  // Define all possible nav items grouped by section
   const allLinks = {
     main: [
       { href: "dashboard.html", icon: "bi-grid-1x2-fill", label: "Dashboard" },
@@ -269,9 +265,17 @@ function renderSidebar() {
         roles: ["ADMIN", "ENROLLMENT_OFFICER"],
       },
     ],
+    settings: [
+      {
+        href: "#",
+        icon: "bi-key",
+        label: "Change Password",
+        action: "openChangePasswordModal()",
+        roles: ["ENROLLMENT_OFFICER", "CLASS_HANDLER", "STUDENT", "TEACHER"],
+      },
+    ],
   };
 
-  // Filter helper — item visible if no role restriction, or current role is included
   const visible = (item) => !item.roles || item.roles.includes(role);
 
   const resourceLinks = allLinks.resources.filter(visible);
@@ -280,7 +284,6 @@ function renderSidebar() {
   // Build HTML
   let html = "";
 
-  // Main section (always shown)
   html += `<div class="sidebar-section-label">Main</div>`;
   for (const link of allLinks.main) {
     html += `<a href="${link.href}" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
@@ -302,6 +305,19 @@ function renderSidebar() {
     }
   }
 
+  // Settings section
+  const settingsLinks = allLinks.settings ? allLinks.settings.filter(visible) : [];
+  if (settingsLinks.length > 0) {
+    html += `<div class="sidebar-section-label">Settings</div>`;
+    for (const link of settingsLinks) {
+      if (link.action) {
+        html += `<a href="#" onclick="${link.action}; return false;" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
+      } else {
+        html += `<a href="${link.href}" class="sidebar-link"><i class="bi ${link.icon}"></i> ${link.label}</a>`;
+      }
+    }
+  }
+
   nav.innerHTML = html;
 }
 
@@ -318,7 +334,7 @@ function setActiveSidebarLink() {
 }
 
 /* ============================================================
-   UPDATE TOPBAR — show logged in user info
+   UPDATE TOPBAR - show logged in user info
    ============================================================ */
 function updateTopbar() {
   const dateEl = document.getElementById("topbar-date");
@@ -369,7 +385,6 @@ function toggleSidebar() {
    RUN ON EVERY PAGE LOAD
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
-  // Inject sidebar overlay backdrop once (avoids editing every HTML page)
   if (!document.getElementById("sidebar-overlay")) {
     const overlay = document.createElement("div");
     overlay.id = "sidebar-overlay";
@@ -378,9 +393,9 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(overlay);
   }
 
-  renderSidebar(); // role-filtered nav links
-  setActiveSidebarLink(); // highlight current page
-  updateTopbar(); // show user email + role badge
+  renderSidebar();
+  setActiveSidebarLink();
+  updateTopbar();
 });
 
 /* ============================================================
@@ -391,7 +406,13 @@ function paginateData(dataArray, currentPage, pageSize) {
   return dataArray.slice(start, start + pageSize);
 }
 
-function renderPagination(totalItems, currentPage, pageSize, containerId, onPageChangeFuncName) {
+function renderPagination(
+  totalItems,
+  currentPage,
+  pageSize,
+  containerId,
+  onPageChangeFuncName,
+) {
   const totalPages = Math.ceil(totalItems / pageSize);
   const container = document.getElementById(containerId);
   if (!container) return;
@@ -421,7 +442,8 @@ function renderPagination(totalItems, currentPage, pageSize, containerId, onPage
   }
 
   if (endPage < totalPages) {
-    if (endPage < totalPages - 1) html += `<span class="pagination-dots">...</span>`;
+    if (endPage < totalPages - 1)
+      html += `<span class="pagination-dots">...</span>`;
     html += `<button class="btn-page" onclick="window.${onPageChangeFuncName}(${totalPages})">${totalPages}</button>`;
   }
 
@@ -430,5 +452,93 @@ function renderPagination(totalItems, currentPage, pageSize, containerId, onPage
            </button>`;
 
   html += "</div>";
+  html += "</div>";
   container.innerHTML = html;
 }
+
+/* ============================================================
+   CHANGE PASSWORD MODAL (Injected dynamically)
+   ============================================================ */
+function getUserId() {
+  return localStorage.getItem("userId");
+}
+
+function injectChangePasswordModal() {
+  if (document.getElementById("changePasswordModal")) return;
+  const modalHtml = `
+  <div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="border-radius: var(--radius-lg); border: none;">
+        <div class="modal-header-custom">
+          <h5 id="cp-modal-title">Change Password</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body" style="padding: 24px">
+          <div id="cp-modal-alert"></div>
+          <div class="mb-3">
+            <label class="form-label-custom">New Password</label>
+            <input type="password" id="cp-newPassword" class="form-control-custom" placeholder="Enter new password" />
+          </div>
+          <div class="mb-3">
+            <label class="form-label-custom">Confirm Password</label>
+            <input type="password" id="cp-confirmPassword" class="form-control-custom" placeholder="Confirm new password" />
+          </div>
+        </div>
+        <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
+          <button type="button" class="btn-danger-custom" data-bs-dismiss="modal">Cancel</button>
+          <button type="button" class="btn-primary-custom" onclick="submitChangePassword()">
+            <i class="bi bi-check-lg"></i> Update Password
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+  document.body.insertAdjacentHTML("beforeend", modalHtml);
+}
+
+function openChangePasswordModal() {
+  injectChangePasswordModal();
+  document.getElementById("cp-newPassword").value = "";
+  document.getElementById("cp-confirmPassword").value = "";
+  document.getElementById("cp-modal-alert").innerHTML = "";
+  const modal = new bootstrap.Modal(document.getElementById("changePasswordModal"));
+  modal.show();
+}
+
+async function submitChangePassword() {
+  const newPass = document.getElementById("cp-newPassword").value;
+  const confPass = document.getElementById("cp-confirmPassword").value;
+  const alertDiv = document.getElementById("cp-modal-alert");
+  
+  if (!newPass || !confPass) {
+    alertDiv.innerHTML = `<div class="alert-custom alert-danger-custom"><i class="bi bi-x-circle-fill"></i> Please fill both fields.</div>`;
+    return;
+  }
+  if (newPass !== confPass) {
+    alertDiv.innerHTML = `<div class="alert-custom alert-danger-custom"><i class="bi bi-x-circle-fill"></i> Passwords do not match.</div>`;
+    return;
+  }
+  
+  const uid = getUserId();
+  if (!uid) {
+    alertDiv.innerHTML = `<div class="alert-custom alert-danger-custom"><i class="bi bi-x-circle-fill"></i> Could not identify user. Please log in again.</div>`;
+    return;
+  }
+  
+  try {
+    await apiPut(`/users/${uid}/reset-password`, { newPassword: newPass });
+    const modalEl = document.getElementById("changePasswordModal");
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal.hide();
+    showToast("Password updated successfully!", "success");
+  } catch (err) {
+    alertDiv.innerHTML = `<div class="alert-custom alert-danger-custom"><i class="bi bi-x-circle-fill"></i> ${err.message}</div>`;
+  }
+}
+
+// Inject on load if user is logged in
+document.addEventListener("DOMContentLoaded", () => {
+    if (localStorage.getItem("token")) {
+        injectChangePasswordModal();
+    }
+});

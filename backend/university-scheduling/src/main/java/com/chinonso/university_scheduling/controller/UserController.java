@@ -23,20 +23,17 @@ public class UserController {
         this.userRepository = userRepository;
     }
 
-    // GET /api/users?role=ADMIN
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers(
             @RequestParam(required = false) String role) {
         return ResponseEntity.ok(userService.getAllUsers(role));
     }
 
-    // GET /api/users/{id}
     @GetMapping("/{id}")
     public ResponseEntity<User> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok(userService.getUserById(id));
     }
 
-    // PUT /api/users/{id}
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
@@ -44,19 +41,26 @@ public class UserController {
         return ResponseEntity.ok(userService.updateUser(id, body));
     }
 
-    // PUT /api/users/{id}/reset-password
     @PutMapping("/{id}/reset-password")
     public ResponseEntity<Map<String, String>> resetPassword(
             @PathVariable Long id,
             @RequestBody Map<String, String> body) {
+            
+        String requestingEmail = SecurityContextHolder.getContext()
+                .getAuthentication().getName();
+        User requestingUser = userRepository.findByEmail(requestingEmail)
+                .orElseThrow(() -> new com.chinonso.university_scheduling.exception.ForbiddenException("User not found"));
+
+        if (requestingUser.getRole() != User.Role.ADMIN && !requestingUser.getUserId().equals(id)) {
+            throw new com.chinonso.university_scheduling.exception.ForbiddenException("You can only change your own password");
+        }
+
         userService.resetPassword(id, body.get("newPassword"));
         return ResponseEntity.ok(Map.of("message", "Password reset successfully."));
     }
 
-    // DELETE /api/users/{id}
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
-        // Resolve the calling admin's userId from their email stored in the JWT principal
         String requestingEmail = SecurityContextHolder.getContext()
                 .getAuthentication().getName();
         Long requestingUserId = userRepository.findByEmail(requestingEmail)

@@ -72,6 +72,8 @@ public class SecurityConfig {
                         .hasAnyRole("ADMIN", "CLASS_HANDLER")
 
                         // ── USER MANAGEMENT ────────────────────────────────
+                        .requestMatchers("/api/users/*/reset-password")
+                        .authenticated()
                         .requestMatchers("/api/users/**")
                         .hasRole("ADMIN")
 

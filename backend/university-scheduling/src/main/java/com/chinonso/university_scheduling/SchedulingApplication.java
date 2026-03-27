@@ -4,6 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -12,6 +14,8 @@ import com.chinonso.university_scheduling.repository.UserRepository;
 
 @SpringBootApplication
 public class SchedulingApplication {
+
+	private static final Logger log = LoggerFactory.getLogger(SchedulingApplication.class);
 
 	public static void main(String[] args) {
 		SpringApplication.run(SchedulingApplication.class, args);
@@ -23,7 +27,6 @@ public class SchedulingApplication {
 			com.chinonso.university_scheduling.repository.TeacherRepository teacherRepository,
 			com.chinonso.university_scheduling.repository.StudentRepository studentRepository) {
 		return args -> {
-			// 1. Create Admin
 			String adminEmail = "admin@university.ac.uk";
 			if (userRepository.findByEmail(adminEmail).isEmpty()) {
 				User admin = new User();
@@ -32,10 +35,9 @@ public class SchedulingApplication {
 				admin.setRole(User.Role.ADMIN);
 				admin.setIsActive(true);
 				userRepository.save(admin);
-				System.out.println("✅ Admin created successfully!");
+				log.info("Admin account initialised.");
 			}
 
-			// 2. Sync Teachers
 			for (com.chinonso.university_scheduling.entity.Teacher t : teacherRepository.findAll()) {
 				if (userRepository.findByEmail(t.getEmail()).isEmpty()) {
 					User teacherUser = new User();
@@ -48,7 +50,6 @@ public class SchedulingApplication {
 				}
 			}
 
-			// 3. Sync Students
 			for (com.chinonso.university_scheduling.entity.Student s : studentRepository.findAll()) {
 				if (userRepository.findByEmail(s.getEmail()).isEmpty()) {
 					User studentUser = new User();
@@ -61,7 +62,7 @@ public class SchedulingApplication {
 				}
 			}
 
-			System.out.println("✅ User accounts for all Teachers and Students synced!");
+			log.info("Startup seed check complete.");
 		};
 	}
 }

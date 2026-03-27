@@ -16,10 +16,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final com.chinonso.university_scheduling.repository.TeacherRepository teacherRepository;
+    private final com.chinonso.university_scheduling.repository.StudentRepository studentRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, 
+                       PasswordEncoder passwordEncoder,
+                       com.chinonso.university_scheduling.repository.TeacherRepository teacherRepository,
+                       com.chinonso.university_scheduling.repository.StudentRepository studentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.teacherRepository = teacherRepository;
+        this.studentRepository = studentRepository;
     }
 
     // ── LIST ──────────────────────────────────────────────────────────────────
@@ -96,6 +103,13 @@ public class UserService {
             throw new ForbiddenException("You cannot delete your own account.");
         }
         User user = getUserById(id);
+        
+        if (user.getRole() == User.Role.TEACHER && user.getLinkedId() != null) {
+            teacherRepository.findById(user.getLinkedId().intValue()).ifPresent(teacherRepository::delete);
+        } else if (user.getRole() == User.Role.STUDENT && user.getLinkedId() != null) {
+            studentRepository.findById(user.getLinkedId().intValue()).ifPresent(studentRepository::delete);
+        }
+        
         userRepository.delete(user);
     }
 }

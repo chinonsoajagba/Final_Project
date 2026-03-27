@@ -1,6 +1,6 @@
 -- ============================================================
 -- SEED DATA FOR TESTING
--- Run AFTER schema.sql
+-- Run AFTER schema.sql 
 -- ============================================================
 
 USE university_scheduling;

@@ -30,7 +30,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
 
-        // If no token present just continue — SecurityConfig will block if needed
+        // If no token present just continue - SecurityConfig will block if needed
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
