@@ -261,8 +261,8 @@
             </div>
             <div class="col-4">
               <select id="f-assignRole" class="form-control-custom">
-                <option value="PRIMARY">PRIMARY</option>
-                <option value="ASSISTANT">ASSISTANT</option>
+                <option value="LECTURER">LECTURER</option>
+                <option value="TEACHING_ASSISTANT">ASSISTANT</option>
               </select>
             </div>
           </div>
@@ -653,50 +653,50 @@
       document.getElementById("teachers-alert").innerHTML = "";
       const list = document.getElementById("assigned-teachers-list");
       list.innerHTML = `<li style="font-size:13px; color:var(--text-muted);"><div class="spinner-custom"></div> Loading...</li>`;
-
+      
       if (allGlobalTeachers.length === 0) {
-        try {
-          allGlobalTeachers = await apiGet("/teachers");
-          const sel = document.getElementById("f-assignTeacherId");
-          allGlobalTeachers.forEach(t => {
-            sel.innerHTML += `<option value="${t.teacherId}">${t.firstName} ${t.lastName} (${t.department})</option>`;
-          });
-        } catch (e) {
-          console.error("Failed to load teachers for dropdown", e);
-        }
+          try {
+              allGlobalTeachers = await apiGet("/teachers");
+              const sel = document.getElementById("f-assignTeacherId");
+              allGlobalTeachers.forEach(t => {
+                  sel.innerHTML += `<option value="${t.teacherId}">${t.firstName} ${t.lastName} (${t.department})</option>`;
+              });
+          } catch(e) {
+              console.error("Failed to load teachers for dropdown", e);
+          }
       }
-
+      
       teachersModal.show();
       loadAssignedTeachers();
     }
-
+    
     async function loadAssignedTeachers() {
       try {
-        const list = document.getElementById("assigned-teachers-list");
-        const assignments = await apiGet("/class-teachers/class/" + currentManageClassId);
-        if (assignments.length === 0) {
-          list.innerHTML = '<li style="font-size:13px; color:var(--text-muted); font-style:italic;">No teachers assigned yet.</li>';
-          return;
-        }
-
-        list.innerHTML = assignments.map(a => `
-                <li style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
-                    <div>
-                        <div style="font-size:13px; font-weight:600; color:var(--text-primary);">
-                          ${a.teacher.firstName} ${a.teacher.lastName}
-                        </div>
-                        <div style="font-size:11px; color:var(--primary); font-weight:700;">
-                          ${a.role}
-                        </div>
-                    </div>
-                    <button class="btn-danger-custom" style="padding:4px 8px; font-size:12px;" onclick="removeTeacherAssignment(${a.id})">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </li>
-            `).join("");
-      } catch (e) {
-        console.error(e);
-        showTeacherAlert("Failed to load assignments.", "danger");
+          const list = document.getElementById("assigned-teachers-list");
+          const assignments = await apiGet("/class-teachers/class/" + currentManageClassId);
+          if (assignments.length === 0) {
+              list.innerHTML = '<li style="font-size:13px; color:var(--text-muted); font-style:italic;">No teachers assigned yet.</li>';
+              return;
+          }
+          
+          list.innerHTML = assignments.map(a => `
+              <li style="display:flex; justify-content:space-between; align-items:center; padding:10px; background:#f8fafc; border:1px solid var(--border); border-radius:8px; margin-bottom:8px;">
+                  <div>
+                      <div style="font-size:13px; font-weight:600; color:var(--text-primary);">
+                        ${a.teacher.firstName} ${a.teacher.lastName}
+                      </div>
+                      <div style="font-size:11px; color:var(--primary); font-weight:700;">
+                        ${a.role}
+                      </div>
+                  </div>
+                  <button class="btn-danger-custom" style="padding:4px 8px; font-size:12px;" onclick="removeTeacherAssignment(${a.classTeacherId})">
+                      <i class="bi bi-x"></i>
+                  </button>
+              </li>
+          `).join("");
+      } catch(e) {
+          console.error(e);
+          showTeacherAlert("Failed to load assignments.", "danger");
       }
     }
 
@@ -704,31 +704,30 @@
       const teacherId = document.getElementById("f-assignTeacherId").value;
       const role = document.getElementById("f-assignRole").value;
       if (!teacherId) return showTeacherAlert("Please select a teacher.", "danger");
-
+      
       try {
-        await apiPost("/class-teachers/assign", {
-          classId: currentManageClassId,
-          teacherId: parseInt(teacherId),
-          role: role
-        });
-        showTeacherAlert("Teacher assigned successfully!", "success");
-        loadAssignedTeachers();
-      } catch (err) {
-        showTeacherAlert(err.message, "danger");
+          await apiPost("/class-teachers/assign", {
+              classId: currentManageClassId,
+              teacherId: parseInt(teacherId),
+              role: role
+          });
+          showTeacherAlert("Teacher assigned successfully!", "success");
+          loadAssignedTeachers();
+      } catch(err) {
+          showTeacherAlert(err.message, "danger");
       }
     }
-
+    
     async function removeTeacherAssignment(id) {
       if (!confirm("Remove this teacher from this class?")) return;
       try {
-        await apiDelete("/class-teachers/" + id);
-        loadAssignedTeachers();
-      } catch (err) {
-        showTeacherAlert(err.message, "danger");
+          await apiDelete("/class-teachers/" + id);
+          loadAssignedTeachers();
+      } catch(err) {
+          showTeacherAlert(err.message, "danger");
       }
     }
 
   </script>
 </body>
-
 </html>
