@@ -11,6 +11,7 @@ import com.chinonso.university_scheduling.entity.Teacher;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
 import com.chinonso.university_scheduling.repository.ClassTeacherRepository;
 import com.chinonso.university_scheduling.repository.EnrolmentRepository;
+import com.chinonso.university_scheduling.repository.ScheduleRepository;
 import com.chinonso.university_scheduling.repository.TeacherRepository;
 import com.chinonso.university_scheduling.repository.UserRepository;
 
@@ -26,15 +27,18 @@ public class TeacherPortalController {
         private final TeacherRepository teacherRepository;
         private final ClassTeacherRepository classTeacherRepository;
         private final EnrolmentRepository enrolmentRepository;
+        private final ScheduleRepository scheduleRepository;
 
         public TeacherPortalController(UserRepository userRepository,
                         TeacherRepository teacherRepository,
                         ClassTeacherRepository classTeacherRepository,
-                        EnrolmentRepository enrolmentRepository) {
+                        EnrolmentRepository enrolmentRepository,
+                        ScheduleRepository scheduleRepository) {
                 this.userRepository = userRepository;
                 this.teacherRepository = teacherRepository;
                 this.classTeacherRepository = classTeacherRepository;
                 this.enrolmentRepository = enrolmentRepository;
+                this.scheduleRepository = scheduleRepository;
         }
 
         @GetMapping("/me")
@@ -109,6 +113,31 @@ public class TeacherPortalController {
                                 .collect(Collectors.toList());
 
                 return ResponseEntity.ok(students);
+        }
+
+        @GetMapping("/my-schedule")
+        public ResponseEntity<List<Map<String, Object>>> getMySchedule(
+                        Authentication auth) {
+                Integer teacherId = Math.toIntExact(getLinkedId(auth.getName()));
+
+                List<com.chinonso.university_scheduling.entity.Schedule> schedules = scheduleRepository
+                                .findSchedulesByTeacherId(teacherId);
+
+                List<Map<String, Object>> timetable = schedules.stream()
+                                .map(s -> Map.<String, Object>of(
+                                                "day", s.getDayOfWeek().name(),
+                                                "startTime", s.getStartTime().toString(),
+                                                "endTime", s.getEndTime().toString(),
+                                                "courseCode", s.getClassSection().getCourse().getCourseCode(),
+                                                "courseName", s.getClassSection().getCourse().getCourseName(),
+                                                "section", s.getClassSection().getSectionNumber(),
+                                                "room", s.getClassSection().getRoom() != null
+                                                                ? s.getClassSection().getRoom().getRoomCode()
+                                                                : "TBA",
+                                                "frequency", s.getFrequency().name()))
+                                .collect(Collectors.toList());
+
+                return ResponseEntity.ok(timetable);
         }
 
         private Long getLinkedId(String email) {

@@ -25,10 +25,10 @@ role-based authentication system.
   Student, Teacher
 - Each role sees only what they are permitted to access
 - Student portal — personal timetable and enrolled classes
-- Teacher portal — assigned classes and enrolled students
-- Live enrolment progress tracking per class
-- Dashboard with real-time system statistics
-- Search and filter on all resource pages
+- Teacher portal — assigned classes, personal timetable, and enrolled students
+- Class Teacher Assignment — Assign Lecturers and Teaching Assistants to a given class
+- Dynamic Registration — Automatically provisions Teacher and Student backend profiles on signup
+- Client-Side Pagination — Real-time frontend search filtering and page navigation for infinite scaling
 
 ## SYSTEM REQUIREMENTS
 
@@ -133,30 +133,30 @@ Email : admin@university.ac.uk
 Password: admin123
 
 To create accounts for other roles, go to register.html and select
-the appropriate role. For Student and Teacher roles, enter the
-numeric ID that matches their record in the database.
+the appropriate role. The registration form uses a dynamic interface
+to automatically create backend profiles for Students and Teachers!
 
 ## REGISTERING USERS
 
 Admin, Enrollment Officer, Class Handler:
 
 - Go to register.html
-- Enter email, password and select role
-- No linked ID required
+- Enter first name, last name, email, password and select role
+- Registration instantly creates user credentials
 
 Student:
 
 - Go to register.html
 - Select role: Student
-- Enter their Student ID (numeric ID from the students table)
-- Use the email that matches their student record
+- The form dynamically expands to ask for Program and Year of Study
+- Registration automatically provisions a new Student profile in the database and links it to their login account
 
 Teacher:
 
 - Go to register.html
 - Select role: Teacher
-- Enter their Teacher ID (numeric ID from the teachers table)
-- Use the email that matches their teacher record
+- The form dynamically expands to ask for Department and Employee ID
+- Registration automatically provisions a new Teacher profile in the database and links it to their login account
 
 ## API ENDPOINTS SUMMARY
 
@@ -171,12 +171,14 @@ GET/POST/PUT/DELETE /api/schedules
 GET/POST /api/enrolments/enrol
 GET/POST /api/enrolments/drop
 GET/POST/PUT/DELETE /api/class-teachers
+POST /api/class-teachers/assign
 GET /api/student-portal/me
 GET /api/student-portal/my-enrolments
 GET /api/student-portal/my-schedule
 GET /api/teacher-portal/me
 GET /api/teacher-portal/my-classes
 GET /api/teacher-portal/my-classes/{id}/students
+GET /api/teacher-portal/my-schedule
 
 ## CONFLICT DETECTION LOGIC
 

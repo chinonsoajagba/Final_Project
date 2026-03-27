@@ -111,6 +111,21 @@
           </div>
         </div>
 
+        <!-- MY TIMETABLE -->
+        <div class="card mt-4">
+          <div class="card-header-custom">
+            <h5><i class="bi bi-calendar3"></i> My Timetable</h5>
+          </div>
+          <div class="card-body-custom p-0">
+            <div id="timetable-container">
+              <div class="loading-state">
+                <div class="spinner-custom"></div>
+                <p>Loading your timetable...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- STUDENTS IN SELECTED CLASS -->
         <div class="card mt-4" id="students-card" style="display: none">
           <div class="card-header-custom">
@@ -153,6 +168,7 @@
         if (!requireAuth(["TEACHER"])) return;
         loadProfile();
         loadClasses();
+        loadTimetable();
       });
 
       // ============================================================
@@ -350,6 +366,74 @@
             <div class="alert-custom alert-danger-custom" style="margin:24px;">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 Could not load classes: ${err.message}
+            </div>`;
+        }
+      }
+
+      // ============================================================
+      // LOAD MY TIMETABLE
+      // ============================================================
+      async function loadTimetable() {
+        const container = document.getElementById("timetable-container");
+        try {
+          const schedule = await apiGet("/teacher-portal/my-schedule");
+          if (schedule.length === 0) {
+            container.innerHTML = `
+                <div class="empty-state">
+                    <i class="bi bi-calendar-x"></i>
+                    <p>You have no classes scheduled yet.</p>
+                </div>`;
+            return;
+          }
+
+          // Sort by day then time
+          const daysOrder = { MONDAY:1, TUESDAY:2, WEDNESDAY:3, THURSDAY:4, FRIDAY:5, SATURDAY:6, SUNDAY:7 };
+          schedule.sort((a,b) => {
+             if(daysOrder[a.day] !== daysOrder[b.day]) return daysOrder[a.day] - daysOrder[b.day];
+             return a.startTime.localeCompare(b.startTime);
+          });
+
+          container.innerHTML = `
+            <div style="overflow-x:auto;">
+            <table class="table-custom">
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Time</th>
+                        <th>Course</th>
+                        <th>Section</th>
+                        <th>Room</th>
+                        <th>Frequency</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${schedule.map(s => `
+                        <tr>
+                            <td><span class="badge-custom badge-primary">${s.day}</span></td>
+                            <td style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;">
+                                ${s.startTime.substring(0,5)} - ${s.endTime.substring(0,5)}
+                            </td>
+                            <td>
+                                <div style="font-weight:700;font-size:13px;">${s.courseCode}</div>
+                                <div style="font-size:11px;color:var(--text-muted);">${s.courseName}</div>
+                            </td>
+                            <td>Section ${s.section}</td>
+                            <td>
+                                ${s.room !== "TBA" 
+                                   ? `<i class="bi bi-building"></i> ${s.room}` 
+                                   : `<span style="font-style:italic;color:var(--text-muted)">TBA</span>`}
+                            </td>
+                            <td><span class="badge-custom badge-muted">${s.frequency}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            </div>`;
+        } catch (err) {
+          container.innerHTML = `
+            <div class="alert-custom alert-danger-custom" style="margin:24px;">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                Could not load timetable: ${err.message}
             </div>`;
         }
       }
