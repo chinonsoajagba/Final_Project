@@ -1,5 +1,0 @@
-# ==========================================
-# LOCAL ENVIRONMENT OVERRIDES
-# ==========================================
-spring.datasource.username=your_db_username
-spring.datasource.password=your_db_password
