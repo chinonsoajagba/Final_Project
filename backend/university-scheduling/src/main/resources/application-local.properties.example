@@ -1,0 +1,5 @@
+# ==========================================
+# LOCAL ENVIRONMENT OVERRIDES
+# ==========================================
+spring.datasource.username=root
+spring.datasource.password=password
