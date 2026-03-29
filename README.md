@@ -8,6 +8,14 @@
 
 A web-based University Classroom and Scheduling Management System that allows administrators to manage rooms, teachers, students, courses, classes and schedules. The system includes automatic conflict detection to prevent invalid enrolments and a full role-based authentication system.
 
+## ⚡ Quick Start (Recommended)
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/chinonsoajagba/Final_Project.git
+   cd Final_project
+   ```
+
 ## ✨ Key Features
 
 - **Full CRUD Management:** Rooms, Teachers, Students, Courses, Classes, and Schedules.
