@@ -1,4 +1,4 @@
-﻿<!doctype html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -224,11 +224,51 @@
       </div>
     </div>
 
+    <!-- ============================================================
+     ASSIGN ROOM TO CLASS MODAL
+     ============================================================ -->
+    <div class="modal fade" id="assignRoomModal" tabindex="-1">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content" style="border-radius: var(--radius-lg); border: none; overflow: hidden;">
+          <div class="modal-header-custom">
+            <h5 id="assign-modal-title">Assign Room to Class</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body" style="padding: 24px">
+            <div id="assign-modal-alert"></div>
+            <div class="row g-3">
+              <div class="col-12">
+                <p style="font-size:13px; color:var(--text-secondary); margin-bottom:16px;">
+                  <i class="bi bi-info-circle" style="color:var(--primary);"></i>
+                  Select a class to assign <strong id="assign-room-label"></strong> to.
+                  This will replace any previously assigned room for that class.
+                </p>
+              </div>
+              <div class="col-12">
+                <label class="form-label-custom">Select Class *</label>
+                <select id="f-assign-classId" class="form-control-custom">
+                  <option value="">-- Select a Class --</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="padding: 16px 24px; border-top: 1px solid var(--border)">
+            <button type="button" class="btn-danger-custom" data-bs-dismiss="modal">Cancel</button>
+            <button type="button" class="btn-primary-custom" onclick="assignRoomToClass()">
+              <i class="bi bi-check-lg"></i> Assign Room
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="base.js"></script>
     <script>
       let editingRoomId = null;
+      let assigningRoomId = null;
       let roomModal;
+      let assignRoomModal;
       let allRooms = [];
       let currentFilteredRooms = [];
       let currentPage = 1;
@@ -237,6 +277,7 @@
       document.addEventListener("DOMContentLoaded", () => {
         if (!requireAuth(["ADMIN"])) return;
         roomModal = new bootstrap.Modal(document.getElementById("roomModal"));
+        assignRoomModal = new bootstrap.Modal(document.getElementById("assignRoomModal"));
         loadRooms();
       });
 
@@ -327,6 +368,9 @@
                             }</td>
                             <td>
                                 <div style="display:flex;gap:6px;">
+                                    <button class="btn-edit-custom" style="background:#f0fdf4;color:#16a34a;border-color:#bbf7d0;" onclick="openAssignRoomModal(${r.roomId}, '${r.roomCode}')">
+                                        <i class="bi bi-building-add"></i> Assign
+                                    </button>
                                     <button class="btn-edit-custom" onclick="openEditModal(${r.roomId})">
                                         <i class="bi bi-pencil"></i> Edit
                                     </button>
@@ -498,6 +542,74 @@
         <div class="alert-custom ${colors[type]}">
             <i class="bi ${icons[type]}"></i> ${message}
         </div>`;
+      }
+
+      function showAssignAlert(message, type) {
+        const colors = { danger: "alert-danger-custom", success: "alert-success-custom" };
+        const icons  = { danger: "bi-x-circle-fill",    success: "bi-check-circle-fill" };
+        document.getElementById("assign-modal-alert").innerHTML = `
+          <div class="alert-custom ${colors[type]}">
+              <i class="bi ${icons[type]}"></i> ${message}
+          </div>`;
+      }
+
+      // ============================================================
+      // ASSIGN ROOM TO CLASS
+      // ============================================================
+      async function openAssignRoomModal(roomId, roomCode) {
+        assigningRoomId = roomId;
+        document.getElementById("assign-room-label").textContent = roomCode;
+        document.getElementById("assign-modal-alert").innerHTML = "";
+        const select = document.getElementById("f-assign-classId");
+        select.innerHTML = '<option value="">-- Loading classes... --</option>';
+
+        try {
+          const classes = await apiGet("/classes");
+          select.innerHTML = '<option value="">-- Select a Class --</option>';
+          classes.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c.classId;
+            const currentRoom = c.room ? ` [Room: ${c.room.roomCode}]` : " [No Room]";
+            opt.textContent = `${c.course.courseCode} - Section ${c.sectionNumber} (${c.semester})${currentRoom}`;
+            select.appendChild(opt);
+          });
+        } catch (e) {
+          showAssignAlert("Could not load classes. Is the server running?", "danger");
+        }
+
+        assignRoomModal.show();
+      }
+
+      async function assignRoomToClass() {
+        const classId = document.getElementById("f-assign-classId").value;
+        if (!classId) {
+          showAssignAlert("Please select a class.", "danger");
+          return;
+        }
+
+        try {
+          // Fetch the full class first so we keep all its fields intact
+          const cls = await apiGet(`/classes/${classId}`);
+          const body = {
+            sectionNumber: cls.sectionNumber,
+            academicYear: cls.academicYear,
+            semester: cls.semester,
+            status: cls.status,
+            maxEnrolment: cls.maxEnrolment,
+          };
+          await apiFetch(
+            `/classes/${classId}?courseId=${cls.course.courseId}&roomId=${assigningRoomId}`,
+            { method: "PUT", body: JSON.stringify(body) }
+          );
+          showAssignAlert("Room assigned successfully!", "success");
+          // Refresh room list in case room status changed
+          setTimeout(() => {
+            assignRoomModal.hide();
+            loadRooms();
+          }, 900);
+        } catch (err) {
+          showAssignAlert(err.message, "danger");
+        }
       }
     </script>
   </body>

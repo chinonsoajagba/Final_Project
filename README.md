@@ -109,8 +109,13 @@ Final_project/
    spring.datasource.password=yourpassword
    # Update username if yours is not "root"
    ```
-6. Run `SchedulingApplication.java` (right-click -> Run).
-7. The console should show:
+6. **Generate a JWT Secret:** You must update the `jwt.secret` value in `application-local.properties` with your own secure base64 string. You can instantly generate one in your terminal by running:
+   ```bash
+   openssl rand -base64 32
+   ```
+   *(Copy the generated string and paste it after `jwt.secret=` in the properties file)*
+7. Run `SchedulingApplication.java` (right-click -> Run).
+8. The console should show:
    ```text
    Started SchedulingApplication in X.XXX seconds
    API is now running on http://localhost:8080

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.chinonso.university_scheduling.entity.Teacher;
 import com.chinonso.university_scheduling.entity.User;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
+import com.chinonso.university_scheduling.repository.ClassTeacherRepository;
 import com.chinonso.university_scheduling.repository.TeacherRepository;
 import com.chinonso.university_scheduling.repository.UserRepository;
 
@@ -21,13 +22,16 @@ public class TeacherService {
     private final TeacherRepository teacherRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ClassTeacherRepository classTeacherRepository;
 
     public TeacherService(TeacherRepository teacherRepository,
-                          UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+            UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            ClassTeacherRepository classTeacherRepository) {
         this.teacherRepository = teacherRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.classTeacherRepository = classTeacherRepository;
     }
 
     public List<Teacher> getAllTeachers() {
@@ -98,6 +102,10 @@ public class TeacherService {
 
     public void deleteTeacher(Integer id) {
         Teacher teacher = getTeacherById(id);
+        // Remove FK-dependent class-teacher assignments first
+        classTeacherRepository.deleteAll(
+                classTeacherRepository.findByTeacher_TeacherId(id));
+        // Remove the linked login account
         userRepository.findByEmail(teacher.getEmail()).ifPresent(userRepository::delete);
         teacherRepository.delete(teacher);
     }

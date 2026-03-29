@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.chinonso.university_scheduling.entity.Room;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
+import com.chinonso.university_scheduling.repository.ClassSectionRepository;
 import com.chinonso.university_scheduling.repository.RoomRepository;
 
 import java.util.List;
@@ -12,9 +13,12 @@ import java.util.List;
 public class RoomService {
 
     private final RoomRepository roomRepository;
+    private final ClassSectionRepository classSectionRepository;
 
-    public RoomService(RoomRepository roomRepository) {
+    public RoomService(RoomRepository roomRepository,
+                       ClassSectionRepository classSectionRepository) {
         this.roomRepository = roomRepository;
+        this.classSectionRepository = classSectionRepository;
     }
 
     public List<Room> getAllRooms() {
@@ -61,6 +65,11 @@ public class RoomService {
 
     public void deleteRoom(Integer id) {
         Room room = getRoomById(id);
+        // Unlink any classes referencing this room before deleting
+        classSectionRepository.findByRoom_RoomId(id).forEach(cs -> {
+            cs.setRoom(null);
+            classSectionRepository.save(cs);
+        });
         roomRepository.delete(room);
     }
 

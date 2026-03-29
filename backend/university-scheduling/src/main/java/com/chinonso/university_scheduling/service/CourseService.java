@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.chinonso.university_scheduling.entity.Course;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
+import com.chinonso.university_scheduling.repository.ClassSectionRepository;
 import com.chinonso.university_scheduling.repository.CourseRepository;
 
 import java.util.List;
@@ -12,9 +13,15 @@ import java.util.List;
 public class CourseService {
 
     private final CourseRepository courseRepository;
+    private final ClassSectionRepository classSectionRepository;
+    private final ClassSectionService classSectionService;
 
-    public CourseService(CourseRepository courseRepository) {
+    public CourseService(CourseRepository courseRepository,
+                         ClassSectionRepository classSectionRepository,
+                         ClassSectionService classSectionService) {
         this.courseRepository = courseRepository;
+        this.classSectionRepository = classSectionRepository;
+        this.classSectionService = classSectionService;
     }
 
     public List<Course> getAllCourses() {
@@ -55,6 +62,9 @@ public class CourseService {
 
     public void deleteCourse(Integer id) {
         Course course = getCourseById(id);
+        // Cascade-delete all class sections (and their dependents) first
+        classSectionRepository.findByCourse_CourseId(id)
+                .forEach(cs -> classSectionService.deleteClass(cs.getClassId()));
         courseRepository.delete(course);
     }
 

@@ -16,17 +16,17 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final com.chinonso.university_scheduling.repository.TeacherRepository teacherRepository;
-    private final com.chinonso.university_scheduling.repository.StudentRepository studentRepository;
+    private final TeacherService teacherService;
+    private final StudentService studentService;
 
-    public UserService(UserRepository userRepository, 
-                       PasswordEncoder passwordEncoder,
-                       com.chinonso.university_scheduling.repository.TeacherRepository teacherRepository,
-                       com.chinonso.university_scheduling.repository.StudentRepository studentRepository) {
+    public UserService(UserRepository userRepository,
+            PasswordEncoder passwordEncoder,
+            TeacherService teacherService,
+            StudentService studentService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.teacherRepository = teacherRepository;
-        this.studentRepository = studentRepository;
+        this.teacherService = teacherService;
+        this.studentService = studentService;
     }
 
     // ── LIST ──────────────────────────────────────────────────────────────────
@@ -103,13 +103,16 @@ public class UserService {
             throw new ForbiddenException("You cannot delete your own account.");
         }
         User user = getUserById(id);
-        
+
+        // For TEACHER/STUDENT users, delegate to their service for full cascade
         if (user.getRole() == User.Role.TEACHER && user.getLinkedId() != null) {
-            teacherRepository.findById(user.getLinkedId().intValue()).ifPresent(teacherRepository::delete);
+            teacherService.deleteTeacher(user.getLinkedId().intValue());
+            return; // deleteTeacher already removes the user account
         } else if (user.getRole() == User.Role.STUDENT && user.getLinkedId() != null) {
-            studentRepository.findById(user.getLinkedId().intValue()).ifPresent(studentRepository::delete);
+            studentService.deleteStudent(user.getLinkedId().intValue());
+            return; // deleteStudent already removes the user account
         }
-        
+
         userRepository.delete(user);
     }
 }

@@ -7,8 +7,11 @@ import com.chinonso.university_scheduling.entity.Course;
 import com.chinonso.university_scheduling.entity.Room;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
 import com.chinonso.university_scheduling.repository.ClassSectionRepository;
+import com.chinonso.university_scheduling.repository.ClassTeacherRepository;
 import com.chinonso.university_scheduling.repository.CourseRepository;
+import com.chinonso.university_scheduling.repository.EnrolmentRepository;
 import com.chinonso.university_scheduling.repository.RoomRepository;
+import com.chinonso.university_scheduling.repository.ScheduleRepository;
 
 import java.util.List;
 
@@ -18,13 +21,22 @@ public class ClassSectionService {
     private final ClassSectionRepository classSectionRepository;
     private final CourseRepository courseRepository;
     private final RoomRepository roomRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final ClassTeacherRepository classTeacherRepository;
+    private final EnrolmentRepository enrolmentRepository;
 
     public ClassSectionService(ClassSectionRepository classSectionRepository,
             CourseRepository courseRepository,
-            RoomRepository roomRepository) {
+            RoomRepository roomRepository,
+            ScheduleRepository scheduleRepository,
+            ClassTeacherRepository classTeacherRepository,
+            EnrolmentRepository enrolmentRepository) {
         this.classSectionRepository = classSectionRepository;
         this.courseRepository = courseRepository;
         this.roomRepository = roomRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.classTeacherRepository = classTeacherRepository;
+        this.enrolmentRepository = enrolmentRepository;
     }
 
     public List<ClassSection> getAllClasses() {
@@ -107,6 +119,10 @@ public class ClassSectionService {
 
     public void deleteClass(Integer id) {
         ClassSection classSection = getClassById(id);
+        // Delete dependent records in FK order to avoid constraint violations
+        scheduleRepository.deleteAll(scheduleRepository.findByClassSection_ClassId(id));
+        classTeacherRepository.deleteAll(classTeacherRepository.findByClassSection_ClassId(id));
+        enrolmentRepository.deleteAll(enrolmentRepository.findByClassSection_ClassId(id));
         classSectionRepository.delete(classSection);
     }
 

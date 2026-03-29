@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.chinonso.university_scheduling.entity.Student;
 import com.chinonso.university_scheduling.entity.User;
 import com.chinonso.university_scheduling.exception.ResourceNotFoundException;
+import com.chinonso.university_scheduling.repository.EnrolmentRepository;
 import com.chinonso.university_scheduling.repository.StudentRepository;
 import com.chinonso.university_scheduling.repository.UserRepository;
 
@@ -21,13 +22,16 @@ public class StudentService {
     private final StudentRepository studentRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EnrolmentRepository enrolmentRepository;
 
     public StudentService(StudentRepository studentRepository,
                           UserRepository userRepository,
-                          PasswordEncoder passwordEncoder) {
+                          PasswordEncoder passwordEncoder,
+                          EnrolmentRepository enrolmentRepository) {
         this.studentRepository = studentRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.enrolmentRepository = enrolmentRepository;
     }
 
     public List<Student> getAllStudents() {
@@ -92,6 +96,10 @@ public class StudentService {
 
     public void deleteStudent(Integer id) {
         Student student = getStudentById(id);
+        // Remove FK-dependent enrolment records first
+        enrolmentRepository.deleteAll(
+                enrolmentRepository.findByStudent_StudentId(id));
+        // Remove the linked login account
         userRepository.findByEmail(student.getEmail()).ifPresent(userRepository::delete);
         studentRepository.delete(student);
     }

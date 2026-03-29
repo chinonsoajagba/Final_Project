@@ -1,5 +1,11 @@
 # ==========================================
 # LOCAL ENVIRONMENT OVERRIDES
 # ==========================================
-spring.datasource.username=root
-spring.datasource.password=password
+spring.datasource.username=your_db_username
+spring.datasource.password=your_db_password
+
+# ==========================================
+# JWT CONFIG
+# ==========================================
+jwt.secret=your_base64_jwt_secret_here
+jwt.expiration=3600000
